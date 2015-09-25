@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}用户列表{% endblock %}
+
+{% block leftside %}
+
+{% endblock %}
+
+{% block allcontent %}
+<div class="ui page grid">
+  <div class="sixteen wide column">
+    <table class="ui table segment" style="font-size: 0.75em">
+      <thead>
+        <tr>
+          <th>认证</th>
+          <th>用户名</th>
+          <th>真实姓名</th>
+          <th>学工号</th>
+          <th>电子邮件</th>
+          <th>联系电话</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      {% for account in accounts %}
+      <tr>
+        <td>
+          {% if account.status == 'unauth' %}
+            <i class="circular inverted red question mark icon"></i>
+          {% elif account.status == 'auth' %}
+            <i class="circular inverted teal checkmark icon"></i>
+          {% else %}
+            <i class="circular inverted black remove icon"></i>
+          {% endif %}
+        </td>
+        <td>
+          {% if account.type == 'manager' %}
+            <div class="ui label">管理员</div>&nbsp;
+          {% elif account.type == 'supervisor' %}
+            <div class="ui label">超级管理员</div>&nbsp;
+          {% endif %}
+          {{ account.username }}
+        </td>
+        <td>
+          {{ account.realname }}
+        </td>
+        <td>
+          {{ account.number }}
+        </td>
+        <td>
+          {{ account.email }}
+        </td>
+        <td>
+          {{ account.tel }}
+        </td>
+        <td>
+          <div class="ui tiny black buttons operations">
+            <div class="ui tip button set-perm" data-content="修改权限" data-position="top left" data-user="{{ account.username }}">
+              <i class="unlock icon"></i>
+            </div>
+            <div class="ui floating dropdown icon button">
+              <i class="dropdown icon"></i>
+              <div class="menu">
+                <div class="item set-perm" data-user="{{ account.username }}">
+                  <i class="unlock icon"></i>
+                  修改权限
+                </div>
+                {% if account.status == "unauth" %}
+                  <div class="item approve-auth" data-user="{{ account.username }}">
+                    <i class="checkmark icon"></i>
+                    通过认证
+                  </div>
+                {% endif %}
+                {% if account.status != "deleted" %}
+                  <div class="item del-user" data-user="{{ account.username }}">
+                    <i class="close icon"></i>
+                    删除用户
+                  </div>
+                {% endif %}
+                {% if account.type == "manager" %}
+                  <div class="item clear-mgr" data-user="{{ account.username }}">
+                    <i class="remove icon"></i>
+                    取消管理员
+                  </div>
+                {% elif account.type == "normal" %}
+                  <div class="item set-mgr" data-user="{{ account.username }}">
+                    <i class="remove icon"></i>
+                    设为管理员
+                  </div>
+                {% endif %}
+                <a class="item" href="{% url "log.views.show_log" %}?id={{ account.id }}&type=user&is_actor=true">
+                  <i class="unordered list icon"></i>
+                  查看操作日志
+                </a>
+                <a class="item" href="{% url "log.views.show_log" %}?id={{ account.id }}&type=user&is_actor=false">
+                  <i class="unordered list icon"></i>
+                  查看账户修改日志
+                </a>
+                <a class="item" href="{% url "log.views.show_log" %}?id={{ account.id }}&type=user&is_actor=All">
+                  <i class="unordered list icon"></i>
+                  查看所有相关日志
+                </a>
+                <a class="item agree-button" data-variation="inverted" data-position="top center" data-html='
+                  <h5 class="ui header">发送邮件</h5>
+                  <form method="post" action="{% url "account.views.do_send_mail" %}">
+                  <div class="ui form">
+                    <input type="hidden" name="id" value="{{account.id}}">
+                    <div class="field">
+                        <label><font color="#FFFFFF">收件人</font></label>
+                        <input type="text" value="{{account.username}} ({{account.realname}})">
+                    </div>
+                    <div class="field">
+                        <label><font color="#FFFFFF">标题</font></label>
+                        <input type="text" name="subject" placeholder="标题">
+                    </div>
+                    <div class="field">
+                        <label><font color="#FFFFFF">内容</font></label>
+                        <input type="text" name="message" placeholder="内容">
+                    </div>
+                  </div>
+                  <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认同意</div>
+                  </form>
+                  <script type="text/javascript">
+                    $(".agree-confirm-button").click(function(){
+                      $(this).parent().trigger("submit");
+                    });
+                  </script>'>
+                  <i class="mail icon"></i>
+                  发送邮件通知
+                </a>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+{# The confirmation dialog begins here. #}
+<div class="ui small modal" id="confirm">
+  <div class="header">操作确认</div>
+  <div class="content">
+    <div class="left"><i id="confirm-icon"></i></div>
+    <div class="right">
+      <p>您确定要<span id="confirm-msg"></span>吗？</p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="two fluid ui buttons">
+      <div class="ui positive labeled icon button">
+        <i class="checkmark icon"></i>
+        <span id="confirm-action"></span>
+      </div>
+      <div class="ui negative right labeled icon button">
+        <i class="remove icon"></i>
+        取消
+      </div>
+    </div>
+  </div>
+</div>
+{# The confirmation ends here. #}
+
+{# The permission modification dialog begins here. #}
+<div class="ui small modal" id="perm-dlg">
+  <i class="close icon"></i>
+  <div class="header">
+    <i class="shield icon"></i>
+    权限设置
+  </div>
+  <div class="content">
+    <p><i class="arrow right icon"></i> 修改 <b id="perm-user"></b> 的权限</p>
+    <div class="ui form">
+      {% for perm in all_perms %}
+        <div class="inline field">
+          <div class="ui slider checkbox">
+            <input type="checkbox">
+            <label>{{ perm }}</label>
+          </div>
+        </div>
+      {% endfor %}
+      <div class="ui teal submit button">保存修改</div>
+    </div>
+  </div>
+</div>
+{# The permission modification dialog ends here. #}
+
+{% endblock %}
+
+{% block js %}
+<script>
+  $(function(){
+    $('.agree-button').popup({
+      on: 'click'
+    });
+
+    function confirm(icon, msg, op, username) {
+        $('#confirm').attr('data-op', op);
+        $('#confirm').attr('data-username', username);
+        $('#confirm-icon').removeClass();
+        $('#confirm-icon').addClass(icon + ' icon');
+        $('#confirm-msg').html(msg);
+        $('#confirm-action').html(msg);
+        $('#confirm').modal('show');
+    }
+
+    $('.set-mgr').click(function(){
+        var target = $(this).attr('data-user');
+        confirm('wrench', '将 <b>'+target+'</b> 设为管理员', 'set_mgr', target);
+    });
+
+    $('.del-user').click(function(){
+        var target = $(this).attr('data-user');
+        confirm('remove', '删除 <b>'+target+'</b> ', 'del_user', target);
+    });
+
+    $('.clear-mgr').click(function(){
+        var target = $(this).attr('data-user');
+        confirm('minus sign', '取消 <b>'+target+'</b> 的管理员权限', 'clear_mgr', target);
+    });
+
+    $('.approve-auth').click(function(){
+        var target = $(this).attr('data-user');
+        confirm('checkmark sign', '通过 <b>'+target+'</b> 的实名认证', 'approve_auth', target);
+    });
+
+    $('#confirm .positive.button').click(function() {
+      var operation_url = {
+        set_mgr: '{% url "account.views.do_set_manager" %}',
+        clear_mgr: '{% url "account.views.do_clear_manager" %}',
+        del_user: '{% url "account.views.do_delete_account" %}',
+        approve_auth: '{% url "account.views.do_approve_account" %}'
+      };
+
+      $.ajax({
+        url: operation_url[$('#confirm').attr('data-op')],
+        type: 'POST',
+        dataType: 'text',
+        data: { username: $('#confirm').attr('data-username') },
+      })
+      .done(function() {
+      })
+      .fail(function() {
+      })
+      .always(function() {
+        location.reload(true);
+      });
+      
+    });
+
+    $('.set-perm').click(function(){
+      var target = $(this).attr('data-user');
+
+      $.ajax({
+        url: '{% url "account.views.do_get_permissions" %}',
+        type: 'POST',
+        dataType: 'json',
+        data: { username: target },
+      })
+      .done(function(data) {
+        if (data.status == 'ok') {
+          var perm_state = data.permissions;
+          var index = 0;
+
+          $('#perm-dlg input').each(function(){
+            if (perm_state[index] == 0)
+              this.checked = false;
+            else
+              this.checked = true;
+            index = index + 1;
+          });
+
+          $('#perm-user').html(target);
+          $('#perm-dlg').attr('data-username', target);
+          $('#perm-dlg').modal('show');
+        }
+      });
+    });
+
+    $('#perm-dlg .submit.button').click(function() {
+      var target = $('#perm-dlg').attr('data-username');
+      var perm_state = '';
+
+      $('#perm-dlg input').each(function(){
+        if (this.checked == false)
+          perm_state = perm_state + '0';
+        else
+          perm_state = perm_state + '1';
+      });
+
+      $.ajax({
+        url: '{% url "account.views.do_set_permissions" %}',
+        type: 'POST',
+        dataType: 'text',
+        data: {
+          username: target,
+          permissions: perm_state,
+        },
+      }).always(function(){
+        $('#perm-dlg').modal('hide');
+      });
+    });
+  });
+</script>
+{% endblock %}

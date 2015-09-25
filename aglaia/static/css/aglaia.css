@@ -1,0 +1,45 @@
+.base {
+    margin: 0px;
+    background: rgb(245,245,245);
+    font-family:Arial,Helvetica,sans-serif,"宋体";
+}
+
+.topbar {
+    top: 0px;
+}
+
+.ui.styled.right.sidebar {
+    padding-top: 2rem;
+    padding-bottom: 0;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.ui.gray.simple.segment {
+    height: 100%;
+    border-radius: 0;
+    background: rgba(245,245,245,1);
+}
+
+.segment .description {
+    color: rgb(170,170,170);
+}
+
+.ui.attached.header {
+    font-size: 1.1em;
+}
+
+.ui.modal>.close {
+    right: 1em;
+    top: 1em;
+    color: #000;
+}
+
+.simple.button {
+    color: #000;
+    text-decoration: none;
+}
+
+.simple.button:hover {
+    color: rgb(64,199,193);
+};

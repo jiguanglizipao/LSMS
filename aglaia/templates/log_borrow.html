@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}借还日志列表{% endblock %}
+
+{% block allcontent %}
+<div class="ui page grid">
+  <div class="sixteen wide column">
+    <table class="ui small table">
+      <thead>
+        <tr>
+          <th>SN</th>
+          <th>实物名称</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in borrows %}
+          <tr>
+            <td>{{item.sn}}</td>
+            <td>{{item.name}}</td>
+            <td>
+              <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                <input type="hidden" name="id" value="{{ item.id }}">
+                <input type="hidden" name="type" value="borrow">
+                <button type="submit" class="ui circular tiny inverted icon teal tip button" data-content="日志">
+                    <i class="unordered list icon"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

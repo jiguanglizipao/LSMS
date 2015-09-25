@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}新增实物类型{% endblock %}
+
+{% block allcontent %}
+
+<div class="ui grid" style="margin-top:10px">
+  <div class="one column row">
+    <div class="column">
+      <h2 class="ui header" style="margin-top:10px; margin-left:10px">新增实物类型</h2>
+    </div>
+    <div class="column">
+    <form id="add-type-form" method="post" action='{% url "goods.views.add_type" %}'>
+      <div class="ui form fluid segment" id="form-segment"> <!--error loading-->
+        <div class="ui error message">
+            <div class="header">错误</div>
+            <p></p>
+        </div>
+        <div class="field">
+          <label>类型名称</label>
+          <input placeholder="类型名称" type="text" id="type_name" name="type_name">
+        </div>
+        <div class="ui horizontal divider">属性信息</div>
+        <div class="three fields" id="properties">
+          <div class="field fluid">
+              <label>属性1的名称</label>
+              <input placeholder="属性1的名称" type="text" id="pro1_name" name="pro1_name">
+          </div>
+          <div class="field fluid">
+              <label>属性2的名称</label>
+              <input placeholder="属性2的名称" type="text" id="pro2_name" name="pro2_name">
+          </div>
+          <div class="field fluid">
+              <label>属性3的名称</label>
+              <input placeholder="属性3的名称" type="text" id="pro3_name" name="pro3_name">
+          </div>
+        </div>
+        <div class="ui blue button"  id="new-pro-button">添加新属性</div>
+        <div class="ui green button" id="submit-button">提交新类型</div>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+  <script>
+    var pro_num = 3;
+    var pro_max = 32;
+    $(function(){
+      $('.ui.dropdown').dropdown();
+      $('input').click(function(){
+        $('#form-segment').removeClass('error');
+      });
+      $('#type_name').click(function(){
+        $('#type_name').parent().removeClass('error');
+      });
+      $('#new-pro-button').click(function(){
+        if(pro_num >= pro_max){
+          $('#form-segment').addClass('error');
+          $('.error.message').children('p').text('属性数量已达上限');
+          alert('属性数量已达上限');
+        }
+        else{
+          pro_num += 1;
+          $('#properties').append('<div class="field fluid">'
+              +'<label>属性'+pro_num+'的名称</label>'
+              +'<input placeholder="属性'+pro_num+'的名称" type="text" id="pro'+pro_num+'_name" name="pro'+pro_num+'_name">'
+          +'</div>');
+          $('input').click(function(){
+            $('#form-segment').removeClass('error');
+          });
+        }
+      });
+      $('#submit-button').click(function(){
+        var name = $("#type_name").val();
+        if(name.length <= 0){
+          $('#form-segment').addClass('error');
+          $('#type_name').parent().addClass('error');
+          $('.error.message').children('p').text('类型名称不能为空');
+          if(pro_num > 9){
+            alert('类型名称不能为空');
+          }
+          return;
+        }
+        //alert(name);
+        $('#add-type-form').trigger('submit');
+      })
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}{% endblock %}</title>
+  {% load static from staticfiles %}
+  <link rel="stylesheet" href="{% static "css/semantic.min.css" %}" />
+  <link rel="stylesheet" href="{% static "css/aglaia.css" %}" />
+</head>
+<body class="base">
+  <div class="ui right floating wide inverted styled sidebar" id="account-sidebar">
+    <div class="ui simple segment">
+      <div class="ui basic accordion">
+        <div class="active title">
+          <i class="dropdown icon"></i>
+          账户信息
+        </div>
+        <div class="active content">
+          <form class="ui form">
+            <div class="field">
+              <label>用户名</label>
+              <div class="ui left labeled icon input">
+                <input type="text" value="{{ user.username }}" readonly="readonly">
+                <i class="lock icon tip" data-content="不可更改"></i>
+              </div>
+            </div>
+            <div class="field" id="base-realname">
+              <label>真实姓名</label>
+              <div class="ui left labeled icon input">
+                <input type="text" value="{{ user.realname }}" {% if user.status != "unauth" %} readonly="readonly" {% endif %}>
+                {% if user.status != "unauth" %}
+                <i class="lock icon tip" data-content="不可更改"></i>
+                {% else %}
+                <i class="unlock icon tip" data-content="可更改"></i>
+                {% endif %}
+              </div>
+            </div>
+            <div class="field" id="base-number">
+              <label>学工号</label>
+              <div class="ui left labeled icon input">
+                <input type="text" value="{{ user.number }}" {% if user.status != "unauth" %} readonly="readonly" {% endif %}>
+                {% if user.status != "unauth" %}
+                <i class="lock icon tip" data-content="不可更改"></i>
+                {% else %}
+                <i class="unlock icon tip" data-content="可更改"></i>
+                {% endif %}
+              </div>
+            </div>
+            <div class="field">
+              <label>类型</label>
+              <div class="ui left labeled icon input">
+                <input type="text" value="{% if user.type == "normal" %}普通用户{% elif user.type == "manager" %}管理员{% else %}超级管理员{% endif %}" readonly="readonly">
+                <i class="lock icon tip" data-content="不可更改"></i>
+              </div>
+            </div>
+            <div class="field">
+              <label>电子邮件</label>
+              <div class="ui left labeled icon input">
+                <input type="text" value="{{ user.email }}" readonly="readonly">
+                <i class="lock icon tip" data-content="请在【更改电子邮件】中更改"></i>
+              </div>
+            </div>
+            <div class="field" id="base-tel">
+              <label>联系方式</label>
+              <div class="ui left labeled icon input">
+                <input type="text" value="{{ user.tel }}">                <i class="unlock icon tip" data-content="可更改"></i>
+              </div>
+            </div>
+            <!--
+            <div class="field" id="base-depts">
+              <label>部门</label>
+              <p id="base-selected-depts">
+                {% for dept in user.depts %}
+                <div class="ui teal dept label">
+                  {{ dept }}
+                  <i class="delete icon"></i>
+                </div>
+                {% endfor %}
+              </p>
+              <div class="ui small input"> 
+                <input type="text" placeholder="请输入部门名称" id="base-dept-search">
+                <div class="ui teal button" id="base-dept-add">添加部门</div>
+              </div>
+              <p id="base-candidates"></p>
+            </div>
+            -->
+            <div class="ui hidden message" id="base-info-msg">
+            </div>
+            <button type="button" id="base-info-btn" class="ui teal button">保存修改</button>
+          </form>
+        </div>
+        <div class="title">
+          <i class="dropdown icon"></i>
+          更改密码
+        </div>
+        <div class="content">
+          <form class="ui form">
+            <div class="field" id="base-old-password">
+              <label>请输入当前密码</label>
+              <div class="ui left labeled icon input">
+                <input type="password">
+                <i class="key icon"></i>
+              </div>
+            </div>
+            <div class="field" id="base-new-password">
+              <label>请输入新密码</label>
+              <div class="ui left labeled icon input">
+                <input type="password">
+                <i class="key icon"></i>
+              </div>
+            </div>
+            <div class="field" id="base-new-confirm">
+              <label>请确认新密码</label>
+              <div class="ui left labeled icon input">
+                <input type="password">
+                <i class="key icon"></i>
+              </div>
+            </div>
+            <div class="ui hidden message" id="base-password-msg">
+            </div>
+            <button type="button" class="ui red button" id="base-password-btn">
+              更改密码
+            </button>
+          </form>
+        </div>
+        <div class="title">
+          <i class="dropdown icon"></i>
+          更改电子邮件
+        </div>
+        <div class="content">
+          <form class="ui form">
+            <div class="field">
+              {% if user.email_verified == True %}
+                <div class="ui below pointing green label" id="base-email-state">
+                  已认证
+                </div>
+              {% else %}
+                <div class="ui below pointing red label" id="base-email-state">
+                  未认证
+                </div>
+              {% endif %}
+              <div class="ui left labeled icon input" id="base-email">
+                <input type="text" value="{{ user.email }}">
+                <i class="mail icon"></i>
+              </div>        
+            </div>
+            <div class="ui hidden message" id="base-email-msg">
+            </div>
+            <button type="button" class="ui disabled button" id="base-email-btn">更改电子邮件</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="ui fixed inverted topbar main menu">
+    <a href="/" class="title item"><i class="home icon"></i>Aglaia</a>
+    {% include "topbar_user.html" %}
+    {% if user.type == "manager" or user.type == "supervisor" %}
+      {% include "topbar_manager.html" %}
+      {% include "topbar_admin.html" %}
+    {% endif %}
+    <div class="right menu">
+      <a class="item" id="account-sidebar-toggler">
+        <i class="user icon"></i>{{ user.username }}
+      </a>
+      <a href="{% url "account.views.do_logout" %}" class="item"><i class="sign out icon"></i>离开</a>
+    </div>
+  </div>
+  {% block allcontent %}
+  <div class="ui stackable page grid">
+    <div class="four wide column">
+      {% block leftside %}
+      {% endblock %}
+    </div>
+    <div class="twelve wide column">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </div>
+  {% endblock %}
+  <script src="{% static "javascript/jquery-1.11.1.min.js" %}"></script>
+  <script src="{% static "javascript/semantic.min.js" %}"></script>
+  <script src="{% static "javascript/aglaia.js" %}"></script>
+  {% block js %}
+  {% endblock %}
+  <script>
+  var selectedDepts = [];
+
+  // Instant search for departments.
+  // Add the clicked candidate into the selected label div.
+  function __addDept(deptname) {
+    var newtag = deptname;
+    var has_selected_f24aef = false;
+   
+    $('.dept.label').each(function() {
+      if ($(this).text() == newtag) { 
+        has_selected_f24aef = true;
+      }
+    });
+
+    if (has_selected_f24aef) { return; }
+
+    $('#base-selected-depts').append('<div class="ui teal dept label">' 
+      + newtag
+      + '<i class="delete icon"></i></div>');
+    $('.dept.label i').mousedown(removeDept);
+
+    $('#base-info-btn').removeClass('disabled');
+  }
+
+  function addDept() {
+    __addDept($(this).html());
+  }
+
+  // Remove the clicked selected dept label from the selected dept div.
+  function removeDept() {
+    $(this).parent().remove();
+    $('#base-info-btn').removeClass('disabled');
+  }
+
+  $(function() {
+    // Attach event handler to the dept label.
+    $('.dept.label i').mousedown(removeDept);
+
+    $('#base-dept-add').click(function(){
+      var deptname = $.$.trim($('#base-dept-search').text());
+      if (deptname != '')
+        __addDept(deptname);
+    });
+    
+    // Instant-search for department tags.
+    $('#base-dept-search').keyup(function(){
+      // Search for the candidates by ajax.
+      $.ajax({
+        url: '{% url "account.views.do_lookup_depts" %}',
+        type: 'POST',
+        dataType: 'json',
+        data: { keyword: $('#base-dept-search').val() },
+      })
+      .done(function(data) {
+        // Fill the candidates div with these depts.
+        var cdd = "搜索结果: ";
+        for (i in data.depts) {
+          var dept = data.depts[i];
+          cdd = cdd + '<span class="simple button">' + dept.encodeHtml() + '</span>&nbsp;';
+        }
+        $('#base-candidates').html(cdd);
+        $('#base-candidates .button').mousedown(addDept);
+        })
+      .fail(function() {
+        $('#base-candidates').html('<div class="ui red label">无法连接服务器<div>');
+      });
+    });
+
+
+    var passwordOk = false;
+    var confirmOk = false;
+
+    // If the password is verified, enable the submit button.
+    function verifyPassword() {
+      if (passwordOk && confirmOk) {
+        $('#base-password-btn').removeClass('disabled');
+      } else {
+        $('#base-password-btn').addClass('disabled');
+      }
+    }
+
+    verifyPassword();
+
+    // Verify the password field.
+    $('#base-new-password input').keyup(function() {
+      var pwPattern = new RegExp("^[0-9a-zA-Z_]{6,20}$");
+      if (passwordOk = pwPattern.test($('#base-new-password input').val())) {
+        $('#base-new-password').removeClass('error');
+      } else {
+        $('#base-new-password').addClass('error');
+      }
+      verifyPassword();
+    });
+
+    // Verify the confirmed password field.
+    $('#base-new-confirm input').keyup(function() {
+      var pwPattern = new RegExp("^[0-9a-zA-Z_]{6,20}$");
+      confirmOk = $('#base-new-password input').val() === $('#base-new-confirm input').val();
+      if (confirmOk) {
+        $('#base-new-confirm').removeClass('error');
+      } else {
+        $('#base-new-confirm').addClass('error');
+      }
+      verifyPassword();
+    });
+
+    // Post the password modification request.
+    $('#base-password-btn').click(function() {
+      // Ignore the request when the password is ill-formated.
+      if ($('#base-password-btn').hasClass('disabled'))
+        return;
+
+      $('#base-password-btn').addClass('disabled');
+
+      $.ajax({
+        url: '{% url "account.views.do_modify_password" %}',
+        type: 'POST',
+        dataType: 'text',
+        data: 
+          {
+            old_password: $('#base-old-password input').val(),
+            new_password: $('#base-new-password input').val()
+          },
+      })
+      .done(function(data) {
+        if (data == 'ok') {
+          $('#base-password-msg').removeClass('red');
+          $('#base-password-msg').addClass('teal');
+          $('#base-password-msg').html('密码修改成功，请重新登录');
+        } else if (data == 'mismatch') {
+          $('#base-password-msg').removeClass('teal');
+          $('#base-password-msg').addClass('red');
+          $('#base-password-msg').html('旧密码输入错误');
+        } else if (data == 'invalid') {
+          $('#base-password-msg').removeClass('teal');
+          $('#base-password-msg').addClass('red');
+          $('#base-password-msg').html('新密码不符合密码格式');
+        } else if (data == 'denied') {
+          $('#base-password-msg').removeClass('teal');
+          $('#base-password-msg').addClass('red');
+          $('#base-password-msg').html('您没有权限完成该操作');
+        }
+      })
+      .fail(function() {
+        $('#base-password-msg').removeClass('teal');
+        $('#base-password-msg').addClass('red');
+        $('#base-password-msg').html('服务器故障，请稍后重试');
+      })
+      .always(function() {
+        $('#base-password-msg').removeClass('hidden');
+        $('#base-password-btn').removeClass('disabled');
+      });
+      
+    });
+
+    var telOk = false;
+
+    function verifyInfo() {
+      if (telOk) {
+        $('#base-info-btn').removeClass('disabled');
+      } else {
+        $('#base-info-btn').addClass('disabled');
+      }
+    }
+
+    verifyInfo();
+
+    // Verify the telephone number field.
+    $('#base-tel input').keyup(function() {
+      var telPattern = new RegExp("^[0-9-]{1,20}$");
+      telOk = telPattern.test($('#base-tel input').val());
+      if (telOk) {
+        $('#base-tel').removeClass('error');
+      } else {
+        $('#base-tel').addClass('error');
+      }
+      verifyInfo();
+    });
+
+
+    // Post the user information modification request.
+    $('#base-info-btn').click(function() {
+      if ($('#base-info-btn').hasClass('disabled'))
+        return;
+
+      $('#base-info-btn').addClass('disabled');
+
+      // Concat all the selected departments.
+      var selected_depts = [];
+      $('.dept.label').each(function(){
+        selected_depts.push($(this).text());
+      });
+
+      $.ajax({
+        url: '{% url "account.views.do_modify_account" %}',
+        type: 'POST',
+        dataType: 'text',
+        data: 
+          {
+            tel: $('#base-tel input').val(),
+            depts: selected_depts.join()
+            {% if user.statue == "unauth" %}
+            , realname: $('#base-realname input').val(),
+            number: $('#base-number input').val()
+            {% endif %}
+          },
+      })
+      .done(function(data) {
+        if (data == 'ok') {
+          $('#base-info-msg').removeClass('red');
+          $('#base-info-msg').addClass('teal');
+          $('#base-info-msg').html('账户信息修改成功');
+        } else {
+          var errmsg;
+
+          if (data == 'invalid') {
+            errmsg = '格式不符合要求';
+          } else if (data == 'denied') {
+            errmsg = '您没有权限完成该操作';
+          }
+          
+          $('#base-info-msg').removeClass('teal');
+          $('#base-info-msg').addClass('red');
+          $('#base-info-msg').html(errmsg);
+        }
+      })
+      .fail(function() {
+        $('#base-info-msg').removeClass('teal');
+        $('#base-info-msg').addClass('red');
+        $('#base-info-msg').html('服务器故障，请稍后重试');
+      })
+      .always(function() {
+        $('#base-info-msg').removeClass('hidden');
+        $('#base-info-btn').removeClass('disabled');
+      });
+      
+    });
+
+    // Verify the email format.
+    $('#base-email input').keyup(function() {
+      var emailPattern = /^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/;
+      var emailOk = emailPattern.test($('#base-email input').val());
+      $('#base-email-state').remove();
+      if (emailOk) {
+        $('#base-email').removeClass('error');
+        $('#base-email-btn').removeClass('disabled');
+      } else {
+        $('#base-email').addClass('error');
+        $('#base-email-btn').addClass('disabled');
+      }
+    });
+
+    // Post the email modification request by ajax.
+    $('#base-email-btn').click(function(){
+      // Ignore the event if we are in the process of ajax or the email is invalid.
+      if ($('#base-email-btn').hasClass('disabled'))
+        return;
+
+      $('#base-email-btn').addClass('disabled');
+
+      $.ajax({
+        url: '{% url "account.views.do_modify_email" %}',
+        type: 'POST',
+        dataType: 'text',
+        data:
+          {
+            email: $('#base-email input').val()
+          },
+      })
+      .done(function(data) {
+        if (data == 'ok') {
+          $('#base-email-msg').addClass('teal');
+          $('#base-email-msg').html('电子邮箱修改成功');
+        } else {
+          $('#base-email-msg').addClass('red');
+
+          var errmsg;
+
+          if (data == 'invalid') {
+            errmsg = '电子邮件格式错误';
+          } else {
+            errmsg = '您没有权限完成该操作';
+          }
+
+          $('#base-email-msg').html(errmsg);
+        }
+      })
+      .fail(function() {
+        $('#base-email-msg').addClass('red');
+        $('#base-email-msg').html('服务器故障，请稍后重试');
+      })
+      .always(function() {
+        $('#base-email-msg').removeClass('hidden');
+        $('#base-email-btn').removeClass('disabled');
+      });
+    });
+  });
+  </script>
+</body>
+</html>

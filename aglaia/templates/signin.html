@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Aglaia</title>
+  {% load static from staticfiles %}
+  <link rel="stylesheet" href="{% static "css/semantic.min.css" %}" />
+  <link rel="stylesheet" href="{% static "css/aglaia.css" %}" />
+</head>
+<body class="base">
+  
+  {# Topbar begins here. #}
+  <div class="ui fixed inverted topbar main menu">
+    <a href="/" class="title item"><i class="home icon"></i>Aglaia</a>
+    </div>
+  </div>
+  {# Topbar ends here. #}
+
+  {# Contents begin here. #}
+  <div class="ui grid">
+    <div class="ten wide column">
+      <h1 class="ui header">
+        <i class="large circular inverted rocket icon"></i>
+        <div class="content">
+          快捷
+          <div class="sub header">人性化的功能设计、方便易用的管理工具最大限度地节省您的时间。</div>
+        </div>
+      </h1>
+      <h1 class="ui header">
+        <i class="large circular inverted mobile icon"></i>
+        <div class="content">
+          易用
+          <div class="sub header">无论是在您的手机、平板电脑还是笔记本电脑上，均可以使用我们基于响应式设计的物资管理系统。</div>
+        </div>
+      </h1>
+      <h1 class="ui header">
+        <i class="large circular inverted checkmark icon"></i>
+        <div class="content">
+          现在就注册使用更快、更易操作的Aglaia物资管理系统，拥有你的物资管理专家。
+        </div>
+      </h1>
+    </div>
+    <div class="six wide column">
+      <form class="ui form segment">
+        <h1 class="ui header">
+          <i class="circular inverted tasks icon"></i>
+          Aglaia
+        </h1>
+        <div class="ui hidden red message" id="signin-error-div">
+          <div class="header">登录失败</div>
+          <p id="signin-error-msg"></p>
+        </div>
+        <div class="field">
+          <label>用户名</label>
+          <div class="ui left labeled icon input">
+            <input type="text" placeholder="请输入用户名" id="signin-username">
+            <i class="user icon"></i>
+            <div class="ui corner label">
+              <i class="asterisk icon"></i>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>密码</label>
+          <div class="ui left labeled icon input">
+            <input type="password" placeholder="请输入密码" id="signin-password">
+            <i class="user icon"></i>
+            <div class="ui corner label">
+              <i class="asterisk icon"></i>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="ui basic fluid right labeled icon button" id="signin-btn">
+          登录
+          <i class="arrow right icon"></i>
+        </button>
+        <p></p>
+        <button type="button" class="ui basic fluid right labeled icon button" id="signup-dlg-btn">
+          注册
+          <i class="signup icon"></i>
+        </button>
+        <div class="ui dimmer" id="signin-dimmer">
+          <div class="ui loader"></div>
+        </div>
+      </form>
+      <div class="ui dimmer" id="signup-dimmerp">
+        <div class="ui text loader">注册中</div>
+      </div>
+    </div>
+  </div>
+  {# Contents end here. #}
+
+  {# Signup modal begins here. #}
+  <div class="ui small modal" id="signup-modal">
+    <i class="close icon"></i>
+    <div class="header">
+      注册新用户
+    </div>
+    <div class="content">
+      <div class="ui hidden message" id="signup-msg">
+      </div>
+      <form class="ui form" id="signup-form">
+        <div class="two fields">
+          <div class="field" id="username">
+            <label>用户名</label>
+            <div class="ui fluid left labeled icon input">
+              <input type="text" placeholder="6-20位数字、字母或下划线">
+              <i class="user icon"></i>
+            </div>
+            <div class="ui pointing hidden red label" id="username-state"></div>
+          </div>
+          <div class="field" id="email">
+            <label>电子邮件</label>
+            <div class="ui fluid left labeled icon input">
+              <input type="text" placeholder="有效的电子邮件地址">
+              <i class="mail icon"></i>
+            </div>
+          </div>
+        </div>
+        <div class="two fields">
+          <div class="field" id="password">
+            <label>密码</label>
+            <div class="ui fluid left labeled icon input">
+              <input type="password" placeholder="6-20位数字、字母或下划线">
+              <i class="key icon"></i>
+            </div>
+          </div>
+          <div class="field" id="confirm">
+            <label>确认密码</label>
+            <div class="ui fluid left labeled icon input">
+              <input type="password" placeholder="请重新输入一次密码">
+              <i class="key icon"></i>
+            </div>
+          </div>
+        </div>
+        <div class="two fields">
+          <div class="field" id="realname">
+            <label>真实姓名</label>
+            <div class="ui fluid left labeled icon input">
+              <input type="text" placeholder="真实姓名">
+              <i class="user icon"></i>
+            </div>
+          </div>
+          <div class="field" id="number">
+            <label>学工号</label>
+            <div class="ui fluid left labeled icon input">
+              <input type="text" placeholder="8-15位数字">
+              <i class="info letter icon"></i>
+            </div>
+          </div>
+          <div class="field" id="tel">
+            <label>联系电话</label>
+            <div class="ui fluid left labeled icon input">
+              <input type="text" placeholder="0-30位数字">
+              <i class="mobile icon"></i>
+            </div>
+          </div>
+        </div>
+        <!--
+        <div class="field">
+          <label>部门</label>
+          <div class="ui small left labeled icon input">
+            <input type="text" placeholder="请输入部门名称" id="dept-search">
+            <i class="search icon"></i>
+          </div>
+          <p id="candidates"></p>
+          <p id="selected-depts"></p>
+        </div>
+        -->
+        <a href="#" class="ui disabled right labeled icon button" id="signup-btn">
+          注册
+          <i class="signup icon"></i>
+        </a>
+        <a href="#" class="ui basic button" id="cancel-btn">取消</a>
+      </form>
+    </div>
+  </div>
+  {# Signup modal ends here. #}
+
+  <script src="{% static "javascript/jquery-1.11.1.min.js" %}"></script>
+  <script src="{% static "javascript/semantic.min.js" %}"></script>
+  <script src="{% static "javascript/aglaia.js" %}"></script>
+  <script src="{% static "javascript/signin.js" %}"></script>
+  <script>
+  $(function(){
+    // Instant-search for department tags.
+    $('#dept-search').keyup(function(){
+      // Search for the candidates by ajax.
+      $.ajax({
+        url: '{% url "account.views.do_lookup_depts" %}',
+        type: 'POST',
+        dataType: 'json',
+        data: { keyword: $('#dept-search').val() },
+      })
+      .done(function(data) {
+        // Fill the candidates div with these depts.
+        var cdd = "";
+        for (index in data.depts) {
+          var dept = data.depts[index];
+          cdd = cdd + '<span class="simple button">' + dept.encodeHtml() + '</span>&nbsp;';
+        }
+        $('#candidates').html(cdd);
+        $('#candidates .button').mousedown(addDept);
+      })
+      .fail(function() {
+        $('#candidates').html('<div class="ui red label">无法连接服务器<div>');
+      });
+    });
+
+    // Signin Ajax.
+    $('#signin-btn').click(function(){
+      // Ignore the click in the signing in process..
+      if ($('#signin-dimmer').hasClass('active'))
+        return;
+
+      // Show the loading indicator.
+      $('#signin-dimmer').addClass('active');
+      $.ajax({
+        url: '{% url "account.views.do_signin" %}',
+        type: 'POST',
+        dataType: 'text',
+        data: {
+          username: $('#signin-username').val(),
+          password: $('#signin-password').val()
+        },
+      })
+      .done(function(data) {
+        // If we signed in successfully, we go to the borrow page.
+        if (data === 'ok') {
+          location.href = '{% url "account.views.account_home" %}';
+        } else if (data == 'mismatch') {
+          $('#signin-dimmer').removeClass('active');
+          $('#signin-error-msg').html('用户名密码不匹配');
+          $('#signin-error-div').removeClass('hidden');
+        }
+      })
+      .fail(function() {
+        $('#signin-dimmer').removeClass('active');
+        $('#signin-error-msg').html('服务器异常，请稍后重试');
+        $('#signin-error-div').removeClass('hidden');
+      });
+    });
+
+    // Signup Ajax.
+    $('#signup-btn').click(function(){
+      // Ignore the action if we are doing signing up.
+      if ($('#signup-btn').hasClass('disabled') || $('#signup-dimmer').hasClass('active'))
+        return;
+
+      // Dim the form.
+      $('#signup-dimmer').addClass('active');
+
+      // Concat the names of the selected departments into one single string.
+      var selected_depts = [];
+      $('.dept.label').each(function(){
+        selected_depts.push($(this).text());
+      });
+
+      // Post the ajax.
+      $.ajax({
+        url: '{% url "account.views.do_signup" %}',
+        type: 'POST',
+        dataType: 'text',
+        data: {
+          username: $('#username input').val(),
+          password: $('#password input').val(),
+          realname: $('#realname input').val(),
+          email: $('#email input').val(),
+          tel: $('#tel input').val(),
+          number: $('#number input').val(),
+          depts: selected_depts.join()
+        },
+      })
+      .done(function(data) {
+        if (data === 'ok') {
+          $('#signup-msg').text('您已经成功注册，请等待管理员完成实名认证。');
+          $('#signup-msg').removeClass();
+          $('#signup-msg').addClass('ui teal message');
+          $('#signup-btn').addClass('disabled');
+          $('#signup-btn').text('注册完成');
+          $('#cancel-btn').text('关闭');
+        } else {
+          $('#signup-msg').text('注册失败，请检查您的信息是否符合要求。');
+          $('#signup-msg').removeClass();
+          $('#signup-msg').addClass('ui red message');
+        }
+      })
+      .fail(function() {
+          $('#signup-msg').text('服务器故障，请稍后重试。');
+          $('#signup-msg').removeClass();
+          $('#signup-msg').addClass('ui red message');
+      })
+      .always(function() {
+        $('#signup-dimmer').removeClass('active');
+      });
+        
+    });
+
+    // Verification for Sign Up form.
+    var usernameOk = false;
+    var passwordOk = false;
+    var confirmOk = false;
+    var numberOk = false;
+    var telOk = false;
+    var emailOk = false;
+    
+    // Enable signup button if all the fields are valid, and disable it if not.
+    function verify() {
+      if (usernameOk && passwordOk && confirmOk && numberOk && telOk && emailOk) {
+        $('#signup-btn').removeClass('disabled');
+      } else {
+        $('#signup-btn').addClass('disabled');
+      }
+    }
+
+    // Verify the username field.
+    $('#username input').change(function(){
+      var unamePattern = new RegExp("^[0-9a-zA-Z_]{6,20}$");
+      if (usernameOk = unamePattern.test($('#username input').val())) {
+        $('#username').removeClass('error');
+      } else {
+        $('#username').addClass('error');
+        $('#username-state').removeClass();
+        $('#username-state').addClass('ui pointing red label');
+        $('#username-state').text('用户名格式错误');
+      }
+      verify();
+
+      if (!usernameOk)
+        return;
+
+      // Check the uniquity of the username.
+      $.ajax({
+        url: '{% url "account.views.do_verify_username" %}',
+        type: 'POST',
+        dataType: 'text',
+        data: { username: $('#username input').val() },
+      })
+      .done(function(data) {
+        if (data === 'ok') {
+          $('#username-state').removeClass();
+          $('#username-state').addClass('ui pointing teal label');
+          $('#username-state').text('用户名可用');
+        } else if(data === 'used') {
+          $('#username-state').removeClass();
+          $('#username-state').addClass('ui pointing red label');
+          $('#username-state').text('用户名已经被使用');
+          $('#username').addClass('error');
+          usernameOk = false;
+        }
+        verify();
+      })
+      .fail(function() {
+        console.log('服务器异常，无法即时验证用户名可用性');
+      });
+    });
+
+    // Verify the number field.
+    $('#number input').keyup(function() {
+      var numberPattern = new RegExp("^[0-9]{8,15}$");
+      var number = $('#number input').val();
+      if (numberOk = numberPattern.test(number)) {
+        $('#number').removeClass('error');
+      } else {
+        $('#number').addClass('error');
+      }
+    });
+
+    // Verify the password field.
+    $('#password input').keyup(function() {
+      var pwPattern = new RegExp("^[0-9a-zA-Z_]{6,20}$");
+      if (passwordOk = pwPattern.test($('#password input').val())) {
+        $('#password').removeClass('error');
+      } else {
+        $('#password').addClass('error');
+      }
+      verify();
+    });
+
+    // Verify the confirmed password field.
+    $('#confirm input').keyup(function() {
+      var pwPattern = new RegExp("^[0-9a-zA-Z_]{6,20}$");
+      confirmOk = $('#password input').val() === $('#confirm input').val();
+      if (confirmOk) {
+        $('#confirm').removeClass('error');
+      } else {
+        $('#confirm').addClass('error');
+      }
+      verify();
+    });
+
+    // Verify the telephone number field.
+    $('#tel input').keyup(function() {
+      var telPattern = new RegExp("^[0-9]{0,30}$");
+      telOk = telPattern.test($('#tel input').val());
+      if (telOk) {
+        $('#tel').removeClass('error');
+      } else {
+        $('#tel').addClass('error');
+      }
+      verify();
+    });
+
+    // Verify the email field.
+    $('#email input').keyup(function() {
+      var emailPattern = /^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/;
+      emailOk = emailPattern.test($('#email input').val());
+      if (emailOk) {
+        $('#email').removeClass('error');
+      } else {
+        $('#email').addClass('error');
+      }
+      verify();
+    });
+
+    // Close the modal dialog if we press the cancel button.
+    $('#cancel-btn').click(function() {
+      $('.ui.modal').modal('hide');
+    });
+
+    // Show the signup dialog if we press the signup-dlg-btn.
+    $("#signup-dlg-btn").click(function(){
+          $("#signup-modal").modal("show");
+    });
+
+  });
+
+  // Add the clicked candidate into the selected label div.
+  function addDept() {
+    var newtag = $(this).html();
+    var has_selected = false;
+
+    $('.dept.label').each(function() {
+      if ($(this).text() == newtag)
+        has_selected = true;
+    });
+
+    if (has_selected) { return; }
+
+    $('#selected-depts').append('<div class="ui teal dept label">' 
+      + newtag
+      + '<i class="delete icon"></i></div>');
+    $('.dept.label i').mousedown(removeDept);
+  }
+
+  // Remove the clicked selected dept label from the selected dept div.
+  function removeDept() {
+    $(this).parent().remove();
+  }
+
+  </script>
+</body>
+</html>

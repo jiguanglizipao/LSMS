@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}计算资源日志列表{% endblock %}
+
+{% block allcontent %}
+
+<div class="ui page grid">
+  <div class="sixteen wide column">
+    <table class="ui small table">
+      <thead>
+        <tr>
+          <th>SN</th>
+          <th>套餐</th>
+          <th>类型</th>
+          <th>CPU</th>
+          <th>内存</th>
+          <th>硬盘</th>
+          <th>系统</th>
+          <th>IP</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in computings %}
+          <tr>
+            <td>{{item.sn}}</td>
+            <td>{{ item.package_name | default:"无" }}</td>
+            <td>{% if item.type == "real" %}实体机{% else %}虚拟机{% endif %}</td>
+            <td>{{ item.cpu }}</td>
+            <td>{{ item.memory }}GB</td>
+            <td>{{ item.disk }}GB {{ item.disktype }}</td>
+            <td>{{ item.os }}</td>
+            <td>{{ item.ip }}</td>
+            <td>
+              <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                <input type="hidden" name="id" value="{{ item.id }}">
+                <input type="hidden" name="type" value="computing">
+                <button type="submit" class="ui circular tiny inverted icon teal tip button" data-content="日志">
+                    <i class="unordered list icon"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

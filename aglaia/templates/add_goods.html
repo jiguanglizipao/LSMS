@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}新增实物{% endblock %}
+
+{% block allcontent %}
+
+<div class="ui grid" style="margin-top:10px">
+  <div class="one column row">
+    <div class="column">
+      <h2 class="ui header" style="margin-top:10px; margin-left:10px">新增实物</h2>
+    </div>
+    <div class="column">
+      <form id="add-goods-form" method="post" action='{% url "goods.views.add_goods" %}'>
+        <div class="ui form fluid segment" id="form-segment"> <!--error loading-->
+          <div class="ui error message">
+              <div class="header">错误</div>
+              <p></p>
+          </div>
+          <div class="four fields">
+              <div class="field fluid">
+                  <label>实物名称</label>
+                  <input placeholder="实物名称" type="text" name="name" id="name">
+              </div>
+              <div class="field fluid">
+                  <label>起始SN号</label>
+                  <input placeholder="实物SN号" type="text" name="sn" id="sn">
+              </div>
+              <div class="field" id="type">
+                  <label>实物类型</label>
+                  <div class="ui selection dropdown fluid">
+                    <input type="hidden" value="{{ type_list.0 }}" name="type_name"id="type_name">
+                    <div class="text" id="type_name_text">{{ type_list.0 }}</div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu"> <!--type_list-->
+                      {% for type in type_list %}
+                        <div class="item type-element" data-value="{{ type }}">{{ type }}</div>
+                      {% endfor %}
+                      <a class="ui basic button fluid" href='{% url "goods.views.show_add_type" %}' ><font color="#A1CF64">新增实物类型</font></a>
+                    </div>
+                </div>
+              </div>
+              <div class="field fluid">
+                  <label>实物数量</label>
+                  <input placeholder="实物数量" type="text" id="quantity" disabled>
+              </div>
+          </div>
+          <span id="properties">
+
+          </span>
+          <button type="button" class="ui green button" id="submit-button">提交新实物</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+  <script>
+    $(function(){
+      // 更新数量
+      $('#sn').keydown(function(){
+        var snArray = $('#sn').val().split(',');
+        var snQuantity = 0;
+        var snLength = snArray.length;
+        for (var i = 0; i < snLength; i++) {
+          if (snArray[i] != '')
+            snQuantity++;
+        }
+        $('#quantity').val(snQuantity);
+      });
+
+      $('.ui.dropdown').dropdown();
+      //更新属性信息
+      $('.type-element').click(function(){
+        //alert($('#type_name').val());
+        update_type_pros();
+      });
+      update_type_pros();
+      //提交
+      $('#submit-button').click(function(){
+        var name = $("#name").val();
+        var quan = $("#quantity").val();
+        var regexp=/^[1-9][0-9]*$/; 
+        if(name.length <= 0){
+          $('#form-segment').addClass('error');
+          $('#name').parent().addClass('error');
+          $('.error.message').children('p').text('实物名称不能为空');
+          return;
+        }
+        if(!regexp.test(quan)){
+          $('#form-segment').addClass('error');
+          $('#quantity').parent().addClass('error');
+          $('.error.message').children('p').text('实物数量需要是大于0的合法数值');
+          return;
+        }
+        //提交表单
+        /*$('#add-goods-form').submit(function(e){
+          alert('submitted');
+        });*/
+      $('#add-goods-form').trigger('submit');
+      })
+      $('input').click(function(){
+        $('#form-segment').removeClass('error');
+      });
+      $('#name').click(function(){
+        $('#form-segment').removeClass('error');
+        $('#name').parent().removeClass('error');
+      });
+      $('#quantity').click(function(){
+        $('#form-segment').removeClass('error');
+        $('#quantity').parent().removeClass('error');
+      });
+      /*var pro_names = ['都比一号', "都比二号", "都比三号", "", "都比五号"];
+      $('#properties').children().remove();
+        for(var i = 0 ; i < pro_names.length ; i++){
+          if(pro_names[i].length > 0){
+            $('#properties').append('<div class="field" id="pro'+i+'">'
+              +'<label id="pro'+i+'_name">'+pro_names[i]+'</label>'
+              +'<input placeholder="属性值" type="text" id="pro'+i+'_value">'
+            +'</div>');
+          }
+        }*/
+    });
+
+    function update_type_pros(){
+      $.ajax({
+        url: '{% url "goods.views.do_type_props" %}',
+        type: 'POST',
+        dataType: 'JSON',
+        data: 
+        { 
+          type_name: $('#type_name').val() 
+        },
+      })
+      .done(function(data) {
+      //从后端获得新数据
+        $('#properties').children().remove();
+        for(var i = 0 ; i < data.pro_names.length ; i++){
+          if(data.pro_names[i].length > 0){
+            $('#properties').append('<div class="field" id="pro'+(i+1)+'">'
+              +'<label id="pro'+(i+1)+'_name">'+data.pro_names[i]+'</label>'
+              +'<input placeholder="属性值" type="text" name="pro'+(i+1)+'_value" id="pro'+(i+1)+'_value">'
+            +'</div>');
+          }
+          $('input').click(function(){
+            $('#form-segment').removeClass('error');
+          });
+        }
+      })
+      .fail(function() {
+        alert('服务器异常，无法修改实物类型');
+      });
+    }
+    
+  </script>
+{% endblock %}

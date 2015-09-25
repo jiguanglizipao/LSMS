@@ -1,0 +1,7 @@
+*.pyc
+aglaia/db.sqlite3
+aglaia/testtemp/
+aglaia/account/migrations/
+aglaia/computing/migrations/
+aglaia/goods/migrations/
+nohup.out

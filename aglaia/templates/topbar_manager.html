@@ -1,0 +1,13 @@
+{% load static from staticfiles %}
+<a href="{% url "goods.views.show_manage" %}" class="item">请求审核
+</a>
+<a href="{% url "computing.views.show_comp_verify" %}" class="item">计算资源
+</a>
+<a href="{% url "account.views.show_all_accounts" %}" class="item">用户列表
+</a>
+<a href="{% url "goods.views.show_borrow_list" %}" class="item">
+  借还日志
+</a>
+<a href="{% url "computing.views.show_computing_list" %}" class="item">
+  计算日志
+</a>

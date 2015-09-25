@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}日志{% endblock %}
+
+{% block allcontent %}
+
+<div class="ui page grid">
+  <div class="sixteen wide column">
+    <table class="ui small table">
+      <thead>
+        <tr>
+          <th>时间</th>
+          <th>操作者</th>
+          <th>操作对象</th>
+          <th>动作</th>
+          <th>描述</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in logs %}
+          <tr>
+            <td>{{ item.time }}</td>
+            <td>{{ item.actor }}</td>
+            <td>{{ item.target }}</td>
+            <td>{{ item.action }}</td>
+            <td>{{ item.desc }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

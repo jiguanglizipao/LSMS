@@ -1,0 +1,400 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}实物列表{% endblock %}
+
+{% block leftside %}
+
+{% if user.type != "normal" %}
+<div class="ui vertical menu">
+  <div class="header item">
+    <i class="cloud icon"></i>
+    新增
+  </div>
+</div>
+<a class="ui green button  fluid" href='{% url "goods.views.show_add_goods" %}'>新增实物</a>
+<br/>
+{% endif %}
+
+  <div class="ui vertical menu">
+    <div class="header item">
+      <i class="cloud icon"></i>
+      筛选
+    </div>
+  </div>
+
+  <form action="" method="get">
+    <div class="ui form fluid">
+      <div class="field">
+        <input type="text" placeholder="实物名称" id="filter-name" name="name">
+      </div>
+    </div>
+    <div class="ui selection dropdown fluid">
+      <input type="hidden" id="filter-status" name="status">
+      <div class="text">状态</div>
+      <i class="dropdown icon"></i>
+      <div class="menu">
+          <div class="item" data-value="all">所有状态</div>
+          <div class="item" data-value="available">在库</div>
+          <div class="item" data-value="unavailable">不在库</div>
+          <div class="item" data-value="borrowed">已借出</div>
+          <div class="item" data-value="destroyed">已销毁</div>
+          <div class="item" data-value="lost">已挂失</div>
+          <div class="item" data-value="repairing">维修中</div>
+      </div>
+    </div>
+    <br/>
+    <div class="ui selection dropdown fluid">
+      <input type="hidden" id="filter-type" name="type">
+      <div class="text">类型</div>
+      <i class="dropdown icon"></i>
+      <div class="menu">
+        <div class="item" data-value="">所有类型</div>
+        {% for type in type_list %}
+        <div class="item" data-value="{{type}}">{{type}}</div>
+        {% endfor %}
+      </div>
+    </div>
+    <br/>
+    <button type="submit" class="ui blue button fluid">提交筛选</button>
+  </form>
+{% endblock %}
+
+{% block content %}
+
+    <!-- 列表 -->
+    <h2 class="ui header" style="margin-top:10px; margin-left:10px">实物列表</h2>
+    <table class="ui table segment small" style="margin-left:10px">
+      <thead>
+          <tr>
+              <th>SN号</th>
+              <th>名称</th>
+              <th>状态</th>
+              <th>类型</th>
+              <th>配置</th>
+              <th>备注</th>
+              <th>操作</th>
+          </tr>
+      </thead>
+      <tbody>
+      {% for goods in goods_list %}
+        {% if goods.status == "available" %}
+          <tr class="positive">
+              <td class="goods-sn">{{goods.sn}}</td>
+              <td class="goods-name">{{goods.name}}</td>
+              <td>在库</td>
+              <td class="goods-typename">{{goods.type_name}}</td>
+              <td>
+                <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
+                {% for pro in goods.prop %}
+                  {% if pro.pro_name != "" %}
+                  <div class="ui label" style="margin-top:5px">{{ pro.pro_name }}: {{ pro.pro_value }}</div>
+                  {% endif %}
+                {% endfor %}'>详细</div>
+              </td>
+              <td></td>
+              <td>
+                <span hidden class="goods-id">{{goods.id}}</span>
+                <div class="circular ui icon green button tiny borrow-goods" data-variation="inverted" data-content="借用"><i class="icon add sign"></i></div>
+                {% if user.type != "normal" %}
+                <div class="circular ui icon orange button tiny do-unavailable" data-variation="inverted" data-content="设置为不在库"><i class="icon ban circle"></i></div>
+                <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
+                {% endif %}
+                <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                  <input type="hidden" name="id" value="{{ goods.id }}">
+                  <input type="hidden" name="type" value="goods">
+                  <button type="submit" class="ui circular tiny inverted icon teal tip button" data-content="日志">
+                      <i class="unordered list icon"></i>
+                  </button>
+                </form>
+              </td>
+          </tr>
+        {% elif goods.status == "unavailable" %}
+          <tr>
+              <td class="goods-sn">{{goods.sn}}</td>
+              <td class="goods-name">{{goods.name}}</td>
+              <td>不在库</td>
+              <td class="goods-typename">{{goods.type_name}}</td>
+              <td>
+                <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
+                {% for pro in goods.prop %}
+                  {% if pro.pro_name != "" %}
+                  <div class="ui label" style="margin-top:5px">{{ pro.pro_name }}: {{ pro.pro_value }}</div>
+                  {% endif %}
+                {% endfor %}'>详细</div>
+              </td>
+              <td>{{goods.note}}</td>
+              <td>
+                <span hidden class="goods-id">{{goods.id}}</span>
+                <div class="circular ui icon green button tiny disabled disabled-borrow-goods" data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                {% if user.type != "normal" %}
+                <div class="circular ui icon green button tiny do-available" data-variation="inverted" data-content="设置为在库"><i class="icon checkmark sign"></i></div>
+                <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
+                {% endif %}
+                <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                  <input type="hidden" name="id" value="{{ goods.id }}">
+                  <input type="hidden" name="type" value="goods">
+                  <button type="submit" class="ui circular tiny inverted icon teal tip button" data-content="日志">
+                      <i class="unordered list icon"></i>
+                  </button>
+                </form>
+              </td>
+          </tr>
+        {% elif goods.status == "borrowed" %}
+          <tr>
+              <td class="goods-sn">{{goods.sn}}</td>
+              <td class="goods-name">{{goods.name}}</td>
+              <td>已借出</td>
+              <td class="goods-typename">{{goods.type_name}}</td>
+              <td>
+                <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
+                {% for pro in goods.prop %}
+                  {% if pro.pro_name != "" %}
+                  <div class="ui label" style="margin-top:5px">{{ pro.pro_name }}: {{ pro.pro_value }}</div>
+                  {% endif %}
+                {% endfor %}'>详细</div>
+              </td>
+              <td>{{goods.user_name}}借出</td>
+              <td>
+                <span hidden class="goods-id">{{goods.id}}</span>
+                <div class="circular ui icon green button tiny disabled disabled-borrow-goods" data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                {% if user.type != "normal" %}
+                <div class="circular ui icon orange button tiny disabled  disabled-do-unavailable" data-variation="inverted" data-content="设置为不在库"><i class="icon ban circle"></i></div>
+                <div class="circular ui icon black button tiny disabled disabled-trash-destroy" data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
+                {% endif %}
+                <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                  <input type="hidden" name="id" value="{{ goods.id }}">
+                  <input type="hidden" name="type" value="goods">
+                  <button type="submit" class="ui circular tiny inverted icon teal tip button" data-content="日志">
+                      <i class="unordered list icon"></i>
+                  </button>
+                </form>
+              </td>
+          </tr>
+        {% elif goods.status == "destroyed" %}  
+          <tr class="disabled">
+              <td class="goods-sn">{{goods.sn}}</td>
+              <td class="goods-name">{{goods.name}}</td>
+              <td>已销毁</td>
+              <td class="goods-typename">{{goods.type_name}}</td>
+              <td>
+                <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
+                {% for pro in goods.prop %}
+                  {% if pro.pro_name != "" %}
+                  <div class="ui label" style="margin-top:5px">{{ pro.pro_name }}: {{ pro.pro_value }}</div>
+                  {% endif %}
+                {% endfor %}'>详细</div>
+              </td>
+              <td></td>
+              <td>
+                <span hidden class="goods-id">{{goods.id}}</span>
+                <div class="circular ui icon green button tiny disabled disabled-borrow-goods" data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                {% if user.type != "normal" %}
+                <div class="circular ui icon orange button tiny disabled disabled-do-available" data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
+                <div class="circular ui icon black button tiny disabled disabled-trash-destroy" data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
+                {% endif %}
+                <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                  <input type="hidden" name="id" value="{{ goods.id }}">
+                  <input type="hidden" name="type" value="goods">
+                  <button type="submit" class="ui circular tiny inverted icon teal tip button" data-content="日志">
+                      <i class="unordered list icon"></i>
+                  </button>
+                </form>
+              </td>
+          </tr>
+        {% elif goods.status == "lost" %}  
+          <tr>
+              <td class="goods-sn">{{goods.sn}}</td>
+              <td class="goods-name">{{goods.name}}</td>
+              <td>已挂失</td>
+              <td class="goods-typename">{{goods.type_name}}</td>
+              <td>
+                <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
+                {% for pro in goods.prop %}
+                  {% if pro.pro_name != "" %}
+                  <div class="ui label" style="margin-top:5px">{{ pro.pro_name }}: {{ pro.pro_value }}</div>
+                  {% endif %}
+                {% endfor %}'>详细</div>
+              </td>
+              <td></td>
+              <td>
+                <span hidden class="goods-id">{{goods.id}}</span>
+                <div class="circular ui icon green button tiny disabled disabled-borrow-goods" data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                {% if user.type != "normal" %}
+                <div class="circular ui icon orange button tiny disabled disabled-do-available" data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
+                <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
+                {% endif %}
+                <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                  <input type="hidden" name="id" value="{{ goods.id }}">
+                  <input type="hidden" name="type" value="goods">
+                  <button type="submit" class="ui circular tiny inverted icon teal tip button" data-content="日志">
+                      <i class="unordered list icon"></i>
+                  </button>
+                </form>
+              </td>
+          </tr>
+          {% elif goods.status == "repairing" %}  
+          <tr>
+              <td class="goods-sn">{{goods.sn}}</td>
+              <td class="goods-name">{{goods.name}}</td>
+              <td>维修中</td>
+              <td class="goods-typename">{{goods.type_name}}</td>
+              <td>
+                <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
+                {% for pro in goods.prop %}
+                  {% if pro.pro_name != "" %}
+                  <div class="ui label" style="margin-top:5px">{{ pro.pro_name }}: {{ pro.pro_value }}</div>
+                  {% endif %}
+                {% endfor %}'>详细</div>
+              </td>
+              <td></td>
+              <td>
+                <span hidden class="goods-id">{{goods.id}}</span>
+                <div class="circular ui icon green button tiny disabled disabled-borrow-goods" data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                {% if user.type != "normal" %}
+                <div class="circular ui icon orange button tiny disabled disabled-do-available" data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
+                <div class="circular ui icon black button tiny disabled disabled-trash-destroy" data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
+                {% endif %}
+                <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                  <input type="hidden" name="id" value="{{ goods.id }}">
+                  <input type="hidden" name="type" value="goods">
+                  <button type="submit" class="ui circular tiny inverted icon teal tip button" data-content="日志">
+                      <i class="unordered list icon"></i>
+                  </button>
+                </form>
+              </td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+      </tbody>
+    </table>
+
+<!-- 提价提交信息 -->
+
+<!--<form method="post" action="" id="post-action-form"> <!-- 后台接口 -->
+  <div class="ui small modal" id="post-action">
+    <i class="close icon"></i>
+    <div class="header" id="post-action-header">
+      <!-- 标题 -->
+    </div>
+    <form method="post" action="" id="post-action-form" class="content">
+      <div class="left">
+        <input type="text" id="id" name="id" placeholder="id" hidden> <!--value-->
+        <div class="ui form">
+          <div class="inline fields">
+            <div class="field attached">
+              <label>SN号</label>
+              <input type="text" id="sn" name="sn" placeholder="SN号" disabled> <!--value-->
+            </div>
+          </div>
+          <div class="inline fields">
+            <div class="field attached">
+              <label>名称</label>
+              <input type="text" id="name" name="name" placeholder="名称" disabled><!--value-->
+            </div>
+          </div>
+          <div class="inline fields">
+            <div class="field attached">
+              <label>类型</label>
+              <input type="text" id="type" name="type" placeholder="类型" disabled><!--value-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="ui form">
+          <div class="inline fields">
+            <div class="field attached">
+              <label>说明</label>
+              <input type="text" id="note" name="note" placeholder="编辑说明"><!--value-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="actions">
+      <div class="ui black button" id="post-action-cancel">
+        取消
+      </div>
+      <div class="ui positive right labeled icon button" id="post-action-confirm">
+        确认<span id="post-action-confirm-content"></span><!--动态生成-->
+        <i class="checkmark icon"></i>
+      </div>
+    </div>
+  </div>
+<!--</form>-->
+
+
+{% endblock %}
+
+{% block js %}
+  <script>
+    var do_borrow = '{% url "goods.views.do_borrow" %}';
+    var do_set_unavailable = '{% url "goods.views.do_set_unavailable" %}';
+    var do_set_available = '{% url "goods.views.do_set_available" %}';
+    var do_destroy = '{% url "goods.views.do_destroy" %}';
+    $(function(){
+      $('.ui.dropdown').dropdown();
+      $('.config-detail').popup({
+        on: 'hover'
+      });
+      $('.borrow-goods').popup({
+        on: 'hover'
+      });
+      $('.borrow-goods').click(function(){
+        $('#post-action-form').attr('action', do_borrow);
+        $('#post-action-header').text('借用实物');
+        $('#id').val($(this).parent().children('.goods-id').text());
+        $('#sn').val($(this).parent().parent().children('.goods-sn').text());
+        $('#name').val($(this).parent().parent().children('.goods-name').text());
+        $('#type').val($(this).parent().parent().children('.goods-typename').text());
+        $('post-action-confirm-content').text('借用');
+        $('.modal#post-action').modal('show');
+      });
+      $('.do-available').popup({
+        on: 'hover'
+      });
+      $('.do-available').click(function(){
+        $('#post-action-form').attr('action', do_set_available);
+        $('#post-action-header').text('设置为在库');
+        $('#id').val($(this).parent().children('.goods-id').text());
+        $('#sn').val($(this).parent().parent().children('.goods-sn').text());
+        $('#name').val($(this).parent().parent().children('.goods-name').text());
+        $('#type').val($(this).parent().parent().children('.goods-typename').text());
+        $('post-action-confirm-content').text('设置为在库');
+        $('.modal#post-action').modal('show');
+      });
+      $('.do-unavailable').popup({
+        on: 'hover'
+      });
+      $('.do-unavailable').click(function(){
+        $('#post-action-form').attr('action', do_set_unavailable);
+        $('#post-action-header').text('设置为不在库');
+        $('#id').val($(this).parent().children('.goods-id').text());
+        $('#sn').val($(this).parent().parent().children('.goods-sn').text());
+        $('#name').val($(this).parent().parent().children('.goods-name').text());
+        $('#type').val($(this).parent().parent().children('.goods-typename').text());
+        $('post-action-confirm-content').text('设置为不在库');
+        $('.modal#post-action').modal('show');
+      });
+      $('.trash-destroy').popup({
+        on: 'hover'
+      });
+      $('.trash-destroy').click(function(){
+        $('#post-action-form').attr('action', do_destroy);
+        $('#post-action-header').text('销毁');
+        $('#id').val($(this).parent().children('.goods-id').text());
+        $('#sn').val($(this).parent().parent().children('.goods-sn').text());
+        $('#name').val($(this).parent().parent().children('.goods-name').text());
+        $('#type').val($(this).parent().parent().children('.goods-typename').text());
+        $('post-action-confirm-content').text('销毁');
+        $('.modal#post-action').modal('show');
+      });
+      $('#post-action-confirm').click(function(){
+        $('#post-action-form').trigger('submit');
+      })
+    });
+
+  </script>
+{% endblock %}

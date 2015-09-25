@@ -1,0 +1,789 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}计算资源{% endblock %}
+
+{% block leftside %}
+		<div class="ui vertical menu">
+		  <div class="header item">
+		    <i class="cloud icon"></i>
+		    计算资源
+		  </div>
+		  <div class="item">
+		    <div class="menu">
+		      <a href="#borrowing" class="item">
+		        待审核借用申请
+		        <div class="ui label">{{borrowing_list|length}}</div>
+		      </a>
+          <a href="#returning" class="item">
+            待审核归还申请
+            <div class="ui label">{{returning_list|length}}</div>
+          </a>
+          <a href="#modifying" class="item">
+            待审核配置调整申请
+            <div class="ui label">{{modifying_list|length}}</div>
+          </a>
+          <a href="#inuse" class="item">
+            使用资源
+            <div class="ui label">{{inuse_list|length}}</div>
+          </a>
+		    </div>
+		  </div>
+		</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="ui divider"></div>
+<!--borrowing-->
+<div class="ui grid" id="borrowing">
+  <div class="one column row">
+    <h2 class="ui header">待审核<font color="#F05940">借用</font>申请</h2>
+    {% for borrowing in borrowing_list %}
+      {% if borrowing.type == "real" %}
+      <div class="column" style="margin-top:10px">
+        <div class="ui top attached header">
+          <div class="ui horizontal green label">编号 {{borrowing.id}}</div>
+          {% if borrowing.flag %}
+          <div class="ui horizontal red label">含重要信息</div>
+          {% endif %}
+          实体资源
+        </div>
+        <div class="ui attached segment">
+          <div class="ui divided selection list">
+            <a class="item">
+              <div class="ui green horizontal label">申请人姓名</div>
+              {{borrowing.name}}
+            </a>
+            <a class="item">
+              <div class="ui green horizontal label">申请理由</div>
+              {{borrowing.note}}
+            </a>
+            <a class="item">
+              <div class="ui green horizontal label" style="margin-top:5px">配置要求</div>
+              <div class="ui horizontal label" style="margin-top:5px">CPU: {{borrowing.cpu}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">内存: {{borrowing.memory}}GB</div>
+              <div class="ui horizontal label" style="margin-top:5px">硬盘类型: {{borrowing.disktype}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">硬盘大小: {{borrowing.disk}}GB</div>
+              <div class="ui horizontal label" style="margin-top:5px">IP: {{borrowing.ip}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">OS: {{borrowing.os}}</div>
+            </a>
+            <a class="item">
+              <div class="ui green horizontal label">申请登陆用户名</div>
+              {{borrowing.login}}
+            </a>
+            <a class="item">
+              <div class="ui green horizontal label">申请初始密码</div>
+              {{borrowing.initial_password}}
+            </a>
+            <div class="positive ui button float right agree-button" data-variation="inverted" data-position="top center" data-html='
+            <h5 class="ui header">同意借出实体资源</h5>
+            <form method="post" action="{% url "computing.views.do_approve_borrow" %}" class="do-approve-borrow">
+            <input type="text" name="id" value="{{borrowing.id}}" hidden>
+            <div class="ui form">
+              <div class="inline field">
+                  <label><font color="#FFFFFF">编号</font></label>
+                  <input type="text" name="sn" placeholder="资源编号">
+              </div>
+              <div class="inline field">
+                  <label><font color="#FFFFFF">账号</font></label>
+                  <input type="text" name="login" placeholder="登陆用户名" value="{{borrowing.login}}">
+              </div>
+              <div class="inline field">
+                  <label><font color="#FFFFFF">密码</font></label>
+                  <input type="text" name="initial_password" placeholder="初始登陆密码" value="{{borrowing.initial_password}}">
+              </div>
+              <div class="inline field">
+                  <label><font color="#FFFFFF">地址</font></label>
+                  <input type="text" name="ip" placeholder="IP地址" value="{{borrowing.ip}}">
+              </div>
+              <div class="inline field">
+                  <label><font color="#FFFFFF">说明</font></label>
+                  <input type="text" name="note" placeholder="附加说明">
+              </div>
+            </div>
+            <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认同意</div>
+            </form>
+            <script type="text/javascript">
+              $(".agree-confirm-button").click(function(){
+                $(this).parent().trigger("submit");
+              });
+            </script>
+            '>同意</div>
+            <div class="negative ui button float right reject-button" data-variation="inverted" data-position="top center" data-html='
+            <h5 class="ui header">拒绝借出实体资源</h5>
+            <form method="post" action="{% url "computing.views.do_disapprove_borrow" %}" class="do-disapprove-borrow">
+            <input type="text" name="id" value="{{borrowing.id}}" hidden>
+            <div class="ui form">
+              <div class="inline field">
+                  <label><font color="#FFFFFF">说明</font></label>
+                  <input type="text" name="note" placeholder="附加说明">
+              </div>
+            </div>
+            <div class="negative ui tiny circular button floated right fluid reject-confirm-button">确认拒绝</div>
+            </form>
+            <script type="text/javascript">
+              $(".reject-confirm-button").click(function(){
+                $(this).parent().trigger("submit");
+              });
+            </script>
+            '>拒绝</div>
+          </div>
+        </div> 
+      </div>
+      {% elif borrowing.type == "virtual" %}
+      <div class="column" style="margin-top:10px">
+        <div class="ui top attached header">
+          <div class="ui horizontal blue label">编号 {{borrowing.id}}</div>
+          {% if borrowing.flag %}
+          <div class="ui horizontal red label">含重要信息</div>
+          {% endif %}
+          虚拟资源
+        </div>
+        <div class="ui attached segment">
+          <div class="ui divided selection list">
+            <a class="item">
+              <div class="ui blue horizontal label">申请人姓名</div>
+              {{borrowing.name}}
+            </a>
+            <a class="item">
+              <div class="ui blue horizontal label">申请理由</div>
+              {{borrowing.note}}
+            </a>
+            <a class="item">
+              <div class="ui blue horizontal label" style="margin-top:5px">配置要求</div>
+              <div class="ui horizontal label" style="margin-top:5px">CPU: {{borrowing.cpu}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">内存: {{borrowing.memory}}GB</div>
+              <div class="ui horizontal label" style="margin-top:5px">硬盘类型: {{borrowing.disktype}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">硬盘大小: {{borrowing.disk}}GB</div>
+              <div class="ui horizontal label" style="margin-top:5px">IP: {{borrowing.ip}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">OS: {{borrowing.os}}</div>
+            </a>
+            <a class="item">
+              <div class="ui blue horizontal label">申请登陆用户名</div>
+              {{borrowing.login}}
+            </a>
+            <a class="item">
+              <div class="ui blue horizontal label">申请初始密码</div>
+              {{borrowing.initial_password}}
+            </a>
+            <div>
+                  <div class="positive ui button agree-button" data-variation="inverted" data-position="top center" data-html='
+                  <h5 class="ui header">同意借出虚拟资源</h5>
+                  <form method="post" action="{% url "computing.views.do_approve_borrow" %}" class="do-approve-borrow">
+                  <input type="text" name="id" value="{{borrowing.id}}" hidden>
+                  <div class="ui form">
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">编号</font></label>
+                        <input type="text" name="sn" placeholder="资源编号">
+                    </div>
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">账号</font></label>
+                        <input type="text" name="login" placeholder="登陆用户名" value="{{borrowing.login}}">
+                    </div>
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">密码</font></label>
+                        <input type="text" name="initial_password" placeholder="初始登陆密码" value="{{borrowing.initial_password}}">
+                    </div>
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">地址</font></label>
+                        <input type="text" name="ip" placeholder="IP地址" value="{{borrowing.ip}}">
+                    </div>
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">说明</font></label>
+                        <input type="text" name="note" placeholder="附加说明">
+                    </div>
+                  </div>
+                  <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认同意</div>
+                  </form>
+                  <script type="text/javascript">
+                    $(".agree-confirm-button").click(function(){
+                      $(this).parent().trigger("submit");
+                    });
+                  </script>
+                  '>同意</div>
+                  <div class="negative ui float right button reject-button"  style="floating:right;" data-variation="inverted" data-position="top center" data-html='
+                  <h5 class="ui header">拒绝借出虚拟资源</h5>
+                  <form method="post" action="{% url "computing.views.do_disapprove_borrow" %}" class="do-disapprove-borrow">
+                  <input type="text" name="id" value="{{borrowing.id}}" hidden>
+                  <div class="ui form">
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">说明</font></label>
+                        <input type="text" name="note" placeholder="附加说明">
+                    </div>
+                  </div>
+                  <div class="negative ui tiny circular button floated right fluid reject-confirm-button">确认拒绝</div>
+                  </form>
+                  <script type="text/javascript">
+                    $(".reject-confirm-button").click(function(){
+                      $(this).parent().trigger("submit");
+                    });
+                  </script>
+                  '>拒绝</div>
+                  </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<div class="ui divider"></div>
+<!--returning-->
+<div class="ui grid" id="returning">
+  <div class="one column row">
+    <h2 class="ui header">待审核<font color="#F05940">归还</font>申请</h2>
+    {% for returning in returning_list %} 
+      {% if returning.type == "real" %}
+      <div class="column" style="margin-top:10px">
+        <div class="ui top attached header">
+          <div class="ui horizontal green label">编号 {{returning.id}}</div>
+          {% if returning.flag %}
+          <div class="ui horizontal red label">含重要信息</div>
+          {% endif %}
+          实体资源
+        </div>
+        <div class="ui attached segment">
+          <div class="ui divided selection list">
+            <a class="item">
+              <div class="ui green horizontal label">申请人姓名</div>
+              {{returning.name}}
+            </a>
+            <a class="item">
+              <div class="ui green horizontal label">资源编号</div>
+              {{returning.sn}}
+            </a>
+            <a class="item">
+              <div class="ui green horizontal label">登陆用户名</div>
+              {{returning.login}}
+            </a>
+            <a class="item">
+              <div class="ui green horizontal label">释放说明</div>
+              {{returning.note}}
+            </a>
+                  <div class="positive ui float right button agree-button" data-variation="inverted" data-position="top center" data-html='
+                  <h5 class="ui header">同意释放资源</h5>
+                  <form method="post" action="{% url "computing.views.do_approve_return" %}">
+                  <input type="text" name="id" value="{{returning.id}}" hidden>
+                  <div class="ui form">
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">说明</font></label>
+                        <input type="text" name="note" placeholder="附加说明">
+                    </div>
+                  </div>
+                  <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认同意</div>
+                  </form>
+                  <script type="text/javascript">
+                    $(".agree-confirm-button").click(function(){
+                      $(this).parent().trigger("submit");
+                    });
+                  </script>
+                  '>同意</div>
+          </div>
+        </div>
+      </div>
+      {% elif returning.type == "virtual" %}
+      <div class="column" style="margin-top:10px">
+        <div class="ui top attached header">
+          <div class="ui horizontal blue label">编号 {{returning.id}}</div>
+          {% if returning.flag %}
+          <div class="ui horizontal red label">含重要信息</div>
+          {% endif %}
+          虚拟资源
+        </div>
+        <div class="ui attached segment">
+          <div class="ui divided selection list">
+            <a class="item">
+              <div class="ui blue horizontal label">申请人姓名</div>
+              {{returning.name}}
+            </a>
+            <a class="item">
+              <div class="ui blue horizontal label">资源编号</div>
+              {{returning.sn}}
+            </a>
+            <a class="item">
+              <div class="ui blue horizontal label">登陆用户名</div>
+              {{returning.login}}
+            </a>
+            <a class="item">
+              <div class="ui blue horizontal label">释放说明</div>
+              {{returning.note}}
+            </a>
+                  <div class="positive ui float right button agree-button" data-variation="inverted" data-position="top center" data-html='
+                  <h5 class="ui header">同意释放资源</h5>
+                  <form method="post" action="{% url "computing.views.do_approve_return" %}" >
+                  <input type="text" name="id" value="{{returning.id}}" hidden>
+                  <div class="ui form">
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">说明</font></label>
+                        <input type="text" name="note" placeholder="附加说明">
+                    </div>
+                  </div>
+                  <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认同意</div>
+                  </form>
+                  <script type="text/javascript">
+                    $(".agree-confirm-button").click(function(){
+                      $(this).parent().trigger("submit");
+                    });
+                  </script>
+                  '>同意</div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<div class="ui divider"></div>
+<!--modifying-->
+<div class="ui grid" id="modifying">
+  <div class="one column row">
+    <h2 class="ui header">待审核<font color="#F05940">配置调整</font>申请</h2>
+    {% for modifying in modifying_list %}
+      {% if modifying.type == "real" %}
+      <div class="column" style="margin-top:10px">
+        <div class="ui top attached header">
+          <div class="ui horizontal green label">编号 {{modifying.id}}</div>
+          实体资源
+        </div>
+        <div class="ui attached segment">
+          <div class="ui divided selection list">
+            <a class="item">
+              <div class="ui green horizontal label">申请人姓名</div>
+              {{modifying.name}}
+            </a><a class="item">
+              <div class="ui green horizontal label">申请理由</div>
+              {{modifying.note}}
+            </a>
+            <a class="item">
+              <div class="ui green horizontal label" style="margin-top:5px">配置要求</div>
+              <div class="ui horizontal label" style="margin-top:5px">CPU: {{modifying.cpu}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">内存: {{modifying.memory}}GB</div>
+              <div class="ui horizontal label" style="margin-top:5px">硬盘类型: {{modifying.disktype}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">硬盘大小: {{modifying.disk}}GB</div>
+              <div class="ui horizontal label" style="margin-top:5px">IP: {{modifying.ip}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">OS: {{modifying.os}}</div>
+            </a>
+                  <div class="positive ui float right button agree-button" data-variation="inverted" data-position="top center" data-html='
+                  <h5 class="ui header">同意配置调整</h5>
+                  <form method="post" action="{% url "computing.views.do_approve_modify" %}" class="do-approve-borrow">
+                  <input type="text" name="id" value="{{modifying.id}}" hidden>
+                  <div class="ui form">
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">编号</font></label>
+                        <input type="text" name="sn" placeholder="服务器编号">
+                    </div>
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">CPU</font></label>
+                        <input type="text" name="cpu" value="{{modifying.cpu}}">
+                    </div>
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">内存</font></label>
+                        <input type="text" name="memory" value="{{modifying.memory}}GB">
+                    </div>
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">硬盘类型</font></label>
+                        <input type="text" name="disktype" value="{{modifying.disktype}}">
+                    </div>
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">硬盘大小</font></label>
+                        <input type="text" name="disk" value="{{modifying.disk}}GB">
+                    </div>
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">操作系统</font></label>
+                        <input type="text" name="os" value="{{modifying.os}}">
+                    </div>        
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">说明</font></label>
+                        <input type="text" name="note" placeholder="附加说明">
+                    </div>
+                  </div>
+                  <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认调整完毕</div>
+                  </form>
+                  <script type="text/javascript">
+                    $(".agree-confirm-button").click(function(){
+                      $(this).parent().trigger("submit");
+                    });
+                  </script>
+                  '>调整完毕</div>
+                  <div class="negative ui float right button reject-button" data-variation="inverted" data-position="top center" data-html='
+                  <h5 class="ui header">拒绝配置调整</h5>
+                  <form method="post" action="{% url "computing.views.do_disapprove_modify" %}" class="do-disapprove-borrow">
+                  <input type="text" name="id" value="{{modifying.id}}" hidden>
+                  <div class="ui form">
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">说明</font></label>
+                        <input type="text" name="note" placeholder="附加说明">
+                    </div>
+                  </div>
+                  <div class="negative ui tiny circular button floated right fluid reject-confirm-button">确认拒绝</div>
+                  </form>
+                  <script type="text/javascript">
+                    $(".reject-confirm-button").click(function(){
+                      $(this).parent().trigger("submit");
+                    });
+                  </script>
+                  '>拒绝</div>
+          </div>
+        </div>
+      </div>
+      {% elif modifying.type == "virtual" %}
+      <div class="column" style="margin-top:10px">
+        <div class="ui top attached header">
+          <div class="ui horizontal blue label">编号 {{modifying.id}}</div>
+          虚拟资源
+        </div>
+        <div class="ui attached segment">
+          <div class="ui divided selection list">
+            <a class="item">
+              <div class="ui blue horizontal label">申请人姓名</div>
+              {{modifying.name}}
+            </a><a class="item">
+              <div class="ui blue horizontal label">申请理由</div>
+              {{modifying.note}}
+            </a>
+            <a class="item">
+              <div class="ui blue horizontal label" style="margin-top:5px">配置要求</div>
+              <div class="ui horizontal label" style="margin-top:5px">CPU: {{modifying.cpu}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">内存: {{modifying.memory}}GB</div>
+              <div class="ui horizontal label" style="margin-top:5px">硬盘类型: {{modifying.disktype}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">硬盘大小: {{modifying.disk}}GB</div>
+              <div class="ui horizontal label" style="margin-top:5px">IP: {{modifying.ip}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">OS: {{modifying.os}}</div>
+            </a>
+            <div class="positive ui float button right agree-button final-ultimate-approve-unique-button" data-id="{{modifying.id}}">
+              调整完毕
+            </div>
+            <div class="negative ui circular button floated right reject-button" data-variation="inverted" data-position="top center" data-html='
+            <h5 class="ui header">拒绝配置调整</h5>
+            <form method="post" action="{% url "computing.views.do_disapprove_modify" %}" class="do-disapprove-borrow">
+            <input type="text" name="id" value="{{modifying.id}}" hidden>
+            <div class="ui form">
+              <div class="inline field">
+                  <label><font color="#FFFFFF">说明</font></label>
+                  <input type="text" name="note" placeholder="附加说明">
+              </div>
+            </div>
+            <div class="negative ui tiny circular button floated right fluid reject-confirm-button">确认拒绝</div>
+            </form>
+            <script type="text/javascript">
+              $(".reject-confirm-button").click(function(){
+                $(this).parent().trigger("submit");
+              });
+            </script>
+            '>拒绝</div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<div class="ui modal res-modif">
+  <i class="close icon"></i>
+  <div class="header">配置调整</div>
+  <div class="content">
+    <form class="ui form" action="{% url "computing.views.do_approve_modify" %}" method="post">
+      <input type="hidden" name="id" id="id"> 
+      <div class="sn field">
+          <label>编号</label>
+          <input type="text" name="sn">
+      </div>
+      <div class="type field">
+        <label>类型</label>
+        <div class="ui selection dropdown fluid">
+          <input type="hidden" name="type">
+          <div class="default text"></div>
+          <i class="dropdown icon"></i>
+          <div class="menu">
+            <div class="item" data-value="real">实体机</div>
+            <div class="item" data-value="virtual">虚拟机</div>
+          </div>
+        </div>
+      </div>
+      <div class="cpu field">
+          <label>CPU</label>
+          <input type="text" name="cpu">
+      </div>
+      <div class="memory field">
+          <label>内存/GB</label>
+          <input type="text" name="memory">
+      </div>
+      <div class="disktype field">
+        <label>硬盘类型</label>
+        <div class="ui selection dropdown fluid">
+          <input type="hidden" name="disktype">
+          <div class="default text">HDD</div>
+          <i class="dropdown icon"></i>
+          <div class="menu">
+            <div class="item" data-value="HDD">HDD</div>
+            <div class="item" data-value="SSD">SSD</div>
+          </div>
+        </div>
+      </div>
+      <div class="disk field">
+          <label>硬盘大小/GB</label>
+          <input type="text" name="disk">
+      </div>
+      <div class="os field">
+          <label>操作系统</label>
+          <input type="text" name="os">
+      </div>   
+      <div class="ip field">
+          <label>网络地址</label>
+          <input type="text" name="ip">
+      </div>     
+      <div class="note field">
+          <label>说明</label>
+          <input type="text" name="note">
+      </div>
+      <button type="submit" class="ui green button">同意配置调整</button>
+    </form>
+  </div>
+</div>
+
+<div class="ui divider"></div>
+<!--inuse-->
+<div class="ui grid" id="inuse">
+  <div class="one column row">
+    <h2 class="ui header"><font color="#F05940">使用中</font>资源</h2>
+    {% for inuse in inuse_list %} 
+      {% if inuse.type == "real" %}
+      <div class="column" style="margin-top:10px">
+        <div class="ui top attached header">
+          <div class="ui horizontal green label">编号 {{inuse.id}}</div>
+          {% if inuse.flag %}
+          <div class="ui horizontal red label">含重要信息</div>
+          {% endif %}
+          实体资源
+        </div>
+        <div class="ui attached segment">
+          <div class="ui divided selection list">
+            <a class="item">
+              <div class="ui green horizontal label">使用者姓名</div>
+              {{inuse.name}}
+            </a>
+            <a class="item">
+              <div class="ui green horizontal label">资源编号</div>
+              {{inuse.sn}}
+            </a>
+            <a class="item">
+              <div class="ui green horizontal label">登陆用户名</div>
+              {{inuse.login}}
+            </a>
+            <a class="item">
+              <div class="ui green horizontal label" style="margin-top:5px">配置要求</div>
+              <div class="ui horizontal label" style="margin-top:5px">CPU: {{inuse.cpu}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">内存: {{inuse.memory}}GB</div>
+              <div class="ui horizontal label" style="margin-top:5px">硬盘类型: {{inuse.disktype}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">硬盘大小: {{inuse.disk}}GB</div>
+              <div class="ui horizontal label" style="margin-top:5px">IP: {{inuse.ip}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">OS: {{inuse.os}}</div>
+            </a>
+            <a class="item">
+              <div class="ui green horizontal label">管理员答复</div>
+              {{inuse.note}}
+            </a>
+          </div>
+        </div>
+      </div>
+      {% elif inuse.type == "virtual" %}
+      <div class="column" style="margin-top:10px">
+        <div class="ui top attached header">
+          <div class="ui horizontal blue label">编号 {{inuse.id}}</div>
+          {% if inuse.flag %}
+          <div class="ui horizontal red label">含重要信息</div>
+          {% endif %}
+          虚拟资源
+        </div>
+        <div class="ui attached segment">
+          <div class="ui divided selection list">
+            <a class="item">
+              <div class="ui blue horizontal label">使用者姓名</div>
+              {{inuse.name}}
+            </a>
+            <a class="item">
+              <div class="ui blue horizontal label">资源编号</div>
+              {{inuse.sn}}
+            </a>
+            <a class="item">
+              <div class="ui blue horizontal label">登陆用户名</div>
+              {{inuse.login}}
+            </a>
+            <a class="item">
+              <div class="ui blue horizontal label" style="margin-top:5px">配置要求</div>
+              <div class="ui horizontal label" style="margin-top:5px">CPU: {{inuse.cpu}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">内存: {{inuse.memory}}GB</div>
+              <div class="ui horizontal label" style="margin-top:5px">硬盘类型: {{inuse.disktype}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">硬盘大小: {{inuse.disk}}GB</div>
+              <div class="ui horizontal label" style="margin-top:5px">IP: {{inuse.ip}}</div>
+              <div class="ui horizontal label" style="margin-top:5px">OS: {{inuse.os}}</div>
+            </a>
+            <a class="item">
+              <div class="ui blue horizontal label">管理员答复</div>
+              {{inuse.note}}
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<div class="ui divider">
+</div>
+<h2 class="ui header">套餐列表</h2>
+<table class="ui small table segment">
+  <thead>
+    <tr>
+      <th>名称</th>
+      <th>服务器</th>
+      <th>操作系统</th>
+      <th>CPU</th>
+      <th>内存</th>
+      <th>硬盘</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for pkg in package_list %}
+      <tr>
+        <td>{{pkg.name}}</td>
+        <td>{{pkg.type}}</td>
+        <td>{{pkg.os}}</td>
+        <td>{{pkg.cpu}}</td>
+        <td>{{pkg.memory}}GB</td>
+        <td>{{pkg.disk}}GB {{pkg.disktype}}</td>
+        <td>
+          <form action="{% url "computing.views.do_delete_package" %}" method="post">
+            <input type="hidden" name="name" value="{{pkg.name}}">
+            <button type="submit" class="ui red tiny button">删除</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="ui divider"></div>
+<h2 class="ui header">创建套餐</h2>
+<form action="{% url "computing.views.do_create_package" %}" method="post" class="ui form segment">
+  <div class="field">
+    <label>套餐名字</label>
+    <div class="ui input">
+      <input type="text" name="name">
+    </div>
+  </div>
+  <div class="two fields">
+    <div class="field">
+      <label>服务器类型</label>
+      <div class="ui selection dropdown fluid">
+        <input type="hidden" name="type">
+        <div class="default text">实体机</div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <div class="item" data-value="real">实体机</div>
+          <div class="item" data-value="virtual">虚拟机</div>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label>操作系统</label>
+      <div class="ui input">
+        <input type="text" name="os">
+      </div>
+    </div>
+  </div>
+  <div class="four fields">
+    <div class="field">
+      <label>CPU</label>
+      <div class="ui input">
+        <input type="text" name="cpu">
+      </div>
+    </div>
+    <div class="field">
+      <label>内存/GB</label>
+      <div class="ui input">
+        <input type="text" name="memory">
+      </div>
+    </div>
+    <div class="field">
+      <label>硬盘类型</label>
+      <div class="ui selection dropdown fluid">
+        <input type="hidden" name="disktype">
+        <div class="default text">HDD/SSD</div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <div class="item" data-value="HDD">HDD</div>
+          <div class="item" data-value="SSD">SSD</div>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label>硬盘大小/GB</label>
+      <div class="ui input">
+        <input type="text" name="disk">
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="ui green button">创建新套餐</button>
+</form>
+
+
+{% endblock %}
+
+{% block js %}
+
+<script type="text/javascript">
+  $(function (){
+    $('.agree-button').popup({
+      on: 'click'
+    });
+    $('.reject-button').popup({
+      on: 'click'
+    });
+
+    $('.final-ultimate-approve-unique-button').click(function(){
+      $.ajax({
+        url: '{% url "computing.views.do_get_comp_prop" %}',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          id: $(this).attr('data-id'),
+        },
+      })
+      .done(function(prop) {
+        if (prop.retcode == 'denied'){
+          alert('Denied!');
+          return;
+        }
+        if (prop.server_type == 'real') {
+            $('.res-modif .type .text').html('实体机');
+            $('.res-modif .type input').val('real');
+          } else {
+            $('.res-modif .type .text').html('虚拟机');
+            $('.res-modif .type input').val('virtual');
+          }
+          $('.res-modif #id').val(prop.id);
+        $('.res-modif .sn input').val(prop.sn);
+        $('.res-modif .ip input').val(prop.ip);
+        $('.res-modif .cpu input').val(prop.cpu);
+        $('.res-modif .memory input').val(prop.memory);
+        $('.res-modif .disk input').val(prop.disk);
+        $('.res-modif .os input').val(prop.os);
+        $('.res-modif .disktype input').val(prop.disktype);
+        $('.res-modif .disktype .text').html(prop.disktype);
+        $('.res-modif').modal('show');
+      }).failed(function(){
+        alert(':-(');
+      });
+    });
+  });
+</script>
+
+{% endblock %}

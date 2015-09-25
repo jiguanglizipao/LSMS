@@ -1,0 +1,3 @@
+{% load static from staticfiles %}
+<a href="{% url "goods.views.show_borrow" %}" class="{% ifequal curpage "borrow" %} active {% endifequal %} item">借还物资</a>
+<a href="{% url "goods.views.show_list" %}" class="{% ifequal curpage "goods" %} active {% endifequal %} item">物资列表</a>
