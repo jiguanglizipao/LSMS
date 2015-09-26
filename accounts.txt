@@ -1,0 +1,15 @@
+- superadministrator
+
+    username: admin
+    password: password
+    email: thucst42@126.com
+    email password: you_know_password...
+
+
+- user
+
+    username: killcia
+    password: killcia
+    email: killcia@126.com
+    email password: killcia42
+
