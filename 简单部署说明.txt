@@ -1,0 +1,16 @@
+现有代码部署至可用大致需要这么几步：
+1.数据库配置及初始化。
+	系统本身使用Mysql数据库，可在aglaia/settings.py里面的DATABASES中配置数据库的地址、端口、数据库名、用户名、密码等。如果只是要部署demo，可以使用sqlite，直接把DATABASES里面的ENGINE修改为django.db.backends.sqlite3即可，NAME为sqlite3数据文件的地址。
+	配置完毕后可以进行数据库的初始化，并创建数据库的超级管理员。
+	python manage.py syncdb   (初次执行这条语句会让你创建超级用户
+	python manage.py migrate
+	python manage.py createsuperuser （若在syncdb时创建过就不必了
+
+配置完毕后就可以用 python manage.py runserver 启动了
+注意：创建数据库时创建的用户并不是网站的用户，不能用于登录网站，只能用于登录管理界面。
+
+如果出现 No module named pymysql的错误，可以装一个pymysql。如果使用的是sqlite，也可以把aglaia/__init__.py里的语句注释掉
+
+2.创建用户组
+	可在/admin页面中使用超级管理员登录，然后即可管理数据库中的数据。
+	需要创建'normal'、'manager'、'supervisor'三个用户组。但不要给这些用户组添加权限。
