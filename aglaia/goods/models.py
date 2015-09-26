@@ -105,7 +105,7 @@ class GType(models.Model):
 class Goods(models.Model):
     name = models.CharField(max_length=50)
     gtype = models.ForeignKey(GType)
-    pro_values = models.CharField(max_length=40000)
+    pro_values = models.TextField(max_length=40000)
 
     def __str__(self):
         return str(self.name)
