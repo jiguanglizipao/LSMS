@@ -56,12 +56,32 @@
                 </button>
             </form>
             {##}
-            <form action="{% url "goods.views.do_destroy_goods" %}" method="post" style="display:inline-block;">
-                <input type="hidden" name="id" value="{{ item.id }}">
-                <button type="submit" class="ui circular tiny inverted icon black tip miss button" data-content="请求销毁">
-                    <i class="trash icon"></i>
-                </button>
-            </form>
+
+            <div class="ui circular tiny inverted icon black button agree-button" data-content="销毁"
+                             data-variation="inverted"
+                             data-position="top center"
+
+            data-html='
+                    <h5 class="ui header">销毁申请</h5>
+                    <form method="post" action="{% url "goods.views.do_destroy_goods" %}">
+                    <input type="text" name="id" value="{{ item.id }}" hidden>
+                    <div class="ui form">
+                      <div class="inline field">
+                          <label><font color="#FFFFFF">原因</font></label>
+                          <input type="text" name="note" placeholder="附加原因">
+                      </div>
+                    </div>
+                    <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认</div>
+                    </form>
+                    <script type="text/javascript">
+                      $(".agree-confirm-button").click(function(){
+                        $(this).parent().trigger("submit");
+                      });
+                    </script>
+                    '>
+
+                            <i class="trash circle icon"></i>
+                        </div>
 
                         <div class="ui circular tiny inverted icon orange button agree-button" data-content="测试"
                              data-variation="inverted"
@@ -95,6 +115,9 @@
             </button>
             <button class="ui circular tiny inverted icon red tip disabled button" data-content="挂失">
                 <i class="ban circle icon"></i>
+            </button>
+            <button type="submit" class="ui circular tiny inverted icon black tip disabled button" data-content="销毁">
+                <i class="wrench circle icon"></i>
             </button>
             <button type="submit" class="ui circular tiny inverted icon orange tip disabled button" data-content="维修">
                 <i class="wrench circle icon"></i>
