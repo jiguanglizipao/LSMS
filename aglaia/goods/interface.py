@@ -150,8 +150,6 @@ def find_borrow(filt, exclude):
 			raise KeyError("The key: %s is wrong", key)
 
 	q = Borrow.objects.all()
-	for each in q:
-		print (each)
 	try:
 		if 'single' in filt:
 			q = q.filter(single=filt['single'])
