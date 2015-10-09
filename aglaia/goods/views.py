@@ -528,7 +528,25 @@ def do_miss_goods(request):
 @method_required('POST')
 @permission_required(PERM_NORMAL)
 def do_destroy_goods(request):
-	return show_message(request,'aaaaaaa')
+	try:
+		id = request.POST['id']
+		note = request.POST['note']
+
+		brw = Borrow.objects.get(id=id)
+
+		if not brw.status == BORROWED_KEY:
+			return show_message(request, 'This Request is not in a borrowed status!')
+		if not brw.single.status == BORROWED_KEY:
+			return show_message(request, 'The good is not in a borrowed status!')
+
+		packed_update_borrow(request, id, {'status': DESTROY_APPLY_KEY, 'manager_note': note},
+							 log=get_destroy_apply_log())
+		#send_notify_mail(request, RepairRequstMail, borrow=brw)
+
+		return HttpResponseRedirect(reverse('goods.views.show_borrow'))
+
+	except Exception as e:
+		return show_message(request, 'Destroy apply failed: ' + e.__str__())
 
 
 ##############################
@@ -645,6 +663,8 @@ def show_borrow(request):
 	rping = brws.filter(status=REPAIRING_KEY)
 	rped = brws.filter(status=FINISH_REPAIR_KEY)
 
+	de_apply = brws.filter(status=DESTROY_APPLY_KEY)
+
 	cont['num_goods_used'] = len(brw_inuse)
 	cont['num_goods_borrow'] = len(brwing) + len(brw_pend)
 	cont['num_goods_return'] = len(reting) + len(ret_pend)
@@ -660,6 +680,8 @@ def show_borrow(request):
 	cont['goods_repair_list'] = get_context_list(rp_pend, get_context_userbrw)
 	cont['goods_repairing_list'] = get_context_list(rping, get_context_userbrw)
 	cont['goods_repaired_list'] = get_context_list(rped, get_context_userbrw)
+
+	cont['goods_todestroy_list'] = get_context_list(de_apply, get_context_userbrw)
 
 	cont['user'] = get_context_user(request.user)
 	return render(request, 'borrow.html', cont)
@@ -686,6 +708,8 @@ def show_manage(request):
 	rping = packed_find_borrow(request, {'status': REPAIRING_KEY}, {})
 	rped = packed_find_borrow(request, {'status': FINISH_REPAIR_KEY}, {})
 
+	de_apply = packed_find_borrow(request, {'status': DESTROY_APPLY_KEY}, {})
+
 	b_req_list = get_context_list(b_req, get_context_borrow)
 	b_pend_list = get_context_list(b_pend, get_context_borrow)
 	r_req_list = get_context_list(r_req, get_context_borrow)
@@ -695,6 +719,9 @@ def show_manage(request):
 	rp_pend_list = get_context_list(rp_pend, get_context_borrow)
 	rping_list = get_context_list(rping, get_context_borrow)
 	rped_list = get_context_list(rped, get_context_borrow)
+
+	de_apply_list = get_context_list(de_apply, get_context_borrow)
+
 	return render(request, 'goods_manage.html', {
 		'user': get_context_user(request.user),
 		'borrow_requests': b_req_list,
@@ -704,7 +731,8 @@ def show_manage(request):
 		'torepair_requests': rp_apply_list,
 		'repair_requests': rp_pend_list,
 		'repairing_requests': rping_list,
-		'repaired_requests': rped_list
+		'repaired_requests': rped_list,
+		'todestroy_requests': de_apply_list,
 	})
 
 

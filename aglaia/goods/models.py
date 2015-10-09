@@ -29,6 +29,8 @@ REPAIR_PEND_KEY = 'repn'
 REPAIR_PEND = 'repair_pend'
 FINISH_REPAIR_KEY = 'fr'
 FINISH_REPAIR = 'finish_repair'
+DESTROY_APPLY_KEY = 'dea'
+DESTROY_APPLY = 'destroy_applys'
 
 BORROW_AUTHING_KEY = 'ba'
 BORROW_AUTHING = 'borrow_authing'
@@ -171,7 +173,8 @@ class Borrow(models.Model):
 		(RETURN_PENDING_KEY, RETURN_PENDING),
 		(RETURNED_KEY, RETURNED),
 		(LOST_KEY, LOST),
-		(DAMAGED_KEY, DAMAGED)
+		(DAMAGED_KEY, DAMAGED),
+		(DESTROY_APPLY_KEY,DESTROY_APPLY)
 	)
 	account = models.ForeignKey(Account, default=None)
 	single = models.ForeignKey(Single)

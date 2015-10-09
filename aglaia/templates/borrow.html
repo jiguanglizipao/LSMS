@@ -110,6 +110,9 @@
         {% for item in goods_repaired_list %}
             {% include "goods_item.html" with status="repaired" %}
         {% endfor %}
+        {% for item in goods_todestroy_list %}
+            {% include "goods_item.html" with status="todestroy" %}
+        {% endfor %}
         </tbody>
     </table>
 

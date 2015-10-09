@@ -27,6 +27,8 @@
             <i class="wrench icon"></i>维修中
         {% elif status == "repaired" %}
             <i class="green wrench icon"></i>维修/已完成
+        {% elif status == "todestroy" %}
+            <i class="black trash icon"></i>销毁/审核中
         {% endif %}
     </td>
     <td>
@@ -117,7 +119,7 @@
                 <i class="ban circle icon"></i>
             </button>
             <button type="submit" class="ui circular tiny inverted icon black tip disabled button" data-content="销毁">
-                <i class="wrench circle icon"></i>
+                <i class="trash circle icon"></i>
             </button>
             <button type="submit" class="ui circular tiny inverted icon orange tip disabled button" data-content="维修">
                 <i class="wrench circle icon"></i>
