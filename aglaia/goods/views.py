@@ -321,9 +321,9 @@ def do_accept_destroy(request):
 		if not brw.single.status == BORROWED_KEY:
 			return show_message(request, 'The good is not in a borrowed status!')
 
-		packed_update_borrow(request, id, {'status': DESTROY_ACCEPT_KEY, 'user_note': note},
-		                     log=get_accept_destroy_log())
-		packed_update_single(request, id, {'status': DESTROYED_KEY}, log=get_good_destroy_log())
+		packed_update_borrow(request, id, {'status': DESTROY_ACCEPT_KEY, 'user_note': note}, log=get_accept_destroy_log())
+
+		packed_update_single(request, brw.single.id, {'status': DESTROYED_KEY}, log=get_good_destroy_log())
 
 		return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
