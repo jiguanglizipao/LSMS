@@ -29,6 +29,10 @@
             <i class="green wrench icon"></i>维修/已完成
         {% elif status == "todestroy" %}
             <i class="black trash icon"></i>销毁/审核中
+        {% elif status == "destroyed" %}
+            <i class="black trash icon"></i>已销毁
+        {% elif status == "destroyfail" %}
+            <i class="black trash icon"></i>拒绝销毁
         {% endif %}
     </td>
     <td>
@@ -44,7 +48,7 @@
     </td>
 
     <td>
-        {% if status == "inuse" %}
+        {% if status == "inuse"%}
             <form action="{% url "goods.views.do_return_goods" %}" method="post" style="display:inline-block;">
                 <input type="hidden" name="id" value="{{ item.id }}">
                 <button type="submit" class="ui circular tiny inverted icon green tip return button" data-content="归还">

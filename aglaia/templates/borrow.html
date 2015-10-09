@@ -113,6 +113,12 @@
         {% for item in goods_todestroy_list %}
             {% include "goods_item.html" with status="todestroy" %}
         {% endfor %}
+        {% for item in goods_destroyed_list %}
+            {% include "goods_item.html" with status="destroyed" %}
+        {% endfor %}
+        {% for item in goods_destroyfail_list %}
+            {% include "goods_item.html" with status="destroyfail" %}
+        {% endfor %}
         </tbody>
     </table>
 
