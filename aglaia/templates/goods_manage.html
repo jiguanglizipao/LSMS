@@ -44,6 +44,10 @@
 		        维修完成的请求列表
             	<div class="ui label">{{repaired_requests|length}}</div>
 		      </a>
+				<a href="#td-r" class="item">
+		        待审核销毁的请求列表
+            	<div class="ui label">{{todestroy_requests|length}}</div>
+		      </a>
 		    </div>
 		  </div>
 		</div>
@@ -351,6 +355,7 @@
 	</tbody>
 </table>
 
+<!--待审核维修的列表-->
 <h3 id="tr-r" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">维修</font>的列表</h3>
 <table class="ui table segment small attached">
 	<thead>
@@ -425,6 +430,7 @@
 	</tbody>
 </table>
 
+<!--已同意维修的列表-->
 <h3 td="rr-r" class="ui header top attached" style="margin-top:10px">已同意<font color="#F05940">维修</font>的列表</h3>
 <table class="ui table segment small attached">
 	<thead>
@@ -474,6 +480,7 @@
 	</tbody>
 </table>
 
+<!--维修中的列表-->
 <h3 id="ri-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">维修中</font>的列表</h3>
 <table class="ui table segment small attached">
 	<thead>
@@ -523,6 +530,7 @@
 	</tbody>
 </table>
 
+<!--维修完成的列表-->
 <h3 id="rd-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">维修</font>完成的列表</h3>
 <table class="ui table segment small attached">
 	<thead>
@@ -566,6 +574,81 @@
 	              	 </span>
 	                  '>确认取回
 	        </a>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<!--待审核销毁的列表-->
+<h3 id="td-r" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">销毁</font>的列表</h3>
+<table class="ui table segment small attached">
+	<thead>
+		<tr>
+			<th>SN</th>
+			<th>实物</th>
+			<th>借用者</th>
+			<th>原因</th>
+			<th>操作</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for item in todestroy_requests %}
+			<tr>
+				<td>{{item.sn}}</td>
+				<td>{{item.goods_name}}</td>
+				<td>{{item.borrower_name}}</td>
+				<td>{{item.note}}</td>
+				<td>
+					<a class="positive ui tiny circular button  agree-button" data-variation="inverted" data-position="top center" data-html='
+	                  <span>
+		                  <h5 class="ui header">同意销毁</h5>
+		                  <form  method="post" action="{% url "goods.views.do_accept_destroy" %}">
+			                  <div class="ui form">
+			              			<input type="hidden" name="id" value="{{item.id}}">
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物SN</font></label>
+			                        <input type="text" placeholder="id" name="id" value="{{item.sn}}" disabled>
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物名称</font></label>
+			                        <input type="text" placeholder="实物名称" name="name" value="{{item.goods_name}}" disabled>
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">说明</font></label>
+			                        <input type="text" name="note">
+			                    </div>
+			                  </div>
+			                  <button type="submit" class="ui tiny circular button floated right fluid positive">同意</button>
+		                  </form>
+	              	 </span>
+	                  '>同意
+	        </a>
+	        <a class="negative ui tiny circular button  agree-button" data-variation="inverted" data-position="top center" data-html='
+	                  <span>
+		                  <h5 class="ui header">拒绝销毁</h5>
+		                  <form  method="post" action="{% url "goods.views.do_reject_destroy" %}">
+			                  <div class="ui form">
+			              			<input type="hidden" name="id" value="{{item.id}}">
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物SN</font></label>
+			                        <input type="text" placeholder="id" name="id" value="{{item.sn}}" disabled>
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物名称</font></label>
+			                        <input type="text" placeholder="实物名称" name="name" value="{{item.goods_name}}" disabled>
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">说明</font></label>
+			                        <input type="text" name="note">
+			                    </div>
+			                  </div>
+			                  <button type="submit" class="ui tiny circular button floated right fluid negative">拒绝</button>
+		                  </form>
+	              	 </span>
+	                  '>拒绝
+	        </a>
+
 				</td>
 			</tr>
 		{% endfor %}

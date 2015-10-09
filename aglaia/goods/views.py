@@ -299,7 +299,29 @@ def do_accept_repair(request):
 			return show_message(request, 'The good is not in a borrowed status!')
 
 		packed_update_borrow(request, id, {'status': REPAIR_PEND_KEY, 'user_note': note}, log=get_accept_repair_log())
-		send_notify_mail(request, AcceptRepairMail, borrow=brw)
+		#send_notify_mail(request, AcceptRepairMail, borrow=brw)
+
+		return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+	except Exception as e:
+		return show_message(request, 'Accept Repair failed: ' + e.__str__())
+
+@method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def do_accept_destroy(request):
+	try:
+		id = request.POST['id']
+		note = request.POST['note']
+
+		brw = Borrow.objects.get(id=id)
+
+		if not brw.status == DESTROY_APPLY_KEY:
+			return show_message(request, 'This Request is not in a destroy apply status!')
+		if not brw.single.status == BORROWED_KEY:
+			return show_message(request, 'The good is not in a borrowed status!')
+
+		packed_update_single(request, id, {'status': DESTROYED_KEY, 'user_note': note}, log=get_accept_destroy_log())
+		#send_notify_mail(request, AcceptRepairMail, borrow=brw)
 
 		return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
@@ -316,7 +338,7 @@ def do_reject_repair(request):
 
 		brw = Borrow.objects.get(id=id)
 
-		if not brw.status == REPAIR_APPLY_KEY:
+		if not brw.status == DESTROY_APPLY_KEY:
 			return show_message(request, 'This Request is not in a repair apply status!')
 		if not brw.single.status == BORROWED_KEY:
 			return show_message(request, 'The good is not in a borrowed status!')
@@ -328,6 +350,28 @@ def do_reject_repair(request):
 
 	except Exception as e:
 		return show_message(request, 'Reject Repair failed: ' + e.__str__())
+
+@method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def do_reject_destroy(request):
+	try:
+		id = request.POST['id']
+		note = request.POST['note']
+
+		brw = Borrow.objects.get(id=id)
+
+		if not brw.status == DESTROY_APPLY_KEY:
+			return show_message(request, 'This Request is not in a repair apply status!')
+		if not brw.single.status == BORROWED_KEY:
+			return show_message(request, 'The good is not in a borrowed status!')
+
+		packed_update_borrow(request, id, {'status': BORROWED_KEY, 'user_note': note}, log=get_reject_destroy_log())
+		#send_notify_mail(request, RejectRepairMail, borrow=brw)
+
+		return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+	except Exception as e:
+		return show_message(request, 'Reject Destroy failed: ' + e.__str__())
 
 
 @method_required('POST')
@@ -664,6 +708,8 @@ def show_borrow(request):
 	rped = brws.filter(status=FINISH_REPAIR_KEY)
 
 	de_apply = brws.filter(status=DESTROY_APPLY_KEY)
+	de_acp = brws.filter(status=DESTROY_ACCEPT_KEY)
+	de_rej = brws.filter(status=DESTROY_REJECT_KEY)
 
 	cont['num_goods_used'] = len(brw_inuse)
 	cont['num_goods_borrow'] = len(brwing) + len(brw_pend)
@@ -682,6 +728,8 @@ def show_borrow(request):
 	cont['goods_repaired_list'] = get_context_list(rped, get_context_userbrw)
 
 	cont['goods_todestroy_list'] = get_context_list(de_apply, get_context_userbrw)
+	cont['goods_destroyed_list'] = get_context_list(de_acp, get_context_userbrw)
+	cont['goods_destroyfail_list'] = get_context_list(de_rej,get_context_userbrw)
 
 	cont['user'] = get_context_user(request.user)
 	return render(request, 'borrow.html', cont)
@@ -709,6 +757,8 @@ def show_manage(request):
 	rped = packed_find_borrow(request, {'status': FINISH_REPAIR_KEY}, {})
 
 	de_apply = packed_find_borrow(request, {'status': DESTROY_APPLY_KEY}, {})
+	de_acp = packed_find_borrow(request, {'status': DESTROY_ACCEPT_KEY}, {})
+	de_rej = packed_find_borrow(request, {'status': DESTROY_REJECT_KEY}, {})
 
 	b_req_list = get_context_list(b_req, get_context_borrow)
 	b_pend_list = get_context_list(b_pend, get_context_borrow)
@@ -721,6 +771,8 @@ def show_manage(request):
 	rped_list = get_context_list(rped, get_context_borrow)
 
 	de_apply_list = get_context_list(de_apply, get_context_borrow)
+	de_acp_list = get_context_list(de_acp, get_context_borrow)
+	de_rej_list = get_context_list(de_rej, get_context_borrow)
 
 	return render(request, 'goods_manage.html', {
 		'user': get_context_user(request.user),
@@ -733,6 +785,8 @@ def show_manage(request):
 		'repairing_requests': rping_list,
 		'repaired_requests': rped_list,
 		'todestroy_requests': de_apply_list,
+		'destroyed_requests': de_acp,
+		'destroyfailed_requests': de_rej,
 	})
 
 

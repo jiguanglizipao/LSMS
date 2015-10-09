@@ -29,4 +29,6 @@ urlpatterns = patterns("goods.views",
 					   url(r"^do_reject_repair", "do_reject_repair"),
 					   url(r"^show_borrow_list", "show_borrow_list"),
 					   url(r"^do_destroy_goods", "do_destroy_goods"),
+					   url(r"^do_accept_destroy", "do_accept_destroy"),
+					   url(r"^do_reject_destroy", "do_reject_destroy"),
 					   )

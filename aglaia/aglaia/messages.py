@@ -80,6 +80,13 @@ def get_accept_repair_log(*args, **kwargs):
 def get_reject_repair_log(*args, **kwargs):
 	return '拒绝维修申请'
 
+def get_accept_destroy_log(*args, **kwargs):
+	return '同意销毁申请'
+
+
+def get_reject_destroy_log(*args, **kwargs):
+	return '拒绝销毁申请'
+
 
 def get_brw_repairing_log(*args, **kwargs):
 	return '物品进入维修状态'

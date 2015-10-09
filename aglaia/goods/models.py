@@ -31,6 +31,10 @@ FINISH_REPAIR_KEY = 'fr'
 FINISH_REPAIR = 'finish_repair'
 DESTROY_APPLY_KEY = 'dea'
 DESTROY_APPLY = 'destroy_applys'
+DESTROY_ACCEPT_KEY = 'deacp'
+DESTROY_ACCEPT = 'destroy_accept'
+DESTROY_REJECT_KEY = 'derej'
+DESTROY_REJECT = 'destroy_reject'
 
 BORROW_AUTHING_KEY = 'ba'
 BORROW_AUTHING = 'borrow_authing'
@@ -174,7 +178,9 @@ class Borrow(models.Model):
 		(RETURNED_KEY, RETURNED),
 		(LOST_KEY, LOST),
 		(DAMAGED_KEY, DAMAGED),
-		(DESTROY_APPLY_KEY,DESTROY_APPLY)
+		(DESTROY_APPLY_KEY,DESTROY_APPLY),
+		(DESTROY_ACCEPT_KEY,DESTROY_APPLY),
+		(DESTROY_REJECT_KEY,DESTROY_REJECT)
 	)
 	account = models.ForeignKey(Account, default=None)
 	single = models.ForeignKey(Single)
