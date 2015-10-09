@@ -63,7 +63,7 @@ def get_context_single(sgl):
 	props = []
 	for i in range(0, tp.get_pronum()):
 		props.append({'pro_name': tp.get_proname(i),
-					  'pro_value': good.get_pro(i)})
+		              'pro_value': good.get_pro(i)})
 	dc['prop'] = props
 	return dc
 
@@ -224,7 +224,7 @@ def do_finish_borrow(request):
 			return show_message(request, 'The good is not avaliable!')
 
 		packed_update_single(request, brw.single.id, {'status': BORROWED_KEY, 'user_name': brw.account.user.username},
-							 log=get_good_brwed_log())
+		                     log=get_good_brwed_log())
 		packed_update_borrow(request, id, {'status': BORROWED_KEY}, log=get_finish_brw_log())
 
 		return HttpResponseRedirect(reverse('goods.views.show_manage'))
@@ -249,7 +249,7 @@ def do_accept_return(request):
 
 		if (lost == 'false'):
 			packed_update_borrow(request, id, {'status': RETURN_PENDING_KEY, 'manager_note': note},
-								 log=get_accept_ret_log())
+			                     log=get_accept_ret_log())
 		else:
 			packed_update_borrow(request, id, {'status': LOST_KEY, 'manager_note': note}, log=get_lost_ret_log())
 			packed_update_single(request, brw.single.id, {'status': LOST_KEY}, log=get_good_lost_log())
@@ -273,7 +273,7 @@ def do_finish_return(request):
 			return show_message(request, 'The good is not in a borrowed status!')
 		if intect == 'true':
 			packed_update_single(request, brw.single.id, {'status': AVALIABLE_KEY, 'user_name': ''},
-								 log=get_good_reted_log())
+			                     log=get_good_reted_log())
 			packed_update_borrow(request, id, {'status': RETURNED_KEY}, log=get_brw_reted_log())
 		else:
 			packed_update_single(request, brw.single.id, {'status': UNAVALIABLE_KEY}, log=get_good_dmg_log())
@@ -299,12 +299,13 @@ def do_accept_repair(request):
 			return show_message(request, 'The good is not in a borrowed status!')
 
 		packed_update_borrow(request, id, {'status': REPAIR_PEND_KEY, 'user_note': note}, log=get_accept_repair_log())
-		#send_notify_mail(request, AcceptRepairMail, borrow=brw)
+		# send_notify_mail(request, AcceptRepairMail, borrow=brw)
 
 		return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
 	except Exception as e:
 		return show_message(request, 'Accept Repair failed: ' + e.__str__())
+
 
 @method_required('POST')
 @permission_required(PERM_GOODS_AUTH)
@@ -320,7 +321,8 @@ def do_accept_destroy(request):
 		if not brw.single.status == BORROWED_KEY:
 			return show_message(request, 'The good is not in a borrowed status!')
 
-		packed_update_borrow(request, id, {'status': DESTROY_ACCEPT_KEY, 'user_note': note}, log=get_accept_destroy_log())
+		packed_update_borrow(request, id, {'status': DESTROY_ACCEPT_KEY, 'user_note': note},
+		                     log=get_accept_destroy_log())
 		packed_update_single(request, id, {'status': DESTROYED_KEY}, log=get_good_destroy_log())
 
 		return HttpResponseRedirect(reverse('goods.views.show_manage'))
@@ -338,8 +340,8 @@ def do_reject_repair(request):
 
 		brw = Borrow.objects.get(id=id)
 
-		if not brw.status == DESTROY_APPLY_KEY:
-			return show_message(request, 'This Request is not in a destroy apply status!')
+		if not brw.status == REPAIR_APPLY_KEY:
+			return show_message(request, 'This Request is not in a repair apply status!')
 		if not brw.single.status == BORROWED_KEY:
 			return show_message(request, 'The good is not in a borrowed status!')
 
@@ -350,6 +352,7 @@ def do_reject_repair(request):
 
 	except Exception as e:
 		return show_message(request, 'Reject Repair failed: ' + e.__str__())
+
 
 @method_required('POST')
 @permission_required(PERM_GOODS_AUTH)
@@ -365,7 +368,7 @@ def do_reject_destroy(request):
 		if not brw.single.status == BORROWED_KEY:
 			return show_message(request, 'The good is not in a borrowed status!')
 
-		packed_update_borrow(request, id, {'status': DESTROY_REJECT_KEY}, log=get_reject_destroy_log())
+		packed_update_borrow(request, id, {'status': BORROWED_KEY, 'user_note': note}, log=get_reject_repair_log())
 
 		return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
@@ -513,7 +516,7 @@ def do_borrow(request):
 			return show_message(request, 'The good is not avaliable!')
 		account = Account.objects.get(user=request.user)
 		brw = packed_create_borrow(request, sn=sgl.sn, status=BORROW_AUTHING_KEY, manager_note=note, account=account,
-								   log=get_brw_requst_log())
+		                           log=get_brw_requst_log())
 
 		send_notify_mail(request, BrwRequstMail, borrow=brw)
 
@@ -537,7 +540,7 @@ def do_return_goods(request):
 			return show_message(request, 'The good is not in a borrowed status!')
 
 		packed_update_borrow(request, id, {'status': RETURN_AUTHING_KEY, 'user_note': note, 'manager_note': note},
-							 log=get_ret_request_log())
+		                     log=get_ret_request_log())
 		send_notify_mail(request, RetRequstMail, borrow=brw)
 
 		return HttpResponseRedirect(reverse('goods.views.show_borrow'))
@@ -560,12 +563,13 @@ def do_miss_goods(request):
 			return show_message(request, 'The good is not in a borrowed status!')
 
 		packed_update_borrow(request, id, {'status': RETURN_AUTHING_KEY, 'user_note': note, 'manager_note': note},
-							 log=get_miss_request_log())
+		                     log=get_miss_request_log())
 		send_notify_mail(request, MissRequstMail, borrow=brw)
 
 		return HttpResponseRedirect(reverse('goods.views.show_borrow'))
 	except Exception as e:
 		return show_message(request, 'Miss request failed: ' + e.__str__())
+
 
 ##############################
 @method_required('POST')
@@ -583,8 +587,8 @@ def do_destroy_goods(request):
 			return show_message(request, 'The good is not in a borrowed status!')
 
 		packed_update_borrow(request, id, {'status': DESTROY_APPLY_KEY, 'manager_note': note},
-							 log=get_destroy_apply_log())
-		#send_notify_mail(request, RepairRequstMail, borrow=brw)
+		                     log=get_destroy_apply_log())
+		# send_notify_mail(request, RepairRequstMail, borrow=brw)
 
 		return HttpResponseRedirect(reverse('goods.views.show_borrow'))
 
@@ -609,7 +613,7 @@ def do_repair_goods(request):
 			return show_message(request, 'The good is not in a borrowed status!')
 
 		packed_update_borrow(request, id, {'status': REPAIR_APPLY_KEY, 'manager_note': note},
-							 log=get_repair_apply_log())
+		                     log=get_repair_apply_log())
 		send_notify_mail(request, RepairRequstMail, borrow=brw)
 
 		return HttpResponseRedirect(reverse('goods.views.show_borrow'))
@@ -728,7 +732,7 @@ def show_borrow(request):
 
 	cont['goods_todestroy_list'] = get_context_list(de_apply, get_context_userbrw)
 	cont['goods_destroyed_list'] = get_context_list(de_acp, get_context_userbrw)
-	cont['goods_destroyfail_list'] = get_context_list(de_rej,get_context_userbrw)
+	cont['goods_destroyfail_list'] = get_context_list(de_rej, get_context_userbrw)
 
 	cont['user'] = get_context_user(request.user)
 	return render(request, 'borrow.html', cont)
