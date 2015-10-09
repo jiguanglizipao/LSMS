@@ -1,97 +1,111 @@
-<tr class="goods-item {% if status == "inuse" %}positive{% elif status == "borrow_failed" %}disabled{% endif %}" data-request-id="{{ item.id }}">
-  <td>
-    {% if status == "borrowing" %}
-      <i class="orange question icon"></i>借用/审核中
-    {% elif status == "borrow_pending" %} 
-      <i class="green checkmark icon"></i>借用/已批准
-    {% elif status == "borrow_failed" %}  
-      <i class="remove icon"></i>借用/被拒绝
-    {% elif status == "inuse" %}
-      <i class="lock icon"></i>使用中
-    {% elif status == "returning" %}
-      <i class="orange question icon"></i>归还/审核中
-    {% elif status == "return_pending" %}
-      <i class="green checkmark icon"></i>归还/已批准
-    {% elif status == "returned" %}
-      <i class="black checkmark icon"></i>已归还
-    {% elif status == "lost" %}
-      <i class="black remove icon"></i>已挂失
-    {% elif status == "damaged" %}
-      <i class="black close icon"></i>已损坏
-    {% elif status == "torepair" %}
-      <i class="orange wrench icon"></i>维修/审核中
-    {% elif status == "repair" %}
-      <i class="green wrench icon"></i>维修/已通过
-    {% elif status == "repairing" %}
-      <i class="wrench icon"></i>维修中
-    {% elif status == "repaired" %}
-      <i class="green wrench icon"></i>维修/已完成
-    {% endif %}
-  </td>
-  <td>
-    {{ item.name }}
-  </td>
-  
-  <td>
-    {{ item.sn }}
-  </td>
+<tr class="goods-item {% if status == "inuse" %}positive{% elif status == "borrow_failed" %}disabled{% endif %}"
+    data-request-id="{{ item.id }}">
+    <td>
+        {% if status == "borrowing" %}
+            <i class="orange question icon"></i>借用/审核中
+        {% elif status == "borrow_pending" %}
+            <i class="green checkmark icon"></i>借用/已批准
+        {% elif status == "borrow_failed" %}
+            <i class="remove icon"></i>借用/被拒绝
+        {% elif status == "inuse" %}
+            <i class="lock icon"></i>使用中
+        {% elif status == "returning" %}
+            <i class="orange question icon"></i>归还/审核中
+        {% elif status == "return_pending" %}
+            <i class="green checkmark icon"></i>归还/已批准
+        {% elif status == "returned" %}
+            <i class="black checkmark icon"></i>已归还
+        {% elif status == "lost" %}
+            <i class="black remove icon"></i>已挂失
+        {% elif status == "damaged" %}
+            <i class="black close icon"></i>已损坏
+        {% elif status == "torepair" %}
+            <i class="orange wrench icon"></i>维修/审核中
+        {% elif status == "repair" %}
+            <i class="green wrench icon"></i>维修/已通过
+        {% elif status == "repairing" %}
+            <i class="wrench icon"></i>维修中
+        {% elif status == "repaired" %}
+            <i class="green wrench icon"></i>维修/已完成
+        {% endif %}
+    </td>
+    <td>
+        {{ item.name }}
+    </td>
 
-  <td>
-    {{ item.note }}
-  </td>
+    <td>
+        {{ item.sn }}
+    </td>
 
-  <td>
-    {% if status == "inuse" %}
-      <form action="{% url "goods.views.do_return_goods" %}" method="post" style="display:inline-block;">
-        <input type="hidden" name="id" value="{{ item.id }}">
-        <button type="submit" class="ui circular tiny inverted icon green tip return button" data-content="归还">
-          <i class="unlock icon"></i>
-        </button>
-      </form>
-      <form action="{% url "goods.views.do_miss_goods" %}" method="post" style="display:inline-block;">
-        <input type="hidden" name="id" value="{{ item.id }}">
-        <button type="submit" class="ui circular tiny inverted icon red tip miss button" data-content="挂失">
-            <i class="ban circle icon"></i>
-        </button>
-      </form>
-      <div class="ui circular tiny inverted icon orange button agree-button" data-variation="inverted" data-position="top center" data-html='
-        <h5 class="ui header">维修申请</h5>
-        <form method="post" action="{% url "goods.views.do_repair_goods" %}">
-        <input type="text" name="id" value="{{ item.id }}" hidden>
-        <div class="ui form">
-          <div class="inline field">
-              <label><font color="#FFFFFF">说明</font></label>
-              <input type="text" name="note" placeholder="附加说明">
-          </div>
-        </div>
-        <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认</div>
+    <td>
+        {{ item.note }}
+    </td>
+
+    <td>
+        {% if status == "inuse" %}
+            <form action="{% url "goods.views.do_return_goods" %}" method="post" style="display:inline-block;">
+                <input type="hidden" name="id" value="{{ item.id }}">
+                <button type="submit" class="ui circular tiny inverted icon green tip return button" data-content="归还">
+                    <i class="unlock icon"></i>
+                </button>
+            </form>
+            <form action="{% url "goods.views.do_miss_goods" %}" method="post" style="display:inline-block;">
+                <input type="hidden" name="id" value="{{ item.id }}">
+                <button type="submit" class="ui circular tiny inverted icon red tip miss button" data-content="挂失">
+                    <i class="ban circle icon"></i>
+                </button>
+            </form>
+            {##}
+            <form action="{% url "goods.views.do_destroy_goods" %}" method="post" style="display:inline-block;">
+                <input type="hidden" name="id" value="{{ item.id }}">
+                <button type="submit" class="ui circular tiny inverted icon black tip miss button" data-content="请求销毁">
+                    <i class="trash icon"></i>
+                </button>
+            </form>
+
+                        <div class="ui circular tiny inverted icon orange button agree-button" data-content="测试"
+                             data-variation="inverted"
+                             data-position="top center"
+
+            data-html='
+                    <h5 class="ui header">维修申请</h5>
+                    <form method="post" action="{% url "goods.views.do_repair_goods" %}">
+                    <input type="text" name="id" value="{{ item.id }}" hidden>
+                    <div class="ui form">
+                      <div class="inline field">
+                          <label><font color="#FFFFFF">说明</font></label>
+                          <input type="text" name="note" placeholder="附加说明">
+                      </div>
+                    </div>
+                    <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认</div>
+                    </form>
+                    <script type="text/javascript">
+                      $(".agree-confirm-button").click(function(){
+                        $(this).parent().trigger("submit");
+                      });
+                    </script>
+                    '>
+
+                            <i class="wrench circle icon"></i>
+                        </div>
+
+        {% else %}
+            <button class="ui circular tiny inverted icon green tip disabled button" data-content="归还">
+                <i class="unlock icon"></i>
+            </button>
+            <button class="ui circular tiny inverted icon red tip disabled button" data-content="挂失">
+                <i class="ban circle icon"></i>
+            </button>
+            <button type="submit" class="ui circular tiny inverted icon orange tip disabled button" data-content="维修">
+                <i class="wrench circle icon"></i>
+            </button>
+        {% endif %}
+        <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+            <input type="hidden" name="id" value="{{ item.id }}">
+            <input type="hidden" name="type" value="borrow">
+            <button type="submit" class="ui circular tiny inverted icon teal tip button" data-content="日志">
+                <i class="unordered list icon"></i>
+            </button>
         </form>
-        <script type="text/javascript">
-          $(".agree-confirm-button").click(function(){
-            $(this).parent().trigger("submit");
-          });
-        </script>
-        '>
-        <i class="wrench circle icon"></i>
-      </div>
-      
-    {% else %}
-      <button class="ui circular tiny inverted icon green tip disabled button" data-content="归还">
-        <i class="unlock icon"></i>
-      </button>
-      <button class="ui circular tiny inverted icon red tip disabled button" data-content="挂失">
-          <i class="ban circle icon"></i>
-      </button>
-      <button type="submit" class="ui circular tiny inverted icon orange tip disabled button" data-content="维修">
-            <i class="wrench circle icon"></i>
-      </button>
-    {% endif %}
-    <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-      <input type="hidden" name="id" value="{{ item.id }}">
-      <input type="hidden" name="type" value="borrow">
-      <button type="submit" class="ui circular tiny inverted icon teal tip button" data-content="日志">
-          <i class="unordered list icon"></i>
-      </button>
-    </form>
-  </td>
+    </td>
 </tr>

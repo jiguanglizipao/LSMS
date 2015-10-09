@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -28,26 +29,26 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'account',
-    'computing',
-    'goods',
-    'log',
+	'django.contrib.admin',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+	'account',
+	'computing',
+	'goods',
+	'log',
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	# 'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'aglaia.urls'
@@ -59,17 +60,17 @@ WSGI_APPLICATION = 'aglaia.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {
-     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-         'ENGINE': 'django.db.backends.mysql',
-         'NAME': 'lsms',
-         'USER': 'lsms',
-         # 'PASSWORD': 'rongyuniubi',
-         'PASSWORD': 'lsms',
-         'HOST': 'tcst42.tk',
-         'PORT': '3306',
-     }
+	'default': {
+		#         'ENGINE': 'django.db.backends.sqlite3',
+		#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+		'ENGINE': 'django.db.backends.mysql',
+		'NAME': 'aglaia',
+		'USER': 'root',
+		# 'PASSWORD': 'rongyuniubi',
+		'PASSWORD': 'root',
+		'HOST': '127.0.0.1',
+		'PORT': '3306',
+	}
 }
 
 # Internationalization
@@ -96,13 +97,13 @@ USE_TZ = False
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+	os.path.join(BASE_DIR, 'static'),
 )
 
 # Template directories
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
+	os.path.join(BASE_DIR, 'templates'),
 )
 
 # Some redirect url
@@ -117,11 +118,11 @@ ACCOUNT_HOME_URL = '/account/'
 # E-mail settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST= 'smtp.163.com' 
+EMAIL_HOST = 'smtp.163.com'
 
-EMAIL_PORT= 25
+EMAIL_PORT = 25
 
-EMAIL_HOST_USER = 'AglaiaSys@163.com' 
+EMAIL_HOST_USER = 'AglaiaSys@163.com'
 
 EMAIL_HOST_PASSWORD = 'agsys123456'
 

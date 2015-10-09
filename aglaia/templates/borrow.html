@@ -5,524 +5,547 @@
 {% block title %}借还物资{% endblock %}
 
 {% block leftside %}
-<div class="ui vertical menu">
-  <div class="header item">
-    <i class="archive icon"></i>
-    实物资源
-  </div>
-  <div class="item">
-    <div class="menu">
-      <div class="item"></div>
-      <a href="#" class="item">
-        使用中
-        <div class="teal ui label">{{ num_goods_used }}</div>
-      </a>
-      <a href="#" class="item">
-        借用审核中
-        <div class="teal ui label">{{ num_goods_borrow }}</div>
-      </a>
-       <a href="#" class="item">
-        归还审核中
-        <div class="teal ui label">{{ num_goods_return }}</div>
-      </a>
+    <div class="ui vertical menu">
+        <div class="header item">
+            <i class="archive icon"></i>
+            实物资源
+        </div>
+        <div class="item">
+            <div class="menu">
+                <div class="item"></div>
+                <a href="#" class="item">
+                    使用中
+                    <div class="teal ui label">{{ num_goods_used }}</div>
+                </a>
+                <a href="#" class="item">
+                    借用审核中
+                    <div class="teal ui label">{{ num_goods_borrow }}</div>
+                </a>
+                <a href="#" class="item">
+                    归还审核中
+                    <div class="teal ui label">{{ num_goods_return }}</div>
+                </a>
+            </div>
+        </div>
+        <div class="header item">
+            <i class="cloud icon"></i>
+            计算资源
+        </div>
+        <div class="item">
+            <div class="menu">
+                <a href="#" class="item">
+                    使用中
+                    <div class="ui blue label">{{ num_res_used }}</div>
+                </a>
+                <a href="#" class="item">
+                    申请修改中
+                    <div class="ui blue label">{{ num_res_modif }}</div>
+                </a>
+                <a href="#" class="item">
+                    申请审核中
+                    <div class="ui blue label">{{ num_res_borrow }}</div>
+                </a>
+                <a href="#" class="item">
+                    释放审核中
+                    <div class="ui blue label">{{ num_res_release }}</div>
+                </a>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="header item">
-    <i class="cloud icon"></i>
-    计算资源
-  </div>
-  <div class="item">
-    <div class="menu">
-      <a href="#" class="item">
-        使用中
-        <div class="ui blue label">{{ num_res_used }}</div>
-      </a>
-      <a href="#" class="item">
-        申请修改中
-        <div class="ui blue label">{{ num_res_modif }}</div>
-      </a>
-      <a href="#" class="item">
-        申请审核中
-        <div class="ui blue label">{{ num_res_borrow }}</div>
-      </a>
-      <a href="#" class="item">
-        释放审核中
-        <div class="ui blue label">{{ num_res_release }}</div>
-      </a>
-    </div>
-  </div>
-</div>
 {% endblock %}
 
 {% block content %}
-<div class="ui right aligned basic segment">
-    <div class="ui two buttons">
-      <a href="{% url "goods.views.show_list" %}" class="ui left labeled icon teal button">
-        <i class="archive icon"></i>
-        借用实物资源
-      </a>
-      <a href="#" class="ui right labeled icon blue button" id="res-btn">
-        <i class="cloud icon"></i>
-        申请计算资源
-      </a>
+    <div class="ui right aligned basic segment">
+        <div class="ui two buttons">
+            <a href="{% url "goods.views.show_list" %}" class="ui left labeled icon teal button">
+                <i class="archive icon"></i>
+                借用实物资源
+            </a>
+            <a href="#" class="ui right labeled icon blue button" id="res-btn">
+                <i class="cloud icon"></i>
+                申请计算资源
+            </a>
+        </div>
     </div>
-</div>
 
-<div class="ui header attached top">实物资源</div>
-<table class="ui table segment small attached">
-  <thead>
-    <tr>
-      <th>状态</th>
-      <th>名称</th>
-      <th>SN号</th>
-      <th>消息</th>
-      <th>操作</th>
-    </tr>
-  </thead> 
-  <tbody>
-    {% for item in goods_inuse_list %}
-    {% include "goods_item.html" with status="inuse" %}
-    {% endfor %}
-    {% for item in goods_borrow_pending_list %}
-    {% include "goods_item.html" with status="borrow_pending" %}
-    {% endfor %}
-    {% for item in goods_return_pending_list %}
-    {% include "goods_item.html" with status="return_pending" %}
-    {% endfor %}
-    {% for item in goods_borrowing_list %}
-    {% include "goods_item.html" with status="borrowing" %}
-    {% endfor %}
-    {% for item in goods_returning_list %}
-    {% include "goods_item.html" with status="returning" %}
-    {% endfor %}
-    {% for item in goods_borrow_failed_list %}
-    {% include "goods_item.html" with status="borrow_failed" %}
-    {% endfor %}
-    {% for item in goods_torepair_list %}
-    {% include "goods_item.html" with status="torepair" %}
-    {% endfor %}
-    {% for item in goods_repair_list %}
-    {% include "goods_item.html" with status="repair" %}
-    {% endfor %}
-    {% for item in goods_repairing_list %}
-    {% include "goods_item.html" with status="repairing" %}
-    {% endfor %}
-    {% for item in goods_repaired_list %}
-    {% include "goods_item.html" with status="repaired" %}
-    {% endfor %}
-  </tbody>
-</table>
+    <div class="ui header attached top">实物资源</div>
+    <table class="ui table segment small attached">
+        <thead>
+        <tr>
+            <th>状态</th>
+            <th>名称</th>
+            <th>SN号</th>
+            <th>消息</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in goods_inuse_list %}
+            {% include "goods_item.html" with status="inuse" %}
+        {% endfor %}
+        {% for item in goods_borrow_pending_list %}
+            {% include "goods_item.html" with status="borrow_pending" %}
+        {% endfor %}
+        {% for item in goods_return_pending_list %}
+            {% include "goods_item.html" with status="return_pending" %}
+        {% endfor %}
+        {% for item in goods_borrowing_list %}
+            {% include "goods_item.html" with status="borrowing" %}
+        {% endfor %}
+        {% for item in goods_returning_list %}
+            {% include "goods_item.html" with status="returning" %}
+        {% endfor %}
+        {% for item in goods_borrow_failed_list %}
+            {% include "goods_item.html" with status="borrow_failed" %}
+        {% endfor %}
+        {% for item in goods_torepair_list %}
+            {% include "goods_item.html" with status="torepair" %}
+        {% endfor %}
+        {% for item in goods_repair_list %}
+            {% include "goods_item.html" with status="repair" %}
+        {% endfor %}
+        {% for item in goods_repairing_list %}
+            {% include "goods_item.html" with status="repairing" %}
+        {% endfor %}
+        {% for item in goods_repaired_list %}
+            {% include "goods_item.html" with status="repaired" %}
+        {% endfor %}
+        </tbody>
+    </table>
 
-<div class="ui header attached top">计算资源</div>
-<table class="ui table segment small attached">
-  <thead>
-    <tr>
-      <th>状态</th>
-      <th>名称</th>
-      <th>SN号</th>
-      <th>描述</th>
-      <th>消息</th>
-      <th>操作</th>
-    </tr>
-  </thead> 
-  <tbody>
-    {% for item in inuse_list %}
-    {% include "comp_item.html" with status="inuse" %}
-    {% endfor %}
+    <div class="ui header attached top">计算资源</div>
+    <table class="ui table segment small attached">
+        <thead>
+        <tr>
+            <th>状态</th>
+            <th>名称</th>
+            <th>SN号</th>
+            <th>描述</th>
+            <th>消息</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in inuse_list %}
+            {% include "comp_item.html" with status="inuse" %}
+        {% endfor %}
 
-    {% for item in borrowing_list %}
-    {% include "comp_item.html" with status="borrowing" %}
-    {% endfor %}
-    {% for item in modifying_list %}
-    {% include "comp_item.html" with status="modifying" %}
-    {% endfor %}
+        {% for item in borrowing_list %}
+            {% include "comp_item.html" with status="borrowing" %}
+        {% endfor %}
+        {% for item in modifying_list %}
+            {% include "comp_item.html" with status="modifying" %}
+        {% endfor %}
 
-    {% for item in returning_list %}
-    {% include "comp_item.html" with status="returning" %}
-    {% endfor %}
-  </tbody>
-</table>
-
+        {% for item in returning_list %}
+            {% include "comp_item.html" with status="returning" %}
+        {% endfor %}
+        </tbody>
+    </table>
 
 
-{# Computing resource modification dialog begins here. #}
-<div class="ui modal" id="res-modif-modal">
-  <i class="close icon"></i>
-  <div class="header">
-    <i class="large circular inverted cloud icon"></i>
-    修改资源配置
-  </div>
-  <div class="content">
-    <div class="ui teal message">
-      <div class="header">待修改计算资源</div>
-    <p class="description"></p>
-      </div>
-    <div class="ui form res-modif">
-      <input type="hidden" class="request-id">
-      <div class="field reason">
-        <label>修改原因及修改内容说明</label>
-        <div class="ui left labeled icon input">
-          <i class="teal right arrow icon"></i>
-          <input type="text" placeholder="修改原因">
+
+    {# Computing resource modification dialog begins here. #}
+    <div class="ui modal" id="res-modif-modal">
+        <i class="close icon"></i>
+
+        <div class="header">
+            <i class="large circular inverted cloud icon"></i>
+            修改资源配置
         </div>
-      </div>
-      <div class="ui red hidden message">
-      </div>
-      <a href="#" class="ui teal button submit">提交修改</a>
-      <a href="#" class="ui basic button cancel">取消</a>
+        <div class="content">
+            <div class="ui teal message">
+                <div class="header">待修改计算资源</div>
+                <p class="description"></p>
+            </div>
+            <div class="ui form res-modif">
+                <input type="hidden" class="request-id">
+
+                <div class="field reason">
+                    <label>修改原因及修改内容说明</label>
+
+                    <div class="ui left labeled icon input">
+                        <i class="teal right arrow icon"></i>
+                        <input type="text" placeholder="修改原因">
+                    </div>
+                </div>
+                <div class="ui red hidden message">
+                </div>
+                <a href="#" class="ui teal button submit">提交修改</a>
+                <a href="#" class="ui basic button cancel">取消</a>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-{# Computing resource modification dialog ends here. #}
+    {# Computing resource modification dialog ends here. #}
 
-{# Computing resource request modal begins here. #}
-<div class="ui  modal" id="res-modal">
-  <i class="close icon"></i>
-  <div class="header">
-    <i class="large circular inverted cloud icon"></i>
-    申请计算资源
-  </div>
-  <div class="content">
-    <div>
-      <form class="ui form res-borrow">
-        <div class="three fields">
-          <div class="field package">
-            <label>套餐</label>
-            <div class="ui selection dropdown fluid">
-              <input type="hidden" name="package" value="none">
-              <div class="default text">自由配置</div>
-              <i class="dropdown icon"></i>
-              <div class="menu">
-                <div class="active item" data-value="none">自由配置</div>
-                {% for pkg in package_list %}
-                  <div class="item" data-value="{{pkg}}">{{pkg}}</div>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-          <div class="field flag">
-            <label>重要数据</label>
-            <div class="ui selection dropdown fluid">
-              <input type="hidden" name="type" value="false">
-              <div class="default text">否</div>
-              <i class="dropdown icon"></i>
-              <div class="menu">
-                <div class="item" data-value="true">是</div>
-                <div class="active item" data-value="false">否</div>
-              </div>
-            </div>
-          </div>
-          <div class="field server-type">
-            <label>服务器类型</label>
-            <div class="ui selection dropdown fluid">
-              <input type="hidden" name="type" value="virtual">
-              <div class="default text">虚拟机</div>
-              <i class="dropdown icon"></i>
-              <div class="menu">
-                <div class="item" data-value="real">实体机</div>
-                <div class="active item" data-value="virtual">虚拟机</div>
-              </div>
-            </div>
-          </div>
+    {# Computing resource request modal begins here. #}
+    <div class="ui  modal" id="res-modal">
+        <i class="close icon"></i>
+
+        <div class="header">
+            <i class="large circular inverted cloud icon"></i>
+            申请计算资源
         </div>
-        <div class="four fields">
-          <div class="field cpu">
-            <label>CPU</label>
-            <div class="ui left labeled icon input">
-              <i class="teal right arrow icon"></i>
-              <input type="text" placeholder="CPU">
+        <div class="content">
+            <div>
+                <form class="ui form res-borrow">
+                    <div class="three fields">
+                        <div class="field package">
+                            <label>套餐</label>
+
+                            <div class="ui selection dropdown fluid">
+                                <input type="hidden" name="package" value="none">
+
+                                <div class="default text">自由配置</div>
+                                <i class="dropdown icon"></i>
+
+                                <div class="menu">
+                                    <div class="active item" data-value="none">自由配置</div>
+                                    {% for pkg in package_list %}
+                                        <div class="item" data-value="{{ pkg }}">{{ pkg }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field flag">
+                            <label>重要数据</label>
+
+                            <div class="ui selection dropdown fluid">
+                                <input type="hidden" name="type" value="false">
+
+                                <div class="default text">否</div>
+                                <i class="dropdown icon"></i>
+
+                                <div class="menu">
+                                    <div class="item" data-value="true">是</div>
+                                    <div class="active item" data-value="false">否</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field server-type">
+                            <label>服务器类型</label>
+
+                            <div class="ui selection dropdown fluid">
+                                <input type="hidden" name="type" value="virtual">
+
+                                <div class="default text">虚拟机</div>
+                                <i class="dropdown icon"></i>
+
+                                <div class="menu">
+                                    <div class="item" data-value="real">实体机</div>
+                                    <div class="active item" data-value="virtual">虚拟机</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="four fields">
+                        <div class="field cpu">
+                            <label>CPU</label>
+
+                            <div class="ui left labeled icon input">
+                                <i class="teal right arrow icon"></i>
+                                <input type="text" placeholder="CPU">
+                            </div>
+                        </div>
+                        <div class="field memory">
+                            <label>内存大小(GB)</label>
+
+                            <div class="ui left labeled icon input">
+                                <i class="teal right arrow icon"></i>
+                                <input type="text" placeholder="内存大小">
+                            </div>
+                        </div>
+                        <div class="field disk_type">
+                            <label>硬盘类型</label>
+
+                            <div class="ui selection dropdown fluid">
+                                <input type="hidden" name="disk_type" value="HDD">
+
+                                <div class="default text">HDD</div>
+                                <i class="dropdown icon"></i>
+
+                                <div class="menu">
+                                    <div class="active item" data-value="HDD">HDD</div>
+                                    <div class="item" data-value="SSD">SSD</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field disk">
+                            <label>硬盘大小(GB)</label>
+
+                            <div class="ui left labeled icon input">
+                                <i class="teal right arrow icon"></i>
+                                <input type="text" placeholder="硬盘大小">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field os">
+                        <label>操作系统</label>
+
+                        <div class="ui left labeled icon input">
+                            <i class="teal right arrow icon"></i>
+                            <input type="text" placeholder="操作系统要求">
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="field login">
+                            <label>首选用户名</label>
+
+                            <div class="ui left labeled icon input">
+                                <i class="teal right arrow icon"></i>
+                                <input type="text" placeholder="首选用户名">
+                            </div>
+                        </div>
+                        <div class="field initial_password">
+                            <label>初始密码</label>
+
+                            <div class="ui left labeled icon input">
+                                <i class="teal right arrow icon"></i>
+                                <input type="text" placeholder="初始密码">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field reason">
+                        <label>申请说明</label>
+
+                        <div class="ui left labeled icon input">
+                            <i class="teal right arrow icon"></i>
+                            <input type="text" placeholder="申请说明">
+                        </div>
+                    </div>
+                    <div class="ui hidden red message">
+                    </div>
+                    <a href="#" class="ui teal button submit">申请</a>
+                </form>
             </div>
-          </div>
-          <div class="field memory">
-            <label>内存大小(GB)</label>
-            <div class="ui left labeled icon input">
-              <i class="teal right arrow icon"></i>
-              <input type="text" placeholder="内存大小">
-            </div>
-          </div>
-          <div class="field disk_type">
-            <label>硬盘类型</label>
-            <div class="ui selection dropdown fluid">
-              <input type="hidden" name="disk_type" value="HDD">
-              <div class="default text">HDD</div>
-              <i class="dropdown icon"></i>
-              <div class="menu">
-                <div class="active item" data-value="HDD">HDD</div>
-                <div class="item" data-value="SSD">SSD</div>
-              </div>
-            </div>
-          </div>
-          <div class="field disk">
-            <label>硬盘大小(GB)</label>
-            <div class="ui left labeled icon input">
-              <i class="teal right arrow icon"></i>
-              <input type="text" placeholder="硬盘大小">
-            </div>
-          </div>
         </div>
-        <div class="field os">
-          <label>操作系统</label>
-          <div class="ui left labeled icon input">
-            <i class="teal right arrow icon"></i>
-            <input type="text" placeholder="操作系统要求">
-          </div>
-        </div>
-        <div class="two fields">
-          <div class="field login">
-            <label>首选用户名</label>
-            <div class="ui left labeled icon input">
-              <i class="teal right arrow icon"></i>
-              <input type="text" placeholder="首选用户名">
-            </div>
-          </div>
-          <div class="field initial_password">
-            <label>初始密码</label>
-            <div class="ui left labeled icon input">
-              <i class="teal right arrow icon"></i>
-              <input type="text" placeholder="初始密码">
-            </div>
-          </div>
-        </div>
-        <div class="field reason">
-          <label>申请说明</label>
-          <div class="ui left labeled icon input">
-            <i class="teal right arrow icon"></i>
-            <input type="text" placeholder="申请说明">
-          </div>
-        </div>
-        <div class="ui hidden red message">
-        </div>
-        <a href="#" class="ui teal button submit">申请</a>
-      </form>
     </div>
-  </div>
-</div>
-{# Calculating resource request modal ends here. #}
+    {# Calculating resource request modal ends here. #}
 
 {% endblock %}
 
 {% block js %}
-  <script src="{% static "javascript/borrow.js" %}"></script>
-  <script>
-  $(function(){
-    $('.res-modif .submit').click(function() {
-      if ($('.res-borrow .submit').hasClass('disabled'))
-        return;
+    <script src="{% static "javascript/borrow.js" %}"></script>
+    <script>
+        $(function () {
+            $('.res-modif .submit').click(function () {
+                if ($('.res-borrow .submit').hasClass('disabled'))
+                    return;
 
-      $('.res-modif .submit').hasClass('disabled');
+                $('.res-modif .submit').hasClass('disabled');
 
-      $.ajax({
-        url: '{% url "computing.views.do_modif_request" %}',
-        type: 'POST',
-        dataType: 'text',
-        data: {
-          id: $('.res-modif .request-id').val(),
-          reason: $('.res-modif .reason input').val(),
-        },
-      }) 
-      .done(function(data) {
-        if (data == 'ok') {
-          location.reload(true);
-        } else {
-          $('.res-modif .message').html('修改失败');         
-        }
-      })
-      .fail(function() {
-        $('.res-modif .message').html('修改失败');
-      })
-      .always(function() {
-        $('.res-modif .submit').removeClass('disabled');
-        $('.res-modif .message').removeClass('hidden');
-      });
-      
-    });
+                $.ajax({
+                    url: '{% url "computing.views.do_modif_request" %}',
+                    type: 'POST',
+                    dataType: 'text',
+                    data: {
+                        id: $('.res-modif .request-id').val(),
+                        reason: $('.res-modif .reason input').val(),
+                    },
+                })
+                        .done(function (data) {
+                            if (data == 'ok') {
+                                location.reload(true);
+                            } else {
+                                $('.res-modif .message').html('修改失败');
+                            }
+                        })
+                        .fail(function () {
+                            $('.res-modif .message').html('修改失败');
+                        })
+                        .always(function () {
+                            $('.res-modif .submit').removeClass('disabled');
+                            $('.res-modif .message').removeClass('hidden');
+                        });
 
-    $('.res-modif .cancel').click(function(){
-      $('#res-modif-modal').modal('hide');
-    });
+            });
 
-    $('.res-borrow .submit').click(function() {
-      if($('.res-borrow .submit').hasClass('disabled'))
-        return;
+            $('.res-modif .cancel').click(function () {
+                $('#res-modif-modal').modal('hide');
+            });
 
-      $('.res-borrow .submit').addClass('disabled');
+            $('.res-borrow .submit').click(function () {
+                if ($('.res-borrow .submit').hasClass('disabled'))
+                    return;
 
-      $.ajax({
-        url: '{% url "computing.views.do_borrow_request" %}',
-        type: 'POST',
-        dataType: 'text',
-        data: {
-          flag: $('.res-borrow .flag .active.item').attr('data-value'),
-          type: $('.res-borrow .server-type .active.item').attr('data-value'),
-          cpu: $('.res-borrow .cpu input').val(),
-          memory: $('.res-borrow .memory input').val(),
-          disk_type: $('.res-borrow .disk_type input').val(),
-          disk: $('.res-borrow .disk input').val(),
-          os: $('.res-borrow .os input').val(),
-          login: $('.res-borrow .login input').val(),
-          reason: $('.res-borrow .reason input').val(),
-          initial_password: $('.res-borrow .initial_password input').val(),
-        },
-      })
-      .done(function(data) {
-        if (data == 'ok')
-          location.reload(true);
-        else
-          $('.res-borrow .message').html('提交申请失败');
-      })
-      .fail(function() {
-        $('.res-borrow .message').html('服务器故障');
-      })
-      .always(function() {
-        $('.res-borrow .message').removeClass('hidden');
-        $('.res-borrow .submit').removeClass('disabled');
-      });
-      
-    });
+                $('.res-borrow .submit').addClass('disabled');
 
-    $('.resource-item .modify.button').click(function() {
-      var item = $(this).parent().parent();
+                $.ajax({
+                    url: '{% url "computing.views.do_borrow_request" %}',
+                    type: 'POST',
+                    dataType: 'text',
+                    data: {
+                        flag: $('.res-borrow .flag .active.item').attr('data-value'),
+                        type: $('.res-borrow .server-type .active.item').attr('data-value'),
+                        cpu: $('.res-borrow .cpu input').val(),
+                        memory: $('.res-borrow .memory input').val(),
+                        disk_type: $('.res-borrow .disk_type input').val(),
+                        disk: $('.res-borrow .disk input').val(),
+                        os: $('.res-borrow .os input').val(),
+                        login: $('.res-borrow .login input').val(),
+                        reason: $('.res-borrow .reason input').val(),
+                        initial_password: $('.res-borrow .initial_password input').val(),
+                    },
+                })
+                        .done(function (data) {
+                            if (data == 'ok')
+                                location.reload(true);
+                            else
+                                $('.res-borrow .message').html('提交申请失败');
+                        })
+                        .fail(function () {
+                            $('.res-borrow .message').html('服务器故障');
+                        })
+                        .always(function () {
+                            $('.res-borrow .message').removeClass('hidden');
+                            $('.res-borrow .submit').removeClass('disabled');
+                        });
 
-      $('#res-modif-modal .description').html(item.children('.description').text());
-      $('.res-modif .request-id').val(item.attr('data-request-id'));
-      $('#res-modif-modal').modal('show');
-    });
+            });
 
-    $('.resource-item .return.button').click(function() {
-      var item = $(this).parent().parent();
-      
-      if ($(this).hasClass('disabled'))
-        return;
+            $('.resource-item .modify.button').click(function () {
+                var item = $(this).parent().parent();
 
-      $(this).addClass('disabled');
+                $('#res-modif-modal .description').html(item.children('.description').text());
+                $('.res-modif .request-id').val(item.attr('data-request-id'));
+                $('#res-modif-modal').modal('show');
+            });
 
-      $.ajax({
-        url: '{% url "computing.views.do_return_request" %}',
-        type: 'POST',
-        dataType: 'text',
-        data: {
-          id:  item.attr('data-request-id')
-        },
-      })
-      .done(function() {
-      })
-      .fail(function() {
-      })
-      .always(function() {
-        location.reload(true);
-      });
-      
-    });
+            $('.resource-item .return.button').click(function () {
+                var item = $(this).parent().parent();
 
-    $('.resource-item .return.button').click(function() {
-      var item = $(this).parent().parent();
-      
-      if ($(this).hasClass('disabled'))
-        return;
+                if ($(this).hasClass('disabled'))
+                    return;
 
-      $(this).addClass('disabled');
+                $(this).addClass('disabled');
 
-      $.ajax({
-        url: '{% url "computing.views.do_return_request" %}',
-        type: 'POST',
-        dataType: 'text',
-        data: {
-          id:  item.attr('data-request-id')
-        },
-      })
-      .always(function() {
-        location.reload(true);
-      });
-      
-    });
+                $.ajax({
+                    url: '{% url "computing.views.do_return_request" %}',
+                    type: 'POST',
+                    dataType: 'text',
+                    data: {
+                        id: item.attr('data-request-id')
+                    },
+                })
+                        .done(function () {
+                        })
+                        .fail(function () {
+                        })
+                        .always(function () {
+                            location.reload(true);
+                        });
 
-    $('.resource-item .extreme-flag.button').click(function(){
-      var item = $(this).parent().parent();
+            });
 
-      if ($(this).hasClass('disabled'))
-        return;
+            $('.resource-item .return.button').click(function () {
+                var item = $(this).parent().parent();
 
-      $(this).addClass('disabled');
+                if ($(this).hasClass('disabled'))
+                    return;
 
-      $.ajax({
-        url: '{% url "computing.views.do_set_flag" %}',
-        type: 'POST',
-        dataType: 'text',
-        data: {
-          id:  item.attr('data-request-id'),
-          flag: $(this).attr('data-destiny'),
-        },
-      })
-      .always(function() {
-        location.reload(true);
-      });
-    });
+                $(this).addClass('disabled');
 
-    $('.res-borrow .package input').change(function(){
-      var pkg_name = $(this).val();
-      if (pkg_name == 'none') {
-        $('.res-borrow .server-type .menu').removeClass('disabled');
-        $('.res-borrow .server-type').removeClass('disabled');
-        $('.res-borrow .cpu input').removeAttr('disabled');
-        $('.res-borrow .memory input').removeAttr('disabled');
-        $('.res-borrow .disk_type').removeClass('disabled');
-        $('.res-borrow .disk_type .menu').removeClass('disabled');
-        $('.res-borrow .disk input').removeAttr('disabled');
-        $('.res-borrow .os input').removeAttr('disabled');
-      } else {
-        $.ajax({
-          url: '{% url "computing.views.do_get_package" %}',
-          type: 'POST',
-          dataType: 'json',
-          data: { name: pkg_name },
-        })
-        .done(function(pkg) {
-          if (pkg.type == 'real') {
-            $('.res-borrow .server-type .text').html('实体机');
-            $('.res-borrow .server-type input').val('real');
-          } else {
-            $('.res-borrow .server-type .text').html('虚拟机');
-            $('.res-borrow .server-type input').val('virtual');
-          }
-          if (pkg.disktype == 'HDD') {
-            $('.res-borrow .disk_type .text').html('HDD');
-            $('.res-borrow .disk_type input').val('HDD');
-          } else {
-            $('.res-borrow .disk_type .text').html('SSD');
-            $('.res-borrow .disk_type input').val('SSD');
-          }
-          $('.res-borrow .cpu input').val(pkg.cpu);
-          $('.res-borrow .memory input').val(pkg.memory);
-          $('.res-borrow .disk_type input').val(pkg.disktype);
-          $('.res-borrow .disk input').val(pkg.disk);
-          $('.res-borrow .os input').val(pkg.os);
+                $.ajax({
+                    url: '{% url "computing.views.do_return_request" %}',
+                    type: 'POST',
+                    dataType: 'text',
+                    data: {
+                        id: item.attr('data-request-id')
+                    },
+                })
+                        .always(function () {
+                            location.reload(true);
+                        });
 
-          $('.res-borrow .server-type .menu').addClass('disabled');
-          $('.res-borrow .server-type').addClass('disabled');
-          $('.res-borrow .cpu input').attr('disabled','');
-          $('.res-borrow .memory input').attr('disabled','');
-          $('.res-borrow .disk_type').addClass('disabled');
-          $('.res-borrow .disk_type .menu').addClass('disabled');
-          $('.res-borrow .disk input').attr('disabled','');
-          $('.res-borrow .os input').attr('disabled','');
-        })
-        .fail(function() {
-          alert('套餐查询失败');
+            });
+
+            $('.resource-item .extreme-flag.button').click(function () {
+                var item = $(this).parent().parent();
+
+                if ($(this).hasClass('disabled'))
+                    return;
+
+                $(this).addClass('disabled');
+
+                $.ajax({
+                    url: '{% url "computing.views.do_set_flag" %}',
+                    type: 'POST',
+                    dataType: 'text',
+                    data: {
+                        id: item.attr('data-request-id'),
+                        flag: $(this).attr('data-destiny'),
+                    },
+                })
+                        .always(function () {
+                            location.reload(true);
+                        });
+            });
+
+            $('.res-borrow .package input').change(function () {
+                var pkg_name = $(this).val();
+                if (pkg_name == 'none') {
+                    $('.res-borrow .server-type .menu').removeClass('disabled');
+                    $('.res-borrow .server-type').removeClass('disabled');
+                    $('.res-borrow .cpu input').removeAttr('disabled');
+                    $('.res-borrow .memory input').removeAttr('disabled');
+                    $('.res-borrow .disk_type').removeClass('disabled');
+                    $('.res-borrow .disk_type .menu').removeClass('disabled');
+                    $('.res-borrow .disk input').removeAttr('disabled');
+                    $('.res-borrow .os input').removeAttr('disabled');
+                } else {
+                    $.ajax({
+                        url: '{% url "computing.views.do_get_package" %}',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {name: pkg_name},
+                    })
+                            .done(function (pkg) {
+                                if (pkg.type == 'real') {
+                                    $('.res-borrow .server-type .text').html('实体机');
+                                    $('.res-borrow .server-type input').val('real');
+                                } else {
+                                    $('.res-borrow .server-type .text').html('虚拟机');
+                                    $('.res-borrow .server-type input').val('virtual');
+                                }
+                                if (pkg.disktype == 'HDD') {
+                                    $('.res-borrow .disk_type .text').html('HDD');
+                                    $('.res-borrow .disk_type input').val('HDD');
+                                } else {
+                                    $('.res-borrow .disk_type .text').html('SSD');
+                                    $('.res-borrow .disk_type input').val('SSD');
+                                }
+                                $('.res-borrow .cpu input').val(pkg.cpu);
+                                $('.res-borrow .memory input').val(pkg.memory);
+                                $('.res-borrow .disk_type input').val(pkg.disktype);
+                                $('.res-borrow .disk input').val(pkg.disk);
+                                $('.res-borrow .os input').val(pkg.os);
+
+                                $('.res-borrow .server-type .menu').addClass('disabled');
+                                $('.res-borrow .server-type').addClass('disabled');
+                                $('.res-borrow .cpu input').attr('disabled', '');
+                                $('.res-borrow .memory input').attr('disabled', '');
+                                $('.res-borrow .disk_type').addClass('disabled');
+                                $('.res-borrow .disk_type .menu').addClass('disabled');
+                                $('.res-borrow .disk input').attr('disabled', '');
+                                $('.res-borrow .os input').attr('disabled', '');
+                            })
+                            .fail(function () {
+                                alert('套餐查询失败');
+                            });
+                }
+            });
         });
-      }
-    });
-  });
-  </script>
+    </script>
 
-  <script type="text/javascript">
-  $(function (){
-    $('.agree-button').popup({
-      on: 'click'
-    });
-    $('.reject-button').popup({
-      on: 'click'
-    });
-  });
-  </script>
+    <script type="text/javascript">
+        $(function () {
+            $('.agree-button').popup({
+                on: 'click'
+            });
+            $('.reject-button').popup({
+                on: 'click'
+            });
+        });
+    </script>
 
 {% endblock %}
