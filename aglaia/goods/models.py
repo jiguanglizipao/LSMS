@@ -1,4 +1,3 @@
-from django.db import models
 from account.models import *
 
 # Create your models here.
@@ -178,9 +177,9 @@ class Borrow(models.Model):
 		(RETURNED_KEY, RETURNED),
 		(LOST_KEY, LOST),
 		(DAMAGED_KEY, DAMAGED),
-		(DESTROY_APPLY_KEY,DESTROY_APPLY),
-		(DESTROY_ACCEPT_KEY,DESTROY_APPLY),
-		(DESTROY_REJECT_KEY,DESTROY_REJECT)
+		(DESTROY_APPLY_KEY, DESTROY_APPLY),
+		(DESTROY_ACCEPT_KEY, DESTROY_APPLY),
+		(DESTROY_REJECT_KEY, DESTROY_REJECT)
 	)
 	account = models.ForeignKey(Account, default=None)
 	single = models.ForeignKey(Single)
@@ -189,4 +188,5 @@ class Borrow(models.Model):
 	manager_note = models.CharField(max_length=1000)
 
 	def __str__(self):
-		return str(self.single.goods.name) + '-' + str(self.single.sn)
+		return 'name = ' + str(self.single.goods.name) + '------sn=' + str(self.single.sn) + '------user_note=' + str(
+			self.user_note) + '------manager_note=' + str(self.manager_note)
