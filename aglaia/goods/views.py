@@ -74,7 +74,7 @@ def get_context_borrow(brw):
 	dc['sn'] = brw.single.sn
 	dc['goods_name'] = brw.single.goods.name
 	dc['borrower_name'] = brw.account.user.username
-	dc['note'] = brw.user_note + brw.manager_note
+	dc['note'] = brw.user_note
 	return dc
 
 
@@ -649,7 +649,7 @@ def do_repair_goods(request):
 		if not brw.single.status == BORROWED_KEY:
 			return show_message(request, 'The good is not in a borrowed status!')
 
-		packed_update_borrow(request, id, {'status': REPAIR_APPLY_KEY, 'manager_note': note},
+		packed_update_borrow(request, id, {'status': REPAIR_APPLY_KEY, 'user_note': note},
 							 log=get_repair_apply_log())
 		send_notify_mail(request, RepairRequstMail, borrow=brw)
 
