@@ -623,7 +623,7 @@ def do_destroy_goods(request):
 		if not brw.single.status == BORROWED_KEY:
 			return show_message(request, 'The good is not in a borrowed status!')
 
-		packed_update_borrow(request, id, {'status': DESTROY_APPLY_KEY, 'manager_note': note},
+		packed_update_borrow(request, id, {'status': DESTROY_APPLY_KEY, 'user_note': note},
 							 log=get_destroy_apply_log())
 		# send_notify_mail(request, RepairRequstMail, borrow=brw)
 
