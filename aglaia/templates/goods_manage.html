@@ -48,6 +48,10 @@
                     待审核销毁的请求列表
                     <div class="ui label">{{ todestroy_requests|length }}</div>
                 </a>
+	            <a href="#ga-r" class="item">
+                    待审核销毁的请求列表
+                    <div class="ui label">{{ goods_apply_requests|length }}</div>
+                </a>
             </div>
         </div>
     </div>
@@ -645,7 +649,7 @@
 			                    </div>
 			                    <div class="field">
 			                        <label><font color="#FFFFFF">说明</font></label>
-			                        <input type="text" name="note" placeholder="选填说明">
+			                        <input type="text" name="note" placeholder="说明">
 			                    </div>
 			                  </div>
 			                  <button type="submit" class="ui tiny circular button floated right fluid positive">同意</button>
@@ -667,6 +671,86 @@
 			                    <div class="field">
 			                        <label><font color="#FFFFFF">实物名称</font></label>
 			                        <input type="text" placeholder="实物名称" name="name" value="{{ item.goods_name }}" disabled>
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">说明</font></label>
+			                        <input type="text" name="note">
+			                    </div>
+			                  </div>
+			                  <button type="submit" class="ui tiny circular button floated right fluid negative">拒绝</button>
+		                  </form>
+	              	 </span>
+	                  '>拒绝
+                        </a>
+
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="ui divider"></div>
+    {% endif %}
+
+	<!--待审核采购的列表-->
+    {% if goods_apply_requests %}
+        <h3 id="ga-r" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">采购</font>的列表</h3>
+        <table class="ui table segment small attached">
+            <thead>
+            <tr>
+                <th>SN</th>
+                <th>实物名称</th>
+                <th>申请者</th>
+                <th>原因</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in goods_apply_requests %}
+                <tr>
+                    <td>{{ item.sn }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.applyer_name }}</td>
+                    <td>{{ item.note }}</td>
+                    <td>
+                        <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+                           data-position="top center" data-html='
+	                  <span>
+		                  <h5 class="ui header">同意采购</h5>
+		                  <form  method="post" action="{% url "goods.views.do_accept_apply_goods" %}">
+			                  <div class="ui form">
+			              			<input type="hidden" name="id" value="{{ item.id }}">
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物SN</font></label>
+			                        <input type="text" placeholder="id" name="id" value="{{ item.sn }}" disabled>
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物名称</font></label>
+			                        <input type="text" placeholder="实物名称" name="name" value="{{ item.name }}" disabled>
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">说明</font></label>
+			                        <input type="text" name="note" placeholder="说明">
+			                    </div>
+			                  </div>
+			                  <button type="submit" class="ui tiny circular button floated right fluid positive">同意</button>
+		                  </form>
+	              	 </span>
+	                  '>同意
+                        </a>
+                        <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
+                           data-position="top center" data-html='
+	                  <span>
+		                  <h5 class="ui header">拒绝采购</h5>
+		                  <form  method="post" action="{% url "goods.views.do_reject_apply_goods" %}">
+			                  <div class="ui form">
+			              			<input type="hidden" name="id" value="{{ item.id }}">
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物SN</font></label>
+			                        <input type="text" placeholder="id" name="id" value="{{ item.sn }}" disabled>
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物名称</font></label>
+			                        <input type="text" placeholder="实物名称" name="name" value="{{ item.name }}" disabled>
 			                    </div>
 			                    <div class="field">
 			                        <label><font color="#FFFFFF">说明</font></label>

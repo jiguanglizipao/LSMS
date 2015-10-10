@@ -33,4 +33,6 @@ urlpatterns = patterns("goods.views",
                        url(r"^do_reject_destroy", "do_reject_destroy"),
                        url(r"^show_apply_goods", "show_apply_goods"),
                        url(r"^do_apply_goods/$", "apply_goods"),
+                       url(r"^do_accept_apply_goods", "do_accept_apply_goods"),
+                       url(r"^do_reject_apply_goods", "do_reject_apply_goods"),
                        )

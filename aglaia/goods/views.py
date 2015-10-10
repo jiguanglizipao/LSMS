@@ -78,6 +78,16 @@ def get_context_borrow(brw):
 	return dc
 
 
+def get_context_apply_goods(brw):
+	dc = {}
+	dc['id'] = brw.id
+	dc['sn'] = brw.sn
+	dc['name'] = brw.name
+	dc['applyer_name'] = brw.account.user.username
+	dc['note'] = brw.note
+	return dc
+
+
 def get_context_userbrw(brw):
 	dc = {}
 	dc['id'] = brw.id
@@ -156,6 +166,18 @@ def apply_goods(request):
 		return show_message(request, 'Key not found: ' + e.__str__())
 	except Exception as e:
 		return show_message(request, "Apply goods failed: " + e.__str__())
+
+
+@method_required('POST')
+@permission_required(PERM_NORMAL)
+def do_accept_apply_goods(request):
+	return show_message(request, "accept apply goods")
+
+
+@method_required('POST')
+@permission_required(PERM_NORMAL)
+def do_reject_apply_goods(request):
+	return show_message(request, "reject apply goods")
 
 
 @method_required('POST')
@@ -807,8 +829,8 @@ def show_manage(request):
 	rped = packed_find_borrow(request, {'status': FINISH_REPAIR_KEY}, {})
 
 	de_apply = packed_find_borrow(request, {'status': DESTROY_APPLY_KEY}, {})
-	de_acp = packed_find_borrow(request, {'status': DESTROY_ACCEPT_KEY}, {})
-	de_rej = packed_find_borrow(request, {'status': DESTROY_REJECT_KEY}, {})
+
+	g_apply = packed_find_apply_goods(request, {'status': GOODS_APPLY_KEY}, {})
 
 	b_req_list = get_context_list(b_req, get_context_borrow)
 	b_pend_list = get_context_list(b_pend, get_context_borrow)
@@ -821,8 +843,8 @@ def show_manage(request):
 	rped_list = get_context_list(rped, get_context_borrow)
 
 	de_apply_list = get_context_list(de_apply, get_context_borrow)
-	de_acp_list = get_context_list(de_acp, get_context_borrow)
-	de_rej_list = get_context_list(de_rej, get_context_borrow)
+
+	g_apply_list = get_context_list(g_apply, get_context_apply_goods)
 
 	return render(request, 'goods_manage.html', {
 		'user': get_context_user(request.user),
@@ -835,8 +857,7 @@ def show_manage(request):
 		'repairing_requests': rping_list,
 		'repaired_requests': rped_list,
 		'todestroy_requests': de_apply_list,
-		'destroyed_requests': de_acp,
-		'destroyfailed_requests': de_rej,
+		'goods_apply_requests': g_apply_list,
 	})
 
 

@@ -235,6 +235,29 @@ def packed_create_apply_goods(request, name, pro_name, pro_value, sns, status, a
 			return goods
 
 
+def packed_find_apply_goods(request, filt, exclude):
+	correct_keys = ['status', 'account']
+	for key in filt.keys():
+		if not (key in correct_keys):
+			raise KeyError("The key: %s is wrong", key)
+
+	q = Apply_Goods.objects.all()
+	try:
+		if 'status' in filt:
+			q = q.filter(status=filt['status'])
+		if 'account' in filt:
+			q = q.filter(account=filt['account'])
+
+		if 'status' in exclude:
+			q = q.exclude(status=exclude['status'])
+		if 'account' in exclude:
+			q = q.exclude(account=exclude['account'])
+		return q
+
+	except Exception:
+		raise Exception("Error in find Apply Goods")
+
+
 def packed_find_goods(request, *args, **kwargs):
 	return find_goods(*args, **kwargs)
 
