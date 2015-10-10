@@ -218,6 +218,23 @@ def packed_create_goods(request, *args, **kwargs):
 	return create_goods(*args, **kwargs)
 
 
+def packed_create_apply_goods(request, name, pro_name, pro_value, sns, status, account, note):
+	pro_values = ''
+	for v in pro_value:
+		pro_values += (v + sep)
+
+	pro_names = ''
+	for v in pro_name:
+		pro_names += (v + sep)
+
+	for sn in sns:
+		if sn:
+			goods = Apply_Goods(name=name, pro_values=pro_values, pro_names=pro_names, status=status,
+			                    account=account, note=note, sn=sn)
+			goods.save()
+			return goods
+
+
 def packed_find_goods(request, *args, **kwargs):
 	return find_goods(*args, **kwargs)
 

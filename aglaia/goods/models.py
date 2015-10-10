@@ -28,6 +28,7 @@ REPAIR_PEND_KEY = 'repn'
 REPAIR_PEND = 'repair_pend'
 FINISH_REPAIR_KEY = 'fr'
 FINISH_REPAIR = 'finish_repair'
+
 DESTROY_APPLY_KEY = 'dea'
 DESTROY_APPLY = 'destroy_applys'
 DESTROY_ACCEPT_KEY = 'deacp'
@@ -52,6 +53,12 @@ LOST = 'lost'
 DAMAGED_KEY = 'da'
 DAMAGED = 'damaged'
 
+GOODS_APPLY_KEY = 'ga'
+GOODS_APPLY = 'goods_apply'
+GOODS_APPLY_ACCEPT_KEY = 'gacp'
+GOODS_APPLY_ACCEPT = 'goods_apply_accept'
+GOODS_APPLY_REJECT_KEY = 'grej'
+GOODS_APPLY_REJECT = 'goods_apply_reject'
 
 class GType(models.Model):
 	name = models.CharField(max_length=50)
@@ -141,6 +148,24 @@ class Goods(models.Model):
 				new_values = new_values + values[i] + sep
 		self.pro_values = new_values
 		self.save()
+
+
+class Apply_Goods(models.Model):
+	STATUS_CHOICES = (
+		(GOODS_APPLY_KEY, GOODS_APPLY),
+		(GOODS_APPLY_ACCEPT_KEY, GOODS_APPLY_ACCEPT),
+		(GOODS_APPLY_REJECT_KEY, GOODS_APPLY_REJECT)
+	)
+	name = models.CharField(max_length=50)
+	sn = models.CharField(max_length=60, unique=True)
+	status = models.CharField(max_length=5, choices=STATUS_CHOICES)
+	account = models.ForeignKey(Account, default=None)
+	note = models.CharField(max_length=1000)
+	pro_values = models.TextField(max_length=40000)
+	pro_names = models.TextField(max_length=40000)
+
+	def __str__(self):
+		return str(self.name) + '-' + str(self.sn)
 
 
 class Single(models.Model):

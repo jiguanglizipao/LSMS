@@ -123,6 +123,42 @@ def add_goods(request):
 
 
 @method_required('POST')
+@permission_required(PERM_NORMAL)
+def apply_goods(request):
+	''' Apply new goods with new pro values '''
+	try:
+		name = request.POST['name']
+		type_name = request.POST['type_name']
+		ext_num=request.POST['ext_num']
+
+		pro_name = []
+		pro_value = []
+
+		tp = packed_find_gtypes(request, type_name)
+		if tp and len(tp) == 1:
+			tp = tp[0]
+			for i in range(1, tp.get_pronum() + 1):
+				prop_key = "pro" + str(i) + "_value"
+				pro_value.append(request.POST[prop_key])
+				pro_name.append(tp.get_proname(i-1))
+
+		for i in range(1, int(ext_num) + 1):
+			prop_key = "ext_pro" + str(i)
+			pro_name.append(request.POST[prop_key+"_name"])
+			pro_value.append(request.POST[prop_key+"_value"])
+
+		sns = request.POST['sn'].split(',')
+		account = Account.objects.get(user=request.user)
+		packed_create_apply_goods(request, name, pro_name, pro_value, sns, GOODS_APPLY_KEY, account, '')
+
+		return HttpResponseRedirect(reverse("goods.views.show_list"))
+	except KeyError as e:
+		return show_message(request, 'Key not found: ' + e.__str__())
+	except Exception as e:
+		return show_message(request, "Apply goods failed: " + e.__str__())
+
+
+@method_required('POST')
 @permission_required(PERM_GOODS_AUTH, http_denied)
 def do_type_props(request):
 	'''list all the properties' name of a type'''
@@ -641,6 +677,16 @@ def show_add_goods(request):
 		"type_list": type_list,
 	})
 
+@method_required('GET')
+@permission_required(PERM_NORMAL)
+def show_apply_goods(request):
+	type_list = []
+	for t in GType.objects.all():
+		type_list.append(t.name)
+	return render(request, "apply_goods.html", {
+		'user': get_context_user(request.user),
+		"type_list": type_list,
+	})
 
 @method_required('GET')
 @permission_required(PERM_NORMAL)
