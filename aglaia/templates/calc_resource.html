@@ -74,6 +74,7 @@
                                     </div>
                                     <div class="ui horizontal label" style="margin-top:5px">IP: {{ borrowing.ip }}</div>
                                     <div class="ui horizontal label" style="margin-top:5px">OS: {{ borrowing.os }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据: {% if borrowing.flag == True %}是 数据内容:{{ borrowing.data_content }}{% else %}否{% endif %}</div>
                                 </a>
                                 <a class="item">
                                     <div class="ui green horizontal label">申请登陆用户名</div>
@@ -176,6 +177,7 @@
                                     </div>
                                     <div class="ui horizontal label" style="margin-top:5px">IP: {{ borrowing.ip }}</div>
                                     <div class="ui horizontal label" style="margin-top:5px">OS: {{ borrowing.os }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据: {% if borrowing.flag == True %}是 数据内容:{{ borrowing.data_content }}{% else %}否{% endif %}</div>
                                 </a>
                                 <a class="item">
                                     <div class="ui blue horizontal label">申请登陆用户名</div>
@@ -400,8 +402,9 @@
                                     </div>
                                     <div class="ui horizontal label" style="margin-top:5px">IP: {{ modifying.ip }}</div>
                                     <div class="ui horizontal label" style="margin-top:5px">OS: {{ modifying.os }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据: {% if modifying.flag == True %}是 数据内容:{{ modifying.data_content }}{% else %}否{% endif %}</div>
                                 </a>
-
+<!--
                                 <div class="positive ui float right button agree-button" data-variation="inverted"
                                      data-position="top center" data-html='
                   <h5 class="ui header">同意配置调整</h5>
@@ -431,7 +434,7 @@
                     <div class="inline field">
                         <label><font color="#FFFFFF">操作系统</font></label>
                         <input type="text" name="os" value="{{ modifying.os }}">
-                    </div>        
+                    </div>
                     <div class="inline field">
                         <label><font color="#FFFFFF">说明</font></label>
                         <input type="text" name="note" placeholder="附加说明">
@@ -445,7 +448,12 @@
                     });
                   </script>
                   '>调整完毕
+                                </div>-->
+                                <div class="positive ui float button right agree-button final-ultimate-approve-unique-button"
+                                     data-id="{{ modifying.id }}">
+                                    调整
                                 </div>
+
                                 <div class="negative ui float right button reject-button" data-variation="inverted"
                                      data-position="top center" data-html='
                   <h5 class="ui header">拒绝配置调整</h5>
@@ -498,12 +506,35 @@
                                     </div>
                                     <div class="ui horizontal label" style="margin-top:5px">IP: {{ modifying.ip }}</div>
                                     <div class="ui horizontal label" style="margin-top:5px">OS: {{ modifying.os }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据: {% if modifying.flag == True %}是 数据内容:{{ modifying.data_content }}{% else %}否{% endif %}</div>
                                 </a>
 
                                 <div class="positive ui float button right agree-button final-ultimate-approve-unique-button"
                                      data-id="{{ modifying.id }}">
-                                    调整完毕
+                                    调整
                                 </div>
+
+                                <div class="negative ui float right button reject-button" data-variation="inverted"
+                                     data-position="top center" data-html='
+                  <h5 class="ui header">拒绝配置调整</h5>
+                  <form method="post" action="{% url "computing.views.do_disapprove_modify" %}" class="do-disapprove-borrow">
+                  <input type="text" name="id" value="{{ modifying.id }}" hidden>
+                  <div class="ui form">
+                    <div class="inline field">
+                        <label><font color="#FFFFFF">说明</font></label>
+                        <input type="text" name="note" placeholder="附加说明">
+                    </div>
+                  </div>
+                  <div class="negative ui tiny circular button floated right fluid reject-confirm-button">确认拒绝</div>
+                  </form>
+                  <script type="text/javascript">
+                    $(".reject-confirm-button").click(function(){
+                      $(this).parent().trigger("submit");
+                    });
+                  </script>
+                  '>拒绝
+                                </div>
+                                <!--
                                 <div class="negative ui circular button floated right reject-button"
                                      data-variation="inverted" data-position="top center" data-html='
             <h5 class="ui header">拒绝配置调整</h5>
@@ -523,7 +554,7 @@
               });
             </script>
             '>拒绝
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -594,6 +625,10 @@
                     <label>网络地址</label>
                     <input type="text" name="ip">
                 </div>
+                <div class="data_content field">
+                    <label>数据内容</label>
+                    <input type="text" name="data_content">
+                </div>
                 <div class="note field">
                     <label>说明</label>
                     <input type="text" name="note">
@@ -643,6 +678,7 @@
                                     </div>
                                     <div class="ui horizontal label" style="margin-top:5px">IP: {{ inuse.ip }}</div>
                                     <div class="ui horizontal label" style="margin-top:5px">OS: {{ inuse.os }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据: {% if inuse.flag == True %}是 数据内容:{{ inuse.data_content }}{% else %}否{% endif %}</div>
                                 </a>
                                 <a class="item">
                                     <div class="ui green horizontal label">管理员答复</div>
@@ -685,6 +721,7 @@
                                     </div>
                                     <div class="ui horizontal label" style="margin-top:5px">IP: {{ inuse.ip }}</div>
                                     <div class="ui horizontal label" style="margin-top:5px">OS: {{ inuse.os }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据: {% if inuse.flag == True %}是 数据内容:{{ inuse.data_content }}{% else %}否{% endif %}</div>
                                 </a>
                                 <a class="item">
                                     <div class="ui blue horizontal label">管理员答复</div>
@@ -852,6 +889,10 @@
                             $('.res-modif .os input').val(prop.os);
                             $('.res-modif .disktype input').val(prop.disktype);
                             $('.res-modif .disktype .text').html(prop.disktype);
+                            $('.res-modif .data_content input').val(prop.data_content);
+                            if(!prop.flag) {
+                                $('.res-modif .data_content').hide();
+                            }
                             $('.res-modif').modal('show');
                         }).failed(function () {
                             alert(':-(');

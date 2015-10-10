@@ -58,7 +58,8 @@ def create_computing(computing_list):
 								   login=login, password=password,
 								   status=status, account=account, note=note,
 								   address=address, flag=flag,
-								   name=name, pack_name=pack_name),
+								   name=name, pack_name=pack_name,
+								   data_content=data_content)
 				comput.save()
 				new_computing.append(comput)
 			except TypeError:
@@ -72,7 +73,7 @@ def create_computing(computing_list):
 
 def find_computing(filt, exclude):
 	correct_keys = ['pc_type', 'disk_type', 'check_time', 'os', 'sn',
-					'status', 'account', 'address', 'flag', 'pack_name']
+					'status', 'account', 'address', 'flag', 'pack_name', 'data_content']
 	for key in filt.keys():
 		if not (key in correct_keys):
 			raise KeyError("The key: %s is wrong", key)
@@ -110,6 +111,8 @@ def find_computing(filt, exclude):
 			if 'shorter' in time_dict:
 				q = q.filter(
 					expire_time__lte=date.today() + timedelta(days=time_dict['shorter']))
+		if 'data_content' in filt:
+			q = q.filter(data_content=filt['data_content'])
 		# exclude
 		if 'pc_type' in exclude:
 			q = q.exclude(pc_type=exclude['pc_type'])
@@ -140,6 +143,8 @@ def find_computing(filt, exclude):
 			if (not ('longer' in time_dict)) and ('shorter' in time_dict):
 				q = q.exclude(
 					expire_time__lte=date.today() + timedelta(days=time_dict['shorter']))
+		if 'data_content' in exclude:
+			q = q.exclude(data_content=exclude['data_content'])
 		return q
 	except Exception:
 		raise
@@ -149,8 +154,9 @@ def update_computing(computing_id, update_content):
 	correct_keys = ['pc_type', 'cpu', 'memory', 'disk', 'os', 'sn',
 					'disk_type', 'expire_time', 'login',
 					'password', 'status', 'note', 'address', 'flag',
-					'name']
+					'name', 'data_content']
 	for key in update_content:
+		print('key:'+key)
 		if not (key in correct_keys):
 			raise KeyError("The key: %s is wrong", key)
 	computing = None
@@ -192,6 +198,8 @@ def update_computing(computing_id, update_content):
 			computing.address = update_content['address']
 		if 'flag' in update_content:
 			computing.flag = update_content['flag']
+		if 'data_content' in update_content:
+			computing.data_content = update_content['data_content']
 		computing.save()
 		return computing
 	except KeyError:

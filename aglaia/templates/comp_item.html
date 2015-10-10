@@ -36,6 +36,7 @@
       用户名: {{ item.login }}<br>
       初始密码: {{ item.initial_password }}<br>
       IP: {{ item.ip }}<br>
+      是否含有重要数据：{% if item.flag == True %}是<br>数据内容:{{ item.data_content }}<br>{% else%}否<br>{% endif %}
       ">详细配置</div>
   </td>
   <td>

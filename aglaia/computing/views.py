@@ -31,6 +31,7 @@ def get_context_computing(comp):
 	dc['name'] = comp.account.real_name
 	dc['flag'] = comp.flag
 	dc['sn'] = comp.sn
+	dc['data_content'] = comp.data_content
 	return dc
 
 
@@ -99,7 +100,6 @@ def do_borrow_request(request):
 				comp['disk_type'] = MACHINE_KEY
 			comp['os'] = post['os']
 			comp['pack_name'] = 'user_defined'
-
 		comp['expire_time'] = datetime.now()
 		comp['login'] = post['login']
 		comp['password'] = post['initial_password']
@@ -113,10 +113,8 @@ def do_borrow_request(request):
 			comp['name'] = post['name']
 		else:
 			comp['name'] = ''
-
 		c = packed_create_computing(request, [comp], log=get_comp_request_log())
 		send_notify_mail(request, CompRequestMail, comp=c[0])
-
 		return HttpResponse('ok')
 	except Exception as e:
 		print(e)
@@ -248,6 +246,7 @@ def do_approve_modify(request):
 		dic['disk'] = post['disk']
 		dic['address'] = post['ip']
 		dic['os'] = post['os']
+		dic['data_content']=post['data_content']
 		# dic['login'] = post['login']
 		# dic['password'] = post['initial_password']
 
