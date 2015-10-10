@@ -108,6 +108,7 @@ def do_borrow_request(request):
 		comp['address'] = UNKNOWN_ADDR
 		comp['note'] = post['reason']
 		comp['flag'] = post['flag']
+		comp['data_content'] = post['data_content']
 		if 'name' in post:
 			comp['name'] = post['name']
 		else:

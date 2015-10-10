@@ -46,6 +46,7 @@ def create_computing(computing_list):
 			note = computing['note']
 			address = computing['address']
 			flag = computing['flag']
+			data_content = computing['data_content']
 			if (len(note) > 500):
 				raise FormatInvalidError("Note is too long")
 			try:
@@ -57,7 +58,7 @@ def create_computing(computing_list):
 								   login=login, password=password,
 								   status=status, account=account, note=note,
 								   address=address, flag=flag,
-								   name=name, pack_name=pack_name)
+								   name=name, pack_name=pack_name),
 				comput.save()
 				new_computing.append(comput)
 			except TypeError:
