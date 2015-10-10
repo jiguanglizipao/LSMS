@@ -247,6 +247,14 @@
                             </div>
                         </div>
                     </div>
+                    <div class="field data_content">
+                        <label>数据内容</label>
+
+                        <div class="ui left labeled icon input">
+                            <i class="teal right arrow icon"></i>
+                            <input type="text" placeholder="数据内容" disabled="">
+                        </div>
+                    </div>
                     <div class="four fields">
                         <div class="field cpu">
                             <label>CPU</label>
@@ -394,6 +402,7 @@
                         login: $('.res-borrow .login input').val(),
                         reason: $('.res-borrow .reason input').val(),
                         initial_password: $('.res-borrow .initial_password input').val(),
+                        data_content: $('.res-borrow .data_content input').val(),
                     },
                 })
                         .done(function (data) {
@@ -490,6 +499,7 @@
                         });
             });
 
+
             $('.res-borrow .package input').change(function () {
                 var pkg_name = $(this).val();
                 if (pkg_name == 'none') {
@@ -541,6 +551,16 @@
                             .fail(function () {
                                 alert('套餐查询失败');
                             });
+                }
+            });
+
+            $('.res-borrow .flag input').change(function () {
+                var flag_value = $(this).val();
+                if (flag_value == 'false') {
+                    $('.res-borrow .data_content input').attr('disabled', '');
+                    $('.res-borrow .os input').val();
+                } else {
+                    $('.res-borrow .data_content input').removeAttr('disabled');
                 }
             });
         });
