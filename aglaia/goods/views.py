@@ -154,7 +154,7 @@ def apply_goods(request):
                 pro_name.append(tp.get_proname(i - 1))
 
         for i in range(1, int(ext_num) + 1):
-            prop_key = "pro" + str(i) + "_value"
+            prop_key = "pro" + str(tp_len + i)
             pro_name.append(request.POST[prop_key + "_name"])
             pro_value.append(request.POST[prop_key + "_value"])
 
