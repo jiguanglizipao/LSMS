@@ -45,7 +45,10 @@ def create_computing(computing_list):
 			account = computing['account']
 			note = computing['note']
 			address = computing['address']
-			flag = computing['flag']
+			if computing['flag']=='True' or computing['flag']=='true' or computing['flag']=='TRUE':
+				flag = True
+			else:
+				flag = False
 			data_content = computing['data_content']
 			if (len(note) > 500):
 				raise FormatInvalidError("Note is too long")

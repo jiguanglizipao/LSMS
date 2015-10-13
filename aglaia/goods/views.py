@@ -809,6 +809,13 @@ def show_borrow(request):
     cont['goods_destroyfail_list'] = get_context_list(de_rej, get_context_userbrw)
 
     cont['user'] = get_context_user(request.user)
+
+    cont['filtdata'] = False
+    if 'filtdata' in request.POST:
+        if request.POST['filtdata'] == 'true' or request.POST['filtdata'] == 'True' or request.POST['filtdata'] == 'TRUE':
+            print("true!")
+            cont['filtdata'] = True
+
     return render(request, 'borrow.html', cont)
 
 
