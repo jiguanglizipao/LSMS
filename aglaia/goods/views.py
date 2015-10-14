@@ -962,9 +962,6 @@ def show_manage(request):
     # gaing_list = get_context_list(gaing, get_context_apply_goods)
     # gaed_list = get_context_list(gaed, get_context_apply_goods)
 
-    print("ga_apply_list:")
-    print(ga_apply_list)
-
     return render(request, 'goods_manage.html', {
         'user': get_context_user(request.user),
         'borrow_requests': b_req_list,
