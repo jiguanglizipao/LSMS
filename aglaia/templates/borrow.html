@@ -119,6 +119,9 @@
         {% for item in goods_destroyfail_list %}
             {% include "goods_item.html" with status="destroyfail" %}
         {% endfor %}
+        {% for item in goods_apply_list %}
+            {% include "goods_item.html" with status="topurchase" %}
+        {% endfor %}
         </tbody>
     </table>
 

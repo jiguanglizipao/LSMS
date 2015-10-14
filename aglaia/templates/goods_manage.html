@@ -48,10 +48,12 @@
                     待审核销毁的请求列表
                     <div class="ui label">{{ todestroy_requests|length }}</div>
                 </a>
-	            <a href="#ga-r" class="item">
-                    待审核销毁的请求列表
+	            <a href="#tga-r" class="item">
+                    待审核采购的请求列表
                     <div class="ui label">{{ goods_apply_requests|length }}</div>
                 </a>
+                </a>
+
             </div>
         </div>
     </div>
@@ -692,7 +694,7 @@
     {% endif %}
 
 	<!--待审核采购的列表-->
-    {% if goods_apply_requests %}
+    {% if togoods_apply_requests %}
         <h3 id="ga-r" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">采购</font>的列表</h3>
         <table class="ui table segment small attached">
             <thead>
@@ -705,7 +707,7 @@
             </tr>
             </thead>
             <tbody>
-            {% for item in goods_apply_requests %}
+            {% for item in togoods_apply_requests %}
                 <tr>
                     <td>{{ item.sn }}</td>
                     <td>{{ item.name }}</td>
@@ -770,6 +772,8 @@
         </table>
         <div class="ui divider"></div>
     {% endif %}
+
+
 {% endblock %}
 
 {% block js %}
