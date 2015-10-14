@@ -122,7 +122,15 @@
         </tbody>
     </table>
 
-    <div class="ui header attached top">计算资源</div>
+    <div class="ui header attached top">
+        <form action = "/goods/borrow/" method="POST">
+            计算资源&nbsp;&nbsp;
+            <button class="ui circular mini icon orange tip return button" data-content="筛选重要数据" name="filtdata" value="True" type="submit">
+            <i class="tags icon"></i></button>
+            <button class="ui circular mini icon white tip return button" data-content="显示全部数据" name="filtdata" value="False" type="submit">
+            <i class="tags icon"></i></button>
+        </form>
+    </div>
     <table class="ui table segment small attached">
         <thead>
         <tr>
@@ -136,18 +144,30 @@
         </thead>
         <tbody>
         {% for item in inuse_list %}
-            {% include "comp_item.html" with status="inuse" %}
+            {% if filtdata and not item.flag %}
+            {% else %}
+                {% include "comp_item.html" with status="inuse" %}
+            {% endif %}
         {% endfor %}
 
         {% for item in borrowing_list %}
-            {% include "comp_item.html" with status="borrowing" %}
+            {% if filtdata and not item.flag %}
+            {% else %}
+                {% include "comp_item.html" with status="borrowing" %}
+            {% endif %}
         {% endfor %}
         {% for item in modifying_list %}
-            {% include "comp_item.html" with status="modifying" %}
+            {% if filtdata and not item.flag %}
+            {% else %}
+                {% include "comp_item.html" with status="modifying" %}
+            {% endif %}
         {% endfor %}
 
         {% for item in returning_list %}
-            {% include "comp_item.html" with status="returning" %}
+            {% if filtdata and not item.flag %}
+            {% else %}
+                {% include "comp_item.html" with status="returning" %}
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>
