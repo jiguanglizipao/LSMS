@@ -232,6 +232,10 @@
           $('#signin-dimmer').removeClass('active');
           $('#signin-error-msg').html('用户名密码不匹配');
           $('#signin-error-div').removeClass('hidden');
+        }else if (data == 'unreg') {
+          $('#signin-dimmer').removeClass('active');
+          $('#signin-error-msg').html('该用户名尚未注册');
+          $('#signin-error-div').removeClass('hidden');
         }
       })
       .fail(function() {

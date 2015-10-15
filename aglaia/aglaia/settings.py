@@ -25,30 +25,51 @@ TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+# import ldap
+# from django_auth_ldap.config import LDAPSearch
+#
+# AUTHENTICATION_BACKENDS = (
+# 	'django_auth_ldap.backend.LDAPBackend',
+# 	'django.contrib.auth.backends.ModelBackend',
+# )
+# AUTH_LDAP_SERVER_URI = 'ldap://192.168.1.207:389'
+# AUTH_LDAP_BIND_DN = 'CN=admin,DC=lsms,DC=com'
+# AUTH_LDAP_BIND_PASSWORD = "lsms"
+# AUTH_LDAP_USER_SEARCH = LDAPSearch("OU=People,DC=lsms,DC=com", ldap.SCOPE_SUBTREE, "(&(objectClass=person)(uid=%(user)s))")
+# AUTH_LDAP_USER_ATTR_MAP = {
+# 	"username": "uid",
+# 	"password": "userPassword",
+# 	"first_name": "givenName",
+# 	"last_name": "sn",
+# 	"email": "mail",
+# }
+# AUTH_LDAP_ALWAYS_UPDATE_USER = True
+
+
 
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'account',
-    'computing',
-    'goods',
-    'log',
+	'django.contrib.admin',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+	'account',
+	'computing',
+	'goods',
+	'log',
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	# 'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'aglaia.urls'
@@ -60,16 +81,16 @@ WSGI_APPLICATION = 'aglaia.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aglaia',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-    }
+	'default': {
+		'ENGINE': 'django.db.backends.sqlite3',
+		'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+		# 'ENGINE': 'django.db.backends.mysql',
+		# 'NAME': 'aglaia',
+		# 'USER': 'root',
+		# 'PASSWORD': 'root',
+		# 'HOST': '127.0.0.1',
+		# 'PORT': '3306',
+	}
 }
 
 # Internationalization
@@ -96,13 +117,13 @@ USE_TZ = False
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+	os.path.join(BASE_DIR, 'static'),
 )
 
 # Template directories
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
+	os.path.join(BASE_DIR, 'templates'),
 )
 
 # Some redirect url
