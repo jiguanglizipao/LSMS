@@ -155,10 +155,25 @@
   
   <div class="ui fixed inverted topbar main menu">
     <a href="/" class="title item"><i class="home icon"></i>Aglaia</a>
-    {% include "topbar_user.html" %}
-    {% if user.type == "manager" or user.type == "supervisor" %}
-      {% include "topbar_manager.html" %}
-      {% include "topbar_admin.html" %}
+    <!--{% include "topbar_user.html" %}-->
+    <!--{% if user.type != "normal"%}-->
+      <!--{% include "topbar_manager.html" %}-->
+      <!--{% include "topbar_admin.html" %}-->
+    <!--{% endif %}-->
+    {% if "account.normal" in perm_list%}
+    <a href="{% url "goods.views.show_borrow" %}" class="{% ifequal curpage "borrow" %} active {% endifequal %} item">借还物资</a>
+    <a href="{% url "goods.views.show_list" %}" class="{% ifequal curpage "goods" %} active {% endifequal %} item">物资列表</a>
+    {% endif %}
+    {% if "account.goods_auth" in perm_list %}
+    <a href="{% url "goods.views.show_manage" %}" class="item">请求审核</a>
+    {% endif %}
+    {% if "account.comput_auth" in perm_list%}
+    <a href="{% url "computing.views.show_comp_verify" %}" class="item">计算资源</a>
+    {% endif %}
+    {% if "account.view_all" in perm_list%}
+    <a href="{% url "account.views.show_all_accounts" %}" class="item">用户列表</a>
+    <a href="{% url "goods.views.show_borrow_list" %}" class="item">借还日志</a>
+    <a href="{% url "computing.views.show_computing_list" %}" class="item">计算日志</a>
     {% endif %}
     <div class="right menu">
       <a class="item" id="account-sidebar-toggler">

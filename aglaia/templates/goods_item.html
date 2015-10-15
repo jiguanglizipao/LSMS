@@ -61,7 +61,7 @@
             </form>
             {##}
 
-            <div class="ui circular tiny inverted icon black button agree-button" data-content="销毁"
+            <button class="ui compact circular mini inverted black icon button agree-button" data-content="销毁"
                              data-variation="inverted"
                              data-position="top center"
 
@@ -82,12 +82,13 @@
                         $(this).parent().trigger("submit");
                       });
                     </script>
-                    '>
-
-                            <i class="trash circle icon"></i>
+                    ' style="visibility:hidden;margin:0;padding:0">
+                            <div type="submit" class="ui circular tiny inverted icon black tip miss button" data-content="销毁" style="visibility:visible">
+                            <i class="trash circle icon"></i></div>
                         </div>
+                </button>
 
-                        <div class="ui circular tiny inverted icon orange button agree-button" data-content="测试"
+                        <button class="ui circular tiny inverted icon orange button agree-button" data-content="测试"
                              data-variation="inverted"
                              data-position="top center"
 
@@ -108,10 +109,11 @@
                         $(this).parent().trigger("submit");
                       });
                     </script>
-                    '>
-
-                            <i class="wrench circle icon"></i>
+                    ' style="visibility:hidden;margin:0;padding:0">
+                            <div type="submit" class="ui circular tiny inverted icon orange tip miss button" data-content="维修" style="visibility:visible">
+                            <i class="wrench circle icon"></i></div>
                         </div>
+                        </button>
 
         {% else %}
             <button class="ui circular tiny inverted icon green tip disabled button" data-content="归还">

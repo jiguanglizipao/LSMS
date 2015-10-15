@@ -6,7 +6,7 @@
 
 {% block leftside %}
 
-    {% if user.type != "normal" %}
+    {% if "account.goods_auth" in perm_list %}
         <div class="ui vertical menu">
             <div class="header item">
                 <i class="cloud icon"></i>
@@ -115,7 +115,7 @@
 
                         <div class="circular ui icon green button tiny borrow-goods" data-variation="inverted"
                              data-content="借用"><i class="icon add sign"></i></div>
-                        {% if user.type != "normal" %}
+                        {% if "account.goods_auth" in perm_list %}
                             <div class="circular ui icon orange button tiny do-unavailable" data-variation="inverted"
                                  data-content="设置为不在库"><i class="icon ban circle"></i></div>
                             <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted"
@@ -152,7 +152,7 @@
 
                         <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
                              data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
-                        {% if user.type != "normal" %}
+                        {% if "account.goods_auth" in perm_list %}
                             <div class="circular ui icon green button tiny do-available" data-variation="inverted"
                                  data-content="设置为在库"><i class="icon checkmark sign"></i></div>
                             <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted"
@@ -189,7 +189,7 @@
 
                         <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
                              data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
-                        {% if user.type != "normal" %}
+                        {% if "account.goods_auth" in perm_list %}
                             <div class="circular ui icon orange button tiny disabled  disabled-do-unavailable"
                                  data-variation="inverted" data-content="设置为不在库"><i class="icon ban circle"></i></div>
                             <div class="circular ui icon black button tiny disabled disabled-trash-destroy"
@@ -226,7 +226,7 @@
 
                         <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
                              data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
-                        {% if user.type != "normal" %}
+                        {% if "account.goods_auth" in perm_list %}
                             <div class="circular ui icon orange button tiny disabled disabled-do-available"
                                  data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
                             <div class="circular ui icon black button tiny disabled disabled-trash-destroy"
@@ -263,7 +263,7 @@
 
                         <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
                              data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
-                        {% if user.type != "normal" %}
+                        {% if "account.goods_auth" in perm_list %}
                             <div class="circular ui icon orange button tiny disabled disabled-do-available"
                                  data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
                             <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted"
@@ -300,7 +300,7 @@
 
                         <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
                              data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
-                        {% if user.type != "normal" %}
+                        {% if "account.goods_auth" in perm_list %}
                             <div class="circular ui icon orange button tiny disabled disabled-do-available"
                                  data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
                             <div class="circular ui icon black button tiny disabled disabled-trash-destroy"

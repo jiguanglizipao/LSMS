@@ -738,10 +738,14 @@ def show_list(request):
         singles = singles.filter(goods__name__startswith=name)
 
     sgl_list = get_context_list(singles, get_context_single)
+
+    perm_list = request.user.get_all_permissions()
+
     return render(request, "goods_list.html", {
         'user': get_context_user(request.user),
         "goods_list": sgl_list,
-        "type_list": tp_list
+        "type_list": tp_list,
+        "perm_list": perm_list
     })
 
 
@@ -809,6 +813,7 @@ def show_borrow(request):
     cont['goods_destroyfail_list'] = get_context_list(de_rej, get_context_userbrw)
 
     cont['user'] = get_context_user(request.user)
+    cont['perm_list'] = request.user.get_all_permissions()
 
     cont['filtdata'] = False
     if 'filtdata' in request.POST:
@@ -870,6 +875,7 @@ def show_manage(request):
         'repaired_requests': rped_list,
         'todestroy_requests': de_apply_list,
         'goods_apply_requests': g_apply_list,
+        'perm_list': request.user.get_all_permissions()
     })
 
 
@@ -883,7 +889,8 @@ def show_borrow_list(request):
             'user': get_context_user(request.user),
             'borrows': blist,
             'page': 1,
-            'page_num': 1
+            'page_num': 1,
+            'perm_list': request.user.get_all_permissions()
         })
     except Exception as e:
         return show_message(request, 'Error when show borrows: ' + e.__str__())
