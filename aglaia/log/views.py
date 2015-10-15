@@ -87,7 +87,8 @@ def show_log(request):
 		llist = log_list_func[g['type']](g['id'], is_actor)
 		return render(request, 'log.html', {
 			'user': get_context_user(request.user),
-			'logs': llist
+			'logs': llist,
+			'perm_list': request.user.get_all_permissions()
 		})
 	except Exception as e:
 		return show_message(request, 'Show log Error: ' + e.__str__())

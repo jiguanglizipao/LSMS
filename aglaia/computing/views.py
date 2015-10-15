@@ -402,6 +402,7 @@ def show_comp_verify(request):
 
 	user = get_context_user(request.user)
 	cont['user'] = user
+	cont['perm_list'] = request.user.get_all_permissions()
 
 	return render(request, 'calc_resource.html', cont)
 
@@ -439,6 +440,7 @@ def show_calc_resource(request):
 
 	user = get_context_user(request.user)
 	cont['user'] = user
+	cont['perm_list'] = request.user.get_all_permissions()
 
 	return render(request, 'calc_resource.html', cont)
 
@@ -449,11 +451,13 @@ def show_computing_list(request):
 	try:
 		comp = Computing.objects.all()
 		clist = get_context_list(comp, get_context_computing)
+		perm_list = request.user.get_all_permissions()
 		return render(request, 'log_computing.html', {
 			'user': get_context_user(request.user),
 			'computings': clist,
 			'page': 1,
-			'page_num': 1
+			'page_num': 1,
+			"perm_list": perm_list
 		})
 	except Exception as e:
 		return show_message(request, 'Error when show computings: ' + e.__str__())

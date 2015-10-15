@@ -575,6 +575,6 @@ def show_all_accounts(request):
 	cont['filter_dept'] = None
 
 	cont['user'] = get_context_user(request.user)
+	cont['perm_list'] = request.user.get_all_permissions()
 
-	return render_to_response('allaccounts.html', cont,
-	                          context_instance=RequestContext(request))
+	return render_to_response('allaccounts.html', cont, context_instance=RequestContext(request))
