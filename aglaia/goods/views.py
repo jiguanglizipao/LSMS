@@ -86,7 +86,7 @@ def get_context_apply_goods(brw):
 	dc['sn'] = brw.sn
 	dc['name'] = brw.name
 	dc['applyer_name'] = brw.account.user.username
-	dc['note'] = Message(brw.note).last()['text']
+	dc['note'] = brw.note#Message(brw.note).last()['text']
 	return dc
 
 
@@ -142,11 +142,13 @@ def apply_goods(request):
 		name = request.POST['name']
 		type_name = request.POST['type_name']
 		ext_num = request.POST['ext_num']
+		note = request.POST['note']
 
 		pro_name = []
 		pro_value = []
 
 		tp = packed_find_gtypes(request, type_name)
+		tp_len = 0
 		if tp and len(tp) == 1:
 			tp = tp[0]
 			tp_len = tp.get_pronum()
@@ -162,25 +164,13 @@ def apply_goods(request):
 
 		sns = request.POST['sn'].split(',')
 		account = Account.objects.get(user=request.user)
-		packed_create_apply_goods(request, name, pro_name, pro_value, sns, GOODS_APPLY_KEY, account, '')
+		packed_create_apply_goods(request, name, pro_name, pro_value, sns, GOODS_APPLY_KEY, account, note)
 
 		return HttpResponseRedirect(reverse("goods.views.show_list"))
 	except KeyError as e:
 		return show_message(request, 'Key not found: ' + e.__str__())
 	except Exception as e:
 		return show_message(request, "Apply goods failed: " + e.__str__())
-
-
-@method_required('POST')
-@permission_required(PERM_NORMAL)
-def do_accept_apply_goods(request):
-	return show_message(request, "accept apply goods")
-
-
-@method_required('POST')
-@permission_required(PERM_NORMAL)
-def do_reject_apply_goods(request):
-	return show_message(request, "reject apply goods")
 
 
 @method_required('POST')
@@ -545,6 +535,101 @@ def do_return_repair(request):
 		return show_message(request, 'Return Repair failed: ' + e.__str__())
 
 
+@method_required('POST')
+@permission_required(PERM_NORMAL)
+def do_accept_apply_goods(request):
+	try:
+		id = request.POST['id']
+		note = request.POST['note']
+
+		apgd = Apply_Goods.objects.get(id=id)
+
+		if not apgd.status == GOODS_APPLY_KEY:
+			return show_message(request, 'This Request is not in a apply_goods apply satus!')
+
+		packed_update_apply_goods(request, id, {'status': GOODS_APPLY_PEND_KEY, 'manager_note': note},
+		                          log=get_accept_apply_goods_log())
+		# sent_notify_mail
+
+		return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+	except Exception as e:
+		return show_message(request, 'Accept Apply_Goods failed: ' + e.__str__())
+
+
+@method_required('POST')
+@permission_required(PERM_NORMAL)
+def do_reject_apply_goods(request):
+	try:
+		id = request.POST['id']
+		note = request.POST['note']
+
+		apgd = Apply_Goods.objects.get(id=id)
+
+		if not apgd.status == GOODS_APPLY_KEY:
+			return show_message(request, "This Request is not in a apply_goods apply status!")
+
+		packed_update_apply_goods(request, id, {'status': GOODS_APPLY_REJECT_KEY, 'manager_note': note},
+		                          log=get_reject_apply_goods_log())
+		# send_notify_mail
+
+		return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+	except Exception as e:
+		return show_message(request, 'Reject Apply_Goods failed: ' + e.__str__())
+
+
+@method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def do_start_apply_goods(request):
+	try:
+		id = request.POST['id']
+		note = request.POST['note']
+
+		apgd = Apply_Goods.objects.get(id=id)
+
+		if not apgd.status == GOODS_APPLY_PEND_KEY:
+			return show_message(request, "This Request is not in a apply_goods apply status!")
+
+		packed_update_apply_goods(request, id, {'status': GOODS_APPLYING_KEY, 'manager_note': note},
+		                          log=get_apply_goods_applying_log())
+		# send_notify_mail
+
+		return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+	except Exception as e:
+		return show_message(request, 'Reject Apply_Goods failed: ' + e.__str__())
+
+
+@method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def do_finish_apply_goods(request):
+	try:
+		id = request.POST['id']
+		note = request.POST['note']
+
+		apgd = Apply_Goods.objects.get(id=id)
+
+		if not apgd.status == GOODS_APPLYING_KEY:
+			return show_message(request, "This Request is not in a apply_goods apply status!")
+
+		packed_update_apply_goods(request, id, {'status': FINISH_GOODS_APPLY_KEY, 'manager_note': note},
+		                          log=get_finish_goods_apply_log())
+		# send_notify_mail
+
+		return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+	except Exception as e:
+		return show_message(request, 'Reject Apply_Goods failed: ' + e.__str__())
+
+
+@method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def do_input_apply_goods(request):
+	return show_message(request, 'This function is to automatically add all purchased objects to the database. '
+	                             'Needs to be completed.')
+
+
 # -------------------------
 # -------------------------
 # -------------------------
@@ -846,6 +931,13 @@ def show_borrow(request):
 	de_acp = brws.filter(status=DESTROY_ACCEPT_KEY)
 	de_rej = brws.filter(status=DESTROY_REJECT_KEY)
 
+	# OnionYST
+	g_aps = packed_find_apply_goods(request, {'account': account}, {})
+	g_ap_toapply = g_aps.filter(status=GOODS_APPLY_KEY)
+	g_ap_apply = g_aps.filter(status=GOODS_APPLY_PEND_KEY)
+	g_ap_applying = g_aps.filter(status=GOODS_APPLYING_KEY)
+	g_ap_applied = g_aps.filter(status=FINISH_GOODS_APPLY_KEY)
+
 	cont['num_goods_used'] = len(brw_inuse)
 	cont['num_goods_borrow'] = len(brwing) + len(brw_pend)
 	cont['num_goods_return'] = len(reting) + len(ret_pend)
@@ -865,6 +957,11 @@ def show_borrow(request):
 	cont['goods_todestroy_list'] = get_context_list(de_apply, get_context_userbrw)
 	cont['goods_destroyed_list'] = get_context_list(de_acp, get_context_userbrw)
 	cont['goods_destroyfail_list'] = get_context_list(de_rej, get_context_userbrw)
+
+	cont['goods_apply_toapply_list'] = get_context_list(g_ap_toapply, get_context_apply_goods)
+	cont['goods_apply_apply_list'] = get_context_list(g_ap_apply, get_context_apply_goods)
+	cont['goods_apply_applying_list'] = get_context_list(g_ap_applying, get_context_apply_goods)
+	cont['goods_apply_applied_list'] = get_context_list(g_ap_applied, get_context_apply_goods)
 
 	cont['user'] = get_context_user(request.user)
 	cont['perm_list'] = request.user.get_all_permissions()
@@ -902,7 +999,11 @@ def show_manage(request):
 
 	de_apply = packed_find_borrow(request, {'status': DESTROY_APPLY_KEY}, {})
 
-	g_apply = packed_find_apply_goods(request, {'status': GOODS_APPLY_KEY}, {})
+	ga_apply = packed_find_apply_goods(request, {'status': GOODS_APPLY_KEY}, {})
+	# OnionYST
+	ga_pend = packed_find_apply_goods(request, {'status': GOODS_APPLY_PEND_KEY}, {})
+	gaing = packed_find_apply_goods(request, {'status': GOODS_APPLYING_KEY}, {})
+	gaed = packed_find_apply_goods(request, {'status': FINISH_GOODS_APPLY_KEY}, {})
 
 	b_req_list = get_context_list(b_req, get_context_borrow)
 	b_pend_list = get_context_list(b_pend, get_context_borrow)
@@ -916,7 +1017,11 @@ def show_manage(request):
 
 	de_apply_list = get_context_list(de_apply, get_context_borrow)
 
-	g_apply_list = get_context_list(g_apply, get_context_apply_goods)
+	ga_apply_list = get_context_list(ga_apply, get_context_apply_goods)
+	# OnionYST
+	ga_pend_list = get_context_list(ga_pend, get_context_apply_goods)
+	gaing_list = get_context_list(gaing, get_context_apply_goods)
+	gaed_list = get_context_list(gaed, get_context_apply_goods)
 
 	return render(request, 'goods_manage.html', {
 		'user': get_context_user(request.user),
@@ -929,8 +1034,12 @@ def show_manage(request):
 		'repairing_requests': rping_list,
 		'repaired_requests': rped_list,
 		'todestroy_requests': de_apply_list,
-		'goods_apply_requests': g_apply_list,
-		'perm_list': request.user.get_all_permissions()
+		'togoods_apply_requests': ga_apply_list,
+		'goods_apply_requests': ga_pend_list,
+		'goods_applying_requests': gaing_list,
+		'goods_applied_requests': gaed_list,
+
+		'perm_list': request.user.get_all_permissions(),
 	})
 
 

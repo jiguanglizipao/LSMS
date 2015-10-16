@@ -24,6 +24,10 @@ class BorrowDoesNotExistError(Exception):
 	pass
 
 
+class ApplyGoodsDoesNotExistError(Exception):
+	pass
+
+
 def create_gtype(name, names):
 	pro_names = ""
 	for n in names:
@@ -89,7 +93,7 @@ def create_single(goods, SN, status, user_name):
 	for sn in SN:
 		if sn:
 			single = Single(sn=sn, goods=goods,
-							status=status, note='', user_name=user_name)
+			                status=status, note='', user_name=user_name)
 			single.save()
 			new_single.append(single)
 	return new_single
@@ -201,6 +205,52 @@ def delete_borrow(borrow_id):
 	return True
 
 
+def find_apply(filt, exclude):
+	correct_keys = ['status', 'account']
+	for key in filt.keys():
+		if not (key in correct_keys):
+			raise KeyError("The key: %s is wrong", key)
+
+	q = Apply_Goods.objects.all()
+	try:
+		if 'status' in filt:
+			q = q.filter(status=filt['status'])
+		if 'account' in filt:
+			q = q.filter(account=filt['account'])
+
+		if 'status' in exclude:
+			q = q.exclude(status=exclude['status'])
+		if 'account' in exclude:
+			q = q.exclude(account=exclude['account'])
+		return q
+	except Exception:
+		raise Exception("Error in find Apply Goods")
+
+
+# OnionYST
+def update_apply_goods(apply_id, update_content):
+	correct_keys = ['status', 'user_note', 'manager_note']
+	for key in update_content:
+		if not (key in correct_keys):
+			raise KeyError("The key: %s is wrong", key)
+	g_apply = None
+	try:
+		g_apply = Apply_Goods.objects.get(id=apply_id)
+	except:
+		raise ApplyGoodsDoesNotExistError("Apply Goods does not exist")
+	try:
+		if 'status' in update_content:
+			g_apply.status = update_content['status']
+		if 'user_note' in update_content:
+			g_apply.user_note = update_content['user_note']
+		if 'manager_note' in update_content:
+			g_apply.manager_note = update_content['manager_note']
+		g_apply.save()
+		return g_apply
+	except:
+		raise Exception("Error in update g_apply")
+
+
 def packed_create_gtype(request, *args, **kwargs):
 	return create_gtype(*args, **kwargs)
 
@@ -234,29 +284,6 @@ def packed_create_apply_goods(request, name, pro_name, pro_value, sns, status, a
 			return goods
 
 
-def packed_find_apply_goods(request, filt, exclude):
-	correct_keys = ['status', 'account']
-	for key in filt.keys():
-		if not (key in correct_keys):
-			raise KeyError("The key: %s is wrong", key)
-
-	q = Apply_Goods.objects.all()
-	try:
-		if 'status' in filt:
-			q = q.filter(status=filt['status'])
-		if 'account' in filt:
-			q = q.filter(account=filt['account'])
-
-		if 'status' in exclude:
-			q = q.exclude(status=exclude['status'])
-		if 'account' in exclude:
-			q = q.exclude(account=exclude['account'])
-		return q
-
-	except Exception:
-		raise Exception("Error in find Apply Goods")
-
-
 def packed_find_goods(request, *args, **kwargs):
 	return find_goods(*args, **kwargs)
 
@@ -272,8 +299,8 @@ def packed_create_single(request, *args, **kwargs):
 	ret = create_single(*args, **kwargs)
 	for sgl in ret:
 		create_log('single', user_id=request.user.id,
-				   target=sgl, action='create good',
-				   description=desc)
+		           target=sgl, action='create good',
+		           description=desc)
 	return ret
 
 
@@ -287,8 +314,8 @@ def packed_update_single(request, *args, **kwargs):
 		desc = args[1]
 	ret = update_single(*args, **kwargs)
 	create_log('single', user_id=request.user.id,
-			   target=ret, action='change good',
-			   description=desc)
+	           target=ret, action='change good',
+	           description=desc)
 	return ret
 
 
@@ -306,8 +333,8 @@ def packed_create_borrow(request, *args, **kwargs):
 		desc = args[3]
 	ret = create_borrow(*args, **kwargs)
 	create_log('borrow', user_id=request.user.id,
-			   target=ret, action='create borrow',
-			   description=desc)
+	           target=ret, action='create borrow',
+	           description=desc)
 	return ret
 
 
@@ -325,10 +352,31 @@ def packed_update_borrow(request, *args, **kwargs):
 		desc = args[1]
 	ret = update_borrow(*args, **kwargs)
 	create_log('borrow', user_id=request.user.id,
-			   target=ret, action='update borrow',
-			   description=desc)
+	           target=ret, action='update borrow',
+	           description=desc)
 	return ret
 
 
 def packed_delete_borrow(request, *args, **kwargs):
 	return delete_borrow(*args, **kwargs)
+
+
+def packed_find_apply_goods(request, *args, **kwargs):
+	return find_apply(*args, **kwargs)
+
+
+def packed_update_apply_goods(request, *args, **kwargs):
+	desc = ''
+	if 'log' in kwargs:
+		desc = kwargs.pop('log')
+	elif len(args) < 2:
+		desc = kwargs['update_content']
+	else:
+		desc = args[1]
+
+	ret = update_apply_goods(*args, **kwargs)
+	# create_log('borrow', user_id=request.user.id,
+	#            target=ret, action='update borrow',
+	#            description=desc)
+
+	return ret
