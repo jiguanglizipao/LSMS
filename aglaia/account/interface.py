@@ -148,6 +148,8 @@ def find_users(filt, exclude):
 			q = q.filter(real_name=filt['real_name'])
 		if 'email' in filt:
 			q = q.filter(user__email=filt['email'])
+		if 'type' in filt:
+			q = q.filter(user__email=filt['type'])
 		if 'department' in filt:
 			depart_list = filt['department']
 			for depart_name in depart_list:
@@ -165,6 +167,8 @@ def find_users(filt, exclude):
 			q = q.exclude(real_name=exclude['real_name'])
 		if 'email' in exclude:
 			q = q.exclude(user__email=exclude['email'])
+		if 'type' in exclude:
+			q = q.exclude(user__email=exclude['type'])
 		if 'department' in exclude:
 			depart_list = exclude['department']
 			for depart_name in depart_list:
@@ -208,7 +212,7 @@ def update_user(account_id, update_content):
 			"id and username isn't allowed to be modified")
 	correct_keys = ['real_name', 'email', 'status',
 					'password', 'department', 'tel',
-					'school_id']
+					'school_id','type']
 	for key in update_content.keys():
 		if not (key in correct_keys):
 			raise KeyError("The key: %s is wrong", key)
@@ -242,6 +246,8 @@ def update_user(account_id, update_content):
 			if (not check_style(school_regex, school_id)):
 				raise FormatInvalidError("Format of school id is invalid")
 			account.school_id = update_content['school_id']
+		if 'type' in update_content:
+			account.type = update_content['type']
 		if 'department' in update_content:
 			account.department.clear()
 			for depart_name in update_content['department']:
