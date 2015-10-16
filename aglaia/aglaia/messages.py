@@ -69,6 +69,7 @@ def get_miss_request_log(*args, **kwargs):
 def get_repair_apply_log(*args, **kwargs):
 	return '提出维修申请'
 
+
 def get_destroy_apply_log(*args, **kwargs):
 	return '提出销毁申请'
 
@@ -79,6 +80,7 @@ def get_accept_repair_log(*args, **kwargs):
 
 def get_reject_repair_log(*args, **kwargs):
 	return '拒绝维修申请'
+
 
 def get_accept_destroy_log(*args, **kwargs):
 	return '同意销毁申请'

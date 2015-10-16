@@ -210,9 +210,7 @@ class Borrow(models.Model):
 	account = models.ForeignKey(Account, default=None)
 	single = models.ForeignKey(Single)
 	status = models.CharField(max_length=5, choices=STATUS_CHOICES)
-	user_note = models.CharField(max_length=1000)
-	manager_note = models.CharField(max_length=1000)
+	note = models.TextField(max_length=40000)
 
 	def __str__(self):
-		return 'name = ' + str(self.single.goods.name) + '------sn=' + str(self.single.sn) + '------user_note=' + str(
-			self.user_note) + '------manager_note=' + str(self.manager_note)
+		return 'name = ' + str(self.single.goods.name) + '------sn=' + str(self.single.sn)

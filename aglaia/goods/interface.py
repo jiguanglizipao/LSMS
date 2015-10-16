@@ -3,6 +3,7 @@ from django.db.utils import *
 from django.db.models import *
 from goods.models import *
 from log.interface import *
+from aglaia.message_center import Message
 
 sep = "!!$$@#@#"
 
@@ -127,7 +128,7 @@ def delete_single(single_id):
 	return True
 
 
-def create_borrow(account, sn, status, user_note='', manager_note=''):
+def create_borrow(account, sn, status, note=Message().tostring()):
 	single = None
 	try:
 		single = Single.objects.get(sn=sn)
@@ -135,8 +136,8 @@ def create_borrow(account, sn, status, user_note='', manager_note=''):
 		raise Exception("Invalid SN number")
 	try:
 		borrow = Borrow(
-			single=single, status=status, user_note=user_note,
-			account=account, manager_note=manager_note)
+			single=single, status=status, note=note,
+			account=account)
 		borrow.save()
 	except:
 		raise Exception("Error in borrow create")
@@ -170,7 +171,7 @@ def find_borrow(filt, exclude):
 
 
 def update_borrow(borrow_id, update_content):
-	correct_keys = ['status', 'user_note', 'manager_note']
+	correct_keys = ['status', 'note']
 	for key in update_content:
 		if not (key in correct_keys):
 			raise KeyError("The key: %s is wrong", key)
@@ -182,10 +183,8 @@ def update_borrow(borrow_id, update_content):
 	try:
 		if 'status' in update_content:
 			borrow.status = update_content['status']
-		if 'user_note' in update_content:
-			borrow.user_note = update_content['user_note']
-		if 'manager_note' in update_content:
-			borrow.manager_note = update_content['manager_note']
+		if 'note' in update_content:
+			borrow.note = update_content['note']
 		borrow.save()
 		return borrow
 	except:
@@ -302,7 +301,7 @@ def packed_create_borrow(request, *args, **kwargs):
 	if 'log' in kwargs:
 		desc = kwargs.pop('log')
 	elif len(args) < 4:
-		desc = kwargs['user_note']
+		desc = kwargs['note']
 	else:
 		desc = args[3]
 	ret = create_borrow(*args, **kwargs)
