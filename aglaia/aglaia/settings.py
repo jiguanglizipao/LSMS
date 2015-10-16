@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'b^jrfnul^@=#2@gu!8jxs9y#xz30!(uhol1f3h+o6uu!@$mr$w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = False
 
@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['*']
 # 	'django_auth_ldap.backend.LDAPBackend',
 # 	'django.contrib.auth.backends.ModelBackend',
 # )
-# AUTH_LDAP_SERVER_URI = 'ldap://192.168.1.207:389'
+# AUTH_LDAP_SERVER_URI = 'ldap://192.168.56.101:389'
 # AUTH_LDAP_BIND_DN = 'CN=admin,DC=lsms,DC=com'
 # AUTH_LDAP_BIND_PASSWORD = "lsms"
 # AUTH_LDAP_USER_SEARCH = LDAPSearch("OU=People,DC=lsms,DC=com", ldap.SCOPE_SUBTREE, "(&(objectClass=person)(uid=%(user)s))")
@@ -80,23 +80,24 @@ WSGI_APPLICATION = 'aglaia.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
+
 DATABASES = {
-    'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aglaia',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-    }
+	'default': {
+		'ENGINE': 'django.db.backends.sqlite3',
+		'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+		# 'engine': 'django.db.backends.mysql',
+		# 'name': 'aglaia',
+		# 'user': 'root',
+		# 'password': 'root',
+		# 'host': '127.0.0.1',
+		# 'port': '3306',
+	}
 }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
-LANGUAGE_CODE = 'zh-cn'
+LANGUAGE_CODE = 'zh-hans'
 
 DEFAULT_CHARSET = 'utf-8'
 
@@ -115,7 +116,7 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
