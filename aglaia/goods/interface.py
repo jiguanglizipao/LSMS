@@ -229,27 +229,27 @@ def find_apply(filt, exclude):
 
 
 # OnionYST
-# def update_apply_goods(apply_id, update_content):
-#     correct_keys = ['status', 'user_note', 'manager_note']
-#     for key in update_content:
-#         if not (key in correct_keys):
-#             raise KeyError("The key: %s is wrong", key)
-#     g_apply = None
-#     try:
-#         g_apply = Apply_Goods.objects.get(id=apply_id)
-#     except:
-#         raise ApplyGoodsDoesNotExistError("Apply Goods does not exist")
-#     try:
-#         if 'status' in update_content:
-#             g_apply.status = update_content['status']
-#         if 'user_note' in update_content:
-#             g_apply.user_note = update_content['user_note']
-#         if 'manager_note' in update_content:
-#             g_apply.manager_note = update_content['manager_note']
-#         g_apply.save()
-#         return g_apply
-#     except:
-#         raise Exception("Error in update g_apply")
+def update_apply_goods(apply_id, update_content):
+    correct_keys = ['status', 'user_note', 'manager_note']
+    for key in update_content:
+        if not (key in correct_keys):
+            raise KeyError("The key: %s is wrong", key)
+    g_apply = None
+    try:
+        g_apply = Apply_Goods.objects.get(id=apply_id)
+    except:
+        raise ApplyGoodsDoesNotExistError("Apply Goods does not exist")
+    try:
+        if 'status' in update_content:
+            g_apply.status = update_content['status']
+        if 'user_note' in update_content:
+            g_apply.user_note = update_content['user_note']
+        if 'manager_note' in update_content:
+            g_apply.manager_note = update_content['manager_note']
+        g_apply.save()
+        return g_apply
+    except:
+        raise Exception("Error in update g_apply")
 
 
 def packed_create_gtype(request, *args, **kwargs):

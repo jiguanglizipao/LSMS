@@ -90,15 +90,6 @@ def get_reject_destroy_log(*args, **kwargs):
     return '拒绝销毁申请'
 
 
-# OnionYST
-# def get_accept_apply_goods_log(*args, **kwargs):
-#     return '同意采购申请'
-#
-#
-# def get_reject_apply_goods_log(*arg, **kwargs):
-#     return '拒绝采购申请'
-
-
 def get_brw_repairing_log(*args, **kwargs):
     return '物品进入维修状态'
 
@@ -117,6 +108,23 @@ def get_ret_repaired_log(*args, **kwargs):
 
 def get_good_repaired_log(*args, **kwargs):
     return '维修完毕'
+
+
+# OnionYST
+def get_accept_apply_goods_log(*args, **kwargs):
+    return '同意采购申请'
+
+
+def get_reject_apply_goods_log(*args, **kwargs):
+    return '拒绝采购申请'
+
+
+def get_apply_goods_applying_log(*args, **kwargs):
+    return '进入采购状态'
+
+
+def get_finish_goods_apply_log(*args, **kwargs):
+    return '采购完成'
 
 
 def get_account_modif_log(*args, **kwargs):

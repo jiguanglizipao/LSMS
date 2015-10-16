@@ -119,9 +119,19 @@
         {% for item in goods_destroyfail_list %}
             {% include "goods_item.html" with status="destroyfail" %}
         {% endfor %}
-        {% for item in goods_apply_list %}
+        {% for item in goods_apply_toapply_list %}
             {% include "goods_item.html" with status="topurchase" %}
         {% endfor %}
+        {% for item in goods_apply_apply_list %}
+            {% include "goods_item.html" with status="purchase" %}
+        {% endfor %}
+        {% for item in goods_apply_applying_list %}
+            {% include "goods_item.html" with status="purchasing" %}
+        {% endfor %}
+        {% for item in goods_apply_applied_list %}
+            {% include "goods_item.html" with status="purchased" %}
+        {% endfor %}
+
         </tbody>
     </table>
 

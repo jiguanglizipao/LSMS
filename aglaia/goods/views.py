@@ -502,105 +502,96 @@ def do_return_repair(request):
 @method_required('POST')
 @permission_required(PERM_NORMAL)
 def do_accept_apply_goods(request):
-    return show_message(request, "accept apply goods")
-    # try:
-    #     id = request.POST['id']
-    #     note = request.POST['note']
-    #
-    #     g_ap = Apply_Goods.objects.get(id=id)
-    #
-    #     if not g_ap.status == GOODS_APPLY_KEY:
-    #         return show_message(request, 'This Request is not in a purchase apply status!')
-    #
-    #     packed_update_borrow(request, id, {'status': GOODS_APPLY_PEND_KEY, 'manager_note': note},
-    #                          log=get_accept_apply_goods_log())
-    ##    send_notify_mail(request, AcceptRepairMail, borrow=brw)
-        #
-        # return HttpResponseRedirect(reverse('goods.views.show_manage'))
-    #
-    # except Exception as e:
-    #     return show_message(request, 'Accept Repair failed: ' + e.__str__())
+    try:
+        id = request.POST['id']
+        note = request.POST['note']
+
+        apgd = Apply_Goods.objects.get(id=id)
+
+        if not apgd.status == GOODS_APPLY_KEY:
+            return show_message(request, 'This Request is not in a apply_goods apply satus!')
+
+        packed_update_apply_goods(request, id, {'status': GOODS_APPLY_PEND_KEY, 'manager_note': note},
+                                  log=get_accept_apply_goods_log())
+        # sent_notify_mail
+
+        return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+    except Exception as e:
+        return show_message(request, 'Accept Apply_Goods failed: ' + e.__str__())
 
 
 @method_required('POST')
 @permission_required(PERM_NORMAL)
 def do_reject_apply_goods(request):
-    return show_message(request, "reject apply goods")
+    try:
+        id = request.POST['id']
+        note = request.POST['note']
+
+        apgd = Apply_Goods.objects.get(id=id)
+
+        if not apgd.status == GOODS_APPLY_KEY:
+            return show_message(request, "This Request is not in a apply_goods apply status!")
+
+        packed_update_apply_goods(request, id, {'status': GOODS_APPLY_REJECT_KEY, 'manager_note': note},
+                                  log=get_reject_apply_goods_log())
+        # send_notify_mail
+
+        return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+    except Exception as e:
+        return show_message(request, 'Reject Apply_Goods failed: ' + e.__str__())
 
 
 @method_required('POST')
 @permission_required(PERM_GOODS_AUTH)
 def do_start_apply_goods(request):
-    # try:
-    #     id = request.POST['id']
-    #     note = request.POST['note']
-    #
-    #     brw = Borrow.objects.get(id=id)
-    #
-    #     if not brw.status == REPAIR_PEND_KEY:
-    #         return show_message(request, 'This Request is not in a repair pend status!')
-    #     if not brw.single.status == BORROWED_KEY:
-    #         return show_message(request, 'The good is not in a borrowed status!')
-    #
-    #     packed_update_borrow(request, id, {'status': REPAIRING_KEY, 'manager_note': note}, log=get_brw_repairing_log())
-    #     packed_update_single(request, brw.single.id, {'status': REPAIRING_KEY}, log=get_good_repairing_log())
-    #
-    #     return HttpResponseRedirect(reverse('goods.views.show_manage'))
-    #
-    # except Exception as e:
-    #     return show_message(request, 'Start Repair failed: ' + e.__str__())
-    return show_message(request, "start apply goods")
+    try:
+        id = request.POST['id']
+        note = request.POST['note']
+
+        apgd = Apply_Goods.objects.get(id=id)
+
+        if not apgd.status == GOODS_APPLY_PEND_KEY:
+            return show_message(request, "This Request is not in a apply_goods apply status!")
+
+        packed_update_apply_goods(request, id, {'status': GOODS_APPLYING_KEY, 'manager_note': note},
+                                  log=get_apply_goods_applying_log())
+        # send_notify_mail
+
+        return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+    except Exception as e:
+        return show_message(request, 'Reject Apply_Goods failed: ' + e.__str__())
 
 
 @method_required('POST')
 @permission_required(PERM_GOODS_AUTH)
 def do_finish_apply_goods(request):
-    # try:
-    #     id = request.POST['id']
-    #     note = request.POST['note']
-    #
-    #     brw = Borrow.objects.get(id=id)
-    #
-    #     if not brw.status == REPAIRING_KEY:
-    #         return show_message(request, 'This Request is not in a repairing status!')
-    #     if not brw.single.status == REPAIRING_KEY:
-    #         return show_message(request, 'The good is not in a repairing status!')
-    #
-    #     packed_update_borrow(request, id, {'status': FINISH_REPAIR_KEY, 'manager_note': note},
-    #                          log=get_finish_repair_log())
-    #     send_notify_mail(request, FinishRepairMail, borrow=brw)
-    #
-    #     return HttpResponseRedirect(reverse('goods.views.show_manage'))
-    #
-    # except Exception as e:
-    #     return show_message(request, 'Finish Repair failed: ' + e.__str__())
-    return show_message(request, "finish apply goods")
+    try:
+        id = request.POST['id']
+        note = request.POST['note']
+
+        apgd = Apply_Goods.objects.get(id=id)
+
+        if not apgd.status == GOODS_APPLYING_KEY:
+            return show_message(request, "This Request is not in a apply_goods apply status!")
+
+        packed_update_apply_goods(request, id, {'status': FINISH_GOODS_APPLY_KEY, 'manager_note': note},
+                                  log=get_finish_goods_apply_log())
+        # send_notify_mail
+
+        return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+    except Exception as e:
+        return show_message(request, 'Reject Apply_Goods failed: ' + e.__str__())
 
 
 @method_required('POST')
 @permission_required(PERM_GOODS_AUTH)
 def do_input_apply_goods(request):
-    # try:
-    #     id = request.POST['id']
-    #     note = request.POST['note']
-    #
-    #     brw = Borrow.objects.get(id=id)
-    #
-    #     if not brw.status == FINISH_REPAIR_KEY:
-    #         return show_message(request, 'This Request is not in a finish repair status!')
-    #     if not brw.single.status == REPAIRING_KEY:
-    #         return show_message(request, 'The good is not in a repairing status!')
-    #
-    #     packed_update_borrow(request, id, {'status': BORROWED_KEY, 'manager_note': note},
-    #                          log=get_ret_repaired_log())
-    #     packed_update_single(request, brw.single.id, {'status': BORROWED_KEY},
-    #                          log=get_good_repaired_log())
-    #
-    #     return HttpResponseRedirect(reverse('goods.views.show_manage'))
-    #
-    # except Exception as e:
-    #     return show_message(request, 'Return Repair failed: ' + e.__str__())
-    return show_message(request, "return_apply_goods")
+    return show_message(request, 'This function is to automatically add all purchased objects to the database. '
+                                 'Needs to be completed.')
 
 
 # -------------------------
@@ -886,7 +877,10 @@ def show_borrow(request):
 
     # OnionYST
     g_aps = packed_find_apply_goods(request, {'account': account}, {})
-    g_ap_apply = g_aps.filter(status=GOODS_APPLY_KEY)
+    g_ap_toapply = g_aps.filter(status=GOODS_APPLY_KEY)
+    g_ap_apply = g_aps.filter(status=GOODS_APPLY_PEND_KEY)
+    g_ap_applying = g_aps.filter(status=GOODS_APPLYING_KEY)
+    g_ap_applied = g_aps.filter(status=FINISH_GOODS_APPLY_KEY)
 
     cont['num_goods_used'] = len(brw_inuse)
     cont['num_goods_borrow'] = len(brwing) + len(brw_pend)
@@ -908,7 +902,10 @@ def show_borrow(request):
     cont['goods_destroyed_list'] = get_context_list(de_acp, get_context_userbrw)
     cont['goods_destroyfail_list'] = get_context_list(de_rej, get_context_userbrw)
 
-    cont['goods_apply_list'] = get_context_list(g_ap_apply, get_context_apply_goods)
+    cont['goods_apply_toapply_list'] = get_context_list(g_ap_toapply, get_context_apply_goods)
+    cont['goods_apply_apply_list'] = get_context_list(g_ap_apply, get_context_apply_goods)
+    cont['goods_apply_applying_list'] = get_context_list(g_ap_applying, get_context_apply_goods)
+    cont['goods_apply_applied_list'] = get_context_list(g_ap_applied, get_context_apply_goods)
 
     cont['user'] = get_context_user(request.user)
 
@@ -946,9 +943,9 @@ def show_manage(request):
 
     ga_apply = packed_find_apply_goods(request, {'status': GOODS_APPLY_KEY}, {})
 # OnionYST
-    # ga_pend = packed_find_apply_goods(request, {'status': GOODS_APPLY_PEND_KEY}, {})
-    # gaing = packed_find_apply_goods(request, {'status': GOODS_APPLYING_KEY}, {})
-    # gaed = packed_find_apply_goods(request, {'status': FINISH_GOODS_APPLY_KEY}, {})
+    ga_pend = packed_find_apply_goods(request, {'status': GOODS_APPLY_PEND_KEY}, {})
+    gaing = packed_find_apply_goods(request, {'status': GOODS_APPLYING_KEY}, {})
+    gaed = packed_find_apply_goods(request, {'status': FINISH_GOODS_APPLY_KEY}, {})
 
 
     b_req_list = get_context_list(b_req, get_context_borrow)
@@ -965,9 +962,9 @@ def show_manage(request):
 
     ga_apply_list = get_context_list(ga_apply, get_context_apply_goods)
 # OnionYST
-    # ga_pend_list = get_context_list(ga_pend, get_context_apply_goods)
-    # gaing_list = get_context_list(gaing, get_context_apply_goods)
-    # gaed_list = get_context_list(gaed, get_context_apply_goods)
+    ga_pend_list = get_context_list(ga_pend, get_context_apply_goods)
+    gaing_list = get_context_list(gaing, get_context_apply_goods)
+    gaed_list = get_context_list(gaed, get_context_apply_goods)
 
     return render(request, 'goods_manage.html', {
         'user': get_context_user(request.user),
@@ -980,10 +977,11 @@ def show_manage(request):
         'repairing_requests': rping_list,
         'repaired_requests': rped_list,
         'todestroy_requests': de_apply_list,
+
         'togoods_apply_requests': ga_apply_list,
-        # 'goods_apply_requests': ga_pend_list,
-        # 'goods_applying_requests': gaing_list,
-        # 'goods_applied_requests': gaed_list,
+        'goods_apply_requests': ga_pend_list,
+        'goods_applying_requests': gaing_list,
+        'goods_applied_requests': gaed_list,
     })
 
 

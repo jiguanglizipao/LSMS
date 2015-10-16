@@ -32,7 +32,13 @@
         {% elif status == "destroyed" %}
             <i class="black trash icon"></i>已销毁
         {% elif status == "topurchase" %}
-            <i class="orange wrench icon"></i>采购/审核中
+            <i class="orange windows icon"></i>采购/审核中
+        {% elif status == "purchase" %}
+            <i class="green windows icon"></i>采购/已通过
+        {% elif status == "purchasing" %}
+            <i class="windows icon"></i>采购中
+        {% elif status == "purchased" %}
+            <i class="green windows icon"></i>采购/已完成
         {% endif %}
     </td>
     <td>
