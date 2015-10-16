@@ -14,7 +14,6 @@
     <table class="ui table segment" style="font-size: 0.75em">
       <thead>
         <tr>
-          <th>认证</th>
           <th>用户名</th>
           <th>真实姓名</th>
           <th>学工号</th>
@@ -25,20 +24,26 @@
       </thead>
       {% for account in accounts %}
       <tr>
+        <!--<td>-->
+          <!--{% if account.status == 'unauth' %}-->
+            <!--<i class="circular inverted red question mark icon"></i>-->
+          <!--{% elif account.status == 'auth' %}-->
+            <!--<i class="circular inverted teal checkmark icon"></i>-->
+          <!--{% else %}-->
+            <!--<i class="circular inverted black remove icon"></i>-->
+          <!--{% endif %}-->
+        <!--</td>-->
         <td>
-          {% if account.status == 'unauth' %}
-            <i class="circular inverted red question mark icon"></i>
-          {% elif account.status == 'auth' %}
-            <i class="circular inverted teal checkmark icon"></i>
-          {% else %}
-            <i class="circular inverted black remove icon"></i>
-          {% endif %}
-        </td>
-        <td>
-          {% if account.type == 'manager' %}
+          {% if account.type == 'normal' %}
+            <div class="ui label">普通用户</div>&nbsp;
+          {% elif account.type == 'manager' %}
             <div class="ui label">管理员</div>&nbsp;
           {% elif account.type == 'supervisor' %}
             <div class="ui label">超级管理员</div>&nbsp;
+          {% elif account.type == 'none' %}
+            <div class="ui label">无权限</div>&nbsp;
+          {% else%}
+            <div class="ui label">特殊管理员</div>&nbsp;
           {% endif %}
           {{ account.username }}
         </td>
@@ -62,31 +67,22 @@
             <div class="ui floating dropdown icon button">
               <i class="dropdown icon"></i>
               <div class="menu">
+                {% if 'account.modf_perm' in perm_list %}
                 <div class="item set-perm" data-user="{{ account.username }}">
                   <i class="unlock icon"></i>
                   修改权限
                 </div>
-                {% if account.status == "unauth" %}
-                  <div class="item approve-auth" data-user="{{ account.username }}">
-                    <i class="checkmark icon"></i>
-                    通过认证
+                  <div class="item set-normal" data-user="{{ account.username }}">
+                    <i class="cloud icon"></i>
+                    分配普通用户权限
                   </div>
-                {% endif %}
-                {% if account.status != "deleted" %}
-                  <div class="item del-user" data-user="{{ account.username }}">
-                    <i class="close icon"></i>
-                    删除用户
-                  </div>
-                {% endif %}
-                {% if account.type == "manager" %}
-                  <div class="item clear-mgr" data-user="{{ account.username }}">
-                    <i class="remove icon"></i>
-                    取消管理员
-                  </div>
-                {% elif account.type == "normal" %}
                   <div class="item set-mgr" data-user="{{ account.username }}">
-                    <i class="remove icon"></i>
-                    设为管理员
+                    <i class="cloud icon"></i>
+                    分配管理员权限
+                  </div>
+                  <div class="item set-super" data-user="{{ account.username }}">
+                    <i class="cloud icon"></i>
+                    分配超级管理员权限
                   </div>
                 {% endif %}
                 <a class="item" href="{% url "log.views.show_log" %}?id={{ account.id }}&type=user&is_actor=true">
@@ -160,7 +156,7 @@
     <div class="two fluid ui buttons">
       <div class="ui positive labeled icon button">
         <i class="checkmark icon"></i>
-        <span id="confirm-action"></span>
+        确认
       </div>
       <div class="ui negative right labeled icon button">
         <i class="remove icon"></i>
@@ -216,13 +212,19 @@
 
     $('.set-mgr').click(function(){
         var target = $(this).attr('data-user');
-        confirm('wrench', '将 <b>'+target+'</b> 设为管理员', 'set_mgr', target);
+        confirm('wrench', '为 <b>'+target+'</b> 分配管理员权限', 'set_mgr', target);
     });
 
-    $('.del-user').click(function(){
+    $('.set-normal').click(function(){
         var target = $(this).attr('data-user');
-        confirm('remove', '删除 <b>'+target+'</b> ', 'del_user', target);
+        confirm('wrench', '为 <b>'+target+'</b> 分配普通用户权限', 'set_normal', target);
     });
+
+    $('.set-super').click(function(){
+        var target = $(this).attr('data-user');
+        confirm('wrench', '为 <b>'+target+'</b> 分配超级管理员权限', 'set_super', target);
+    });
+
 
     $('.clear-mgr').click(function(){
         var target = $(this).attr('data-user');
@@ -237,8 +239,8 @@
     $('#confirm .positive.button').click(function() {
       var operation_url = {
         set_mgr: '{% url "account.views.do_set_manager" %}',
-        clear_mgr: '{% url "account.views.do_clear_manager" %}',
-        del_user: '{% url "account.views.do_delete_account" %}',
+        set_normal: '{% url "account.views.do_set_normal" %}',
+        set_super: '{% url "account.views.do_set_super" %}',
         approve_auth: '{% url "account.views.do_approve_account" %}'
       };
 
@@ -308,6 +310,7 @@
         },
       }).always(function(){
         $('#perm-dlg').modal('hide');
+        location.reload(true);
       });
     });
   });

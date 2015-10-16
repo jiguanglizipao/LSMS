@@ -49,7 +49,8 @@
             <div class="field">
               <label>类型</label>
               <div class="ui left labeled icon input">
-                <input type="text" value="{% if user.type == "normal" %}普通用户{% elif user.type == "manager" %}管理员{% else %}超级管理员{% endif %}" readonly="readonly">
+                <!--<input type="text" value="{% if user.type == "normal" %}普通用户{% elif user.type == "manager" %}管理员{% else %}超级管理员{% endif %}" readonly="readonly">-->
+                <input type="text" value="{% if user.type == "normal" %}普通用户{% elif user.type == "manager" %}管理员{% elif user.type == "supervisor" %}超级管理员{% elif user.type == "none" %}无权限{% else %}特殊管理员{% endif %}" readonly="readonly">
                 <i class="lock icon tip" data-content="不可更改"></i>
               </div>
             </div>

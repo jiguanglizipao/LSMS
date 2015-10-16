@@ -19,20 +19,24 @@ from log.interface import *
 
 normal_perms = [NORMAL]
 
-manager_perms = [GOODS_AUTH,
+manager_perms = [NORMAL,
+				 GOODS_AUTH,
                  USER_AUTH,
                  VIEW_ALL,
                  MODF_NORMAL,
                  MODF_KEY,
                  COMPUT_AUTH]
 
-super_perms = [DEL_USER,
+super_perms = [NORMAL,
+			   GOODS_AUTH,
+			   USER_AUTH,
+			   VIEW_ALL,
+			   MODF_NORMAL,
+			   MODF_KEY,
+		       COMPUT_AUTH,
+			   DEL_USER,
                MODF_PERM,
                MODF_GROUP]
-perms_map = {'normal': normal_perms,
-             'manager': manager_perms,
-             'supervisor': super_perms}
-
 
 # ===============================================
 # ===============================================
@@ -53,72 +57,74 @@ def rm_perm(user, perm):
 	user.user_permissions.remove(perm)
 	return
 
-
-def add_group(user, groupname):
-	g = Group.objects.get(name=groupname)
-	user.groups.add(g)
-	perms = perms_map[groupname]
-	for pcode in perms:
-		user.user_permissions.add(Permission.objects.get(codename=pcode))
-	user.save()
-	return
-
-
-def rm_group(user, groupname):
-	g = Group.objects.get(name=groupname)
-	user.groups.remove(g)
-	perms = perms_map[groupname]
-	for pcode in perms:
-		user.user_permissions.remove(Permission.objects.get(codename=pcode))
-	user.save()
-	return
-
-
-def clear_groups(user):
-	user.groups.clear()
-	user.user_permissions.clear();
-	return
-
-
 def get_ordered_perms():
 	p = Permission.objects.filter(content_type__model='account')
 	p = p.exclude(name__endswith='account').order_by('codename')
 	return p
 
+def check_type(account):
+    type_super = True     #判断是否为超级用户
+    for perm in super_perms:
+        if not account.user.has_perm('account.'+perm.lower()):
+            type_super = False
+    if type_super:
+        account.type = "supervisor"
+        account.save()
+        return
+    type_manager = True   #判断是否为管理员
+    for perm in manager_perms:
+        if not account.user.has_perm('account.'+perm.lower()):
+            type_manager = False
+    if type_manager:
+        account.type = "manager"
+        account.save()
+        return
+    type_normal = True    #判断是否为普通用户
+    for perm in normal_perms:
+        if not account.user.has_perm('account.'+perm.lower()):
+            type_normal = False
+    if type_normal:
+        account.type = "normal"
+        account.save()
+        return
+    type_none = True    #判断是否为无权限用户
+    perms = get_ordered_perms()
+    for perm in perms:
+        if account.user.has_perm('account.'+perm.codename):
+            type_none = False
+    if type_none:
+        account.type = "none"
+        account.save()
+        return
+    account.type = "special" #剩下的为特殊用户
+    account.save()
+    return
 
 def get_context_user(user):
-	c_user = {}
-	account = Account.objects.get(user=user)
-	c_user['id'] = user.id
-	c_user['username'] = user.username
-	c_user['realname'] = account.real_name
-	c_user['number'] = account.school_id
-	try:
-		user.groups.get(name='supervisor')
-		c_user['type'] = 'supervisor'
-	except Exception:
-		try:
-			user.groups.get(name='manager')
-			c_user['type'] = 'manager'
-		except Exception:
-			c_user['type'] = 'normal'
-	c_user['email'] = user.email
-	c_user['email_verified'] = account.email_auth
-	c_user['tel'] = account.tel
-	depts = []
-	for d in account.department.all():
-		depts.append(d.depart_name)
-	c_user['depts'] = depts
-	perms = []
-	allperm = get_ordered_perms()
-	for p in allperm:
-		if (user.has_perm(perm_checkname(p))):
-			perms.append('1')
-		else:
-			perms.append('0')
-	c_user['permissions'] = perms
-	c_user['status'] = account.get_status_display()
-	return c_user
+    c_user = {}
+    account = Account.objects.get(user=user)
+    c_user['id'] = user.id
+    c_user['type'] = account.type
+    c_user['username'] = user.username
+    c_user['realname'] = account.real_name
+    c_user['number'] = account.school_id
+    c_user['email'] = user.email
+    c_user['email_verified'] = account.email_auth
+    c_user['tel'] = account.tel
+    depts = []
+    for d in account.department.all():
+        depts.append(d.depart_name)
+    c_user['depts'] = depts
+    perms = []
+    allperm = get_ordered_perms()
+    for p in allperm:
+        if (user.has_perm(perm_checkname(p))):
+            perms.append('1')
+        else:
+            perms.append('0')
+    c_user['permissions'] = perms
+    c_user['status'] = account.get_status_display()
+    return c_user
 
 
 def set_email_hash(account):
@@ -369,8 +375,6 @@ def do_approve_account(request):
 
 		if not account or not account.user.is_active or account.status == status_destroy_key:
 			return HttpResponse('denied')
-
-		add_group(account.user, 'normal')
 		packed_update_user(request, account.id, {'status': status_authed_key}, log=get_approve_account_log())
 
 		return HttpResponse('ok')
@@ -385,7 +389,6 @@ def do_disapprove_account(request):
 		account = Account.objects.get(user__username=request.POST['username'])
 		if not account or not account.user.is_active or account.status == status_destroy_key:
 			return HttpResponse('denied')
-		clear_groups(account.user)
 		packed_update_user(request, account.id, {'status': status_unauth_key}, log=get_disapprove_account_log())
 		return HttpResponse('ok')
 	except:
@@ -399,8 +402,15 @@ def do_set_manager(request):
 		account = Account.objects.get(user__username=request.POST['username'])
 		if not account or not account.user.is_active or account.status == status_destroy_key:
 			return HttpResponse('denied')
-
-		add_group(account.user, 'manager')
+		account.user.user_permissions.clear()
+		perm = get_ordered_perms();
+		for i in range(0, len(perm)):
+			for j in range(0,len(manager_perms)):
+				if perm[i].codename == manager_perms[j].lower():
+					add_perm(account.user,perm[i])
+					break
+		account.user.save()
+		check_type(account)
 
 		create_log('user', user_id=request.user.id,
 		           target=account, action='set manager',
@@ -410,6 +420,55 @@ def do_set_manager(request):
 	except:
 		return HttpResponse('denied')
 
+@method_required('POST')
+@permission_required(PERM_MODF_GROUP, http_denied)
+def do_set_normal(request):
+	try:
+		account = Account.objects.get(user__username=request.POST['username'])
+		if not account or not account.user.is_active or account.status == status_destroy_key:
+			return HttpResponse('denied')
+		account.user.user_permissions.clear()
+		perm = get_ordered_perms();
+		for i in range(0, len(perm)):
+			for j in range(0,len(normal_perms)):
+				if perm[i].codename == normal_perms[j].lower():
+					add_perm(account.user,perm[i])
+					break
+		account.user.save()
+		check_type(account)
+
+		create_log('user', user_id=request.user.id,
+		           target=account, action='set normal',
+		           description=get_set_normal_log())
+
+		return HttpResponse('ok')
+	except:
+		return HttpResponse('denied')
+    
+@method_required('POST')
+@permission_required(PERM_MODF_GROUP, http_denied)
+def do_set_super(request):
+	try:
+		account = Account.objects.get(user__username=request.POST['username'])
+		if not account or not account.user.is_active or account.status == status_destroy_key:
+			return HttpResponse('denied')
+		account.user.user_permissions.clear()
+		perm = get_ordered_perms();
+		for i in range(0, len(perm)):
+			for j in range(0,len(super_perms)):
+				if perm[i].codename == super_perms[j].lower():
+					add_perm(account.user,perm[i])
+					break
+		account.user.save()
+		check_type(account)
+
+		create_log('user', user_id=request.user.id,
+		           target=account, action='set super',
+		           description=get_set_super_log())
+
+		return HttpResponse('ok')
+	except:
+		return HttpResponse('denied')
 
 @method_required('POST')
 @permission_required(PERM_MODF_GROUP, http_denied)
@@ -418,8 +477,6 @@ def do_clear_manager(request):
 		account = Account.objects.get(user__username=request.POST['username'])
 		if not account or not account.user.is_active or account.status == status_destroy_key:
 			return HttpResponse('denied')
-
-		rm_group(account.user, 'manager')
 
 		create_log('user', user_id=request.user.id,
 		           target=account, action='remove manager',
@@ -493,6 +550,7 @@ def do_set_permissions(request):
 			else:
 				rm_perm(user, perms[i])
 		user.save()
+		check_type(account)
 		create_log('user', user_id=request.user.id,
 		           target=account, action='set permissions',
 		           description=get_set_perm_log(perms, perm_set))
@@ -540,7 +598,9 @@ def show_signin(request):
 @login_required
 def account_home(request):
 	# TODO
-	return HttpResponseRedirect(reverse('goods.views.show_borrow'))
+    account = Account.objects.get(user__username=request.user.username)
+    check_type(account)
+    return HttpResponseRedirect(reverse('goods.views.show_borrow'))
 
 
 @method_required('GET')

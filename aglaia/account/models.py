@@ -72,6 +72,7 @@ class Account(models.Model):
 	tel = models.CharField(max_length=30, blank=True)
 	status = models.CharField(max_length=3, choices=status_CHOICES)
 	user = models.OneToOneField(User)
+	type = models.CharField(max_length=50, default = 'none')
 	school_id = models.CharField(max_length=30, default='1234567890')
 	email_auth = models.BooleanField(blank=True, default=False)
 	email_hash = models.CharField(max_length=30, blank=True)

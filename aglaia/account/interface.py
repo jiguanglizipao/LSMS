@@ -58,6 +58,7 @@ def create_user(user_list):
 	tel = ''
 	school_id = ''
 	user = None
+	type = 'none'
 
 	for account in user_list:
 		try:
@@ -73,6 +74,7 @@ def create_user(user_list):
 			if (not check_style(tel_regex, tel)):
 				raise FormatInvalidError(
 					"Format of telephone number is invalid")
+
 
 			school_id = account['school_id']
 			if (not check_style(school_regex, school_id)):
@@ -110,7 +112,7 @@ def create_user(user_list):
 			status = account['status']
 			account = Account(
 				real_name=real_name, tel=tel,
-				status=status, user=user, school_id=school_id)
+				status=status, user=user,type=type, school_id=school_id)
 			account.save()
 			for depart in depart_list:
 				account.department.add(depart)

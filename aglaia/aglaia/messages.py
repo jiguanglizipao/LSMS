@@ -186,11 +186,17 @@ def get_comp_rej_modf_log(*args, **kwargs):
 
 
 def get_set_manager_log(*args, **kwargs):
-    return '设置为管理员，并给予相关权限'
+    return '给予管理员相关权限'
 
 
 def get_rm_manager_log(*args, **kwargs):
     return '取消管理员，并取消相关权限'
+
+def get_set_normal_log(*args, **kwargs):
+    return '给予普通用户相关权限'
+
+def get_set_super_log(*args, **kwargs):
+    return '给予超级管理员相关权限'
 
 
 def get_wrong_goods_status_log(*args, **kwargs):
