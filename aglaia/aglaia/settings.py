@@ -83,14 +83,14 @@ WSGI_APPLICATION = 'aglaia.wsgi.application'
 
 DATABASES = {
 	'default': {
-		'ENGINE': 'django.db.backends.sqlite3',
-		'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-		# 'engine': 'django.db.backends.mysql',
-		# 'name': 'aglaia',
-		# 'user': 'root',
-		# 'password': 'root',
-		# 'host': '127.0.0.1',
-		# 'port': '3306',
+		# 'ENGINE': 'django.db.backends.sqlite3',
+		# 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+		'engine': 'django.db.backends.mysql',
+		'name': 'aglaia',
+		'user': 'root',
+		'password': 'root',
+		'host': '127.0.0.1',
+		'port': '3306',
 	}
 }
 
