@@ -510,27 +510,27 @@
 
             });
 
-            $('.resource-item .extreme-flag.button').click(function () {
-                var item = $(this).parent().parent();
+            <!--$('.resource-item .agree-button.button').click(function () {-->
+                <!--var item = $(this).parent().parent();-->
 
-                if ($(this).hasClass('disabled'))
-                    return;
+                <!--if ($(this).hasClass('disabled'))-->
+                    <!--return;-->
 
-                $(this).addClass('disabled');
+                <!--$(this).addClass('disabled');-->
 
-                $.ajax({
-                    url: '{% url "computing.views.do_set_flag" %}',
-                    type: 'POST',
-                    dataType: 'text',
-                    data: {
-                        id: item.attr('data-request-id'),
-                        flag: $(this).attr('data-destiny'),
-                    },
-                })
-                        .always(function () {
-                            location.reload(true);
-                        });
-            });
+                <!--$.ajax({-->
+                    <!--url: '{% url "computing.views.do_set_flag" %}',-->
+                    <!--type: 'POST',-->
+                    <!--dataType: 'text',-->
+                    <!--data: {-->
+                        <!--id: item.attr('data-request-id'),-->
+                        <!--flag: $(this).attr('data-destiny'),-->
+                    <!--},-->
+                <!--})-->
+                        <!--.always(function () {-->
+                            <!--location.reload(true);-->
+                        <!--});-->
+            <!--});-->
 
 
             $('.res-borrow .package input').change(function () {

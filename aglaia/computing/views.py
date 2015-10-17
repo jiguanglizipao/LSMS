@@ -340,7 +340,10 @@ def do_set_flag(request):
 		comp = Computing.objects.get(id=id)
 		if not comp.account.user == request.user:
 			return show_message(request, 'This resource is not borrowed by you!')
-		packed_update_computing(request, id, {'flag': flag})
+		if request.POST['flag'] == 'true':
+			packed_update_computing(request, id, {'flag': flag,'data_content':request.POST['content']})
+		else:
+			packed_update_computing(request, id, {'flag': flag})
 		comp = Computing.objects.get(id=id)
 		return HttpResponseRedirect(reverse('goods.views.show_borrow'))
 	except Exception as e:

@@ -772,12 +772,16 @@
 
     <div class="ui divider"></div>
     <h2 class="ui header">创建套餐</h2>
-    <form action="{% url "computing.views.do_create_package" %}" method="post" class="ui form segment">
+    <form action="{% url "computing.views.do_create_package" %}" method="post" class="ui form segment" id = "create-package">
+          <div class="ui error message">
+              <div class="header">错误</div>
+              <p></p>
+          </div>
         <div class="field">
             <label>套餐名字</label>
 
             <div class="ui input">
-                <input type="text" name="name">
+                <input type="text" name="name" id="name">
             </div>
         </div>
         <div class="two fields">
@@ -787,7 +791,7 @@
                 <div class="ui selection dropdown fluid">
                     <input type="hidden" name="type">
 
-                    <div class="default text">实体机</div>
+                    <div class="default text">虚拟机</div>
                     <i class="dropdown icon"></i>
 
                     <div class="menu">
@@ -800,7 +804,7 @@
                 <label>操作系统</label>
 
                 <div class="ui input">
-                    <input type="text" name="os">
+                    <input type="text" name="os" id="os">
                 </div>
             </div>
         </div>
@@ -809,14 +813,14 @@
                 <label>CPU</label>
 
                 <div class="ui input">
-                    <input type="text" name="cpu">
+                    <input type="text" name="cpu" id="cpu">
                 </div>
             </div>
             <div class="field">
                 <label>内存/GB</label>
 
                 <div class="ui input">
-                    <input type="text" name="memory">
+                    <input type="text" name="memory" id="memory">
                 </div>
             </div>
             <div class="field">
@@ -838,11 +842,11 @@
                 <label>硬盘大小/GB</label>
 
                 <div class="ui input">
-                    <input type="text" name="disk">
+                    <input type="text" name="disk" id="disk">
                 </div>
             </div>
         </div>
-        <button type="submit" class="ui green button">创建新套餐</button>
+        <button type="button" class="ui green button" id="create-button" >创建新套餐</button>
     </form>
 
 
@@ -858,6 +862,73 @@
             $('.reject-button').popup({
                 on: 'click'
             });
+            var error_info = "";
+            $('#create-button').click(function(){
+                if($("#name").val() == "")
+                {
+                  $('#create-package').addClass('error');
+                  $('.error.message').children('p').text('套餐名称不可为空！');
+                  error_info = "name";
+                  return;
+                }
+                {% for pkg in package_list %}
+                    if($("#name").val() == "{{pkg.name}}")
+                    {
+                      $('#create-package').addClass('error');
+                      $('.error.message').children('p').text('创建套餐名称与已有套餐名相同！');
+                      error_info = "name";
+                      return;
+                    }
+                {% endfor%}
+                if($("#cpu").val() == "")
+                {
+                  $('#create-package').addClass('error');
+                  $('.error.message').children('p').text('CPU不可为空！');
+                  error_info = "name";
+                  return;
+                }
+                if($("#os").val() == "")
+                {
+                  $('#create-package').addClass('error');
+                  $('.error.message').children('p').text('操作系统不可为空！');
+                  error_info = "name";
+                  return;
+                }
+                var regexp=/^[1-9][0-9]*$/;
+                if(!regexp.test($("#memory").val())){
+                  $('#create-package').addClass('error');
+                  $('.error.message').children('p').text('内存大小必须为合法数字！');
+                  error_info = "memory";
+                  return;
+                }
+                if(!regexp.test($("#disk").val())){
+                  $('#create-package').addClass('error');
+                  $('.error.message').children('p').text('硬盘大小必须为合法数字！');
+                  error_info = "disk";
+                  return;
+                }
+                $('#create-package').trigger('submit');
+            });
+              $('#name').click(function(){
+                if(error_info == "name")
+                    $('#create-package').removeClass('error');
+              });
+              $('#name').click(function(){
+                if(error_info == "cpu")
+                    $('#create-package').removeClass('error');
+              });
+              $('#name').click(function(){
+                if(error_info == "os")
+                    $('#create-package').removeClass('error');
+              });
+              $('#memory').click(function(){
+                if(error_info == "memory")
+                    $('#create-package').removeClass('error');
+              });
+              $('#disk').click(function(){
+                if(error_info == "disk")
+                    $('#create-package').removeClass('error');
+              });
 
             $('.final-ultimate-approve-unique-button').click(function () {
                 $.ajax({
