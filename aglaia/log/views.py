@@ -92,3 +92,9 @@ def show_log(request):
 		})
 	except Exception as e:
 		return show_message(request, 'Show log Error: ' + e.__str__())
+
+
+def show_message_center(request):
+	return render(request, 'message_center.html', {
+		'user': get_context_user(request.user),
+		'perm_list': request.user.get_all_permissions()})
