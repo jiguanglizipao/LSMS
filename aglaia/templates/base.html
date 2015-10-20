@@ -166,17 +166,6 @@
                     <button type="button" class="ui disabled button" id="base-email-btn">更改电子邮件</button>
                 </form>
             </div>
-            <div class="title">
-                <i class="dropdown icon"></i>
-                消息中心
-            </div>
-            <div class="content">
-                <div>
-                    {% for message in user.messages %}
-                        <p>{% if message.speaker == 'me' %}<span style="color:Blue">{% else %}<span style="color:Red">{% endif %}{{ message.speaker }}</span>:{{ message.words }}</p>
-                    {% endfor %}
-                </div>
-            </div>
         </div>
     </div>
 </div>

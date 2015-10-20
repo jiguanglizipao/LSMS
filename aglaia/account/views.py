@@ -100,22 +100,6 @@ def check_type(account):
     account.save()
     return
 
-def get_context_messages(messages):
-    msgs = str(messages).split('&')
-    c_msg = []
-    #c_msg.append({'speaker':'System','words':'test'})
-    for msg in msgs:
-        if msg == '':
-            break
-        lmsg = msg.split(':')
-        if len(lmsg) < 1:
-            break
-        elif len(lmsg) == 1:
-            c_msg.append({'speaker':'System','words':lmsg[0]})
-        else:
-            c_msg.append({'speaker':lmsg[0],'words':lmsg[1]})
-    return c_msg
-
 def get_context_user(user):
     c_user = {}
     account = Account.objects.get(user=user)
@@ -127,7 +111,6 @@ def get_context_user(user):
     c_user['email'] = user.email
     c_user['email_verified'] = account.email_auth
     c_user['tel'] = account.tel
-    c_user['messages'] = get_context_messages(account.messages)
     depts = []
     for d in account.department.all():
         depts.append(d.depart_name)
