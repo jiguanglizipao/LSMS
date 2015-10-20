@@ -99,7 +99,7 @@
         <tbody>
         {% for goods in goods_list %}
             {% if goods.status == "available" %}
-                <tr>
+                <tr class="positive">
                     <td class="goods-sn">{{ goods.sn }}</td>
                     <td class="goods-name">{{ goods.name }}</td>
                     <td class="good-status" data-value='{{ goods.status }}'>在库</td>
@@ -450,7 +450,7 @@
                 if($(this).attr('data-value')=='false'){
                     if($(this).parent().parent().children('.good-status').attr('data-value')=='borrowed'){
                         $(this).attr('data-value','true');
-                        $(this).parent().parent().css("background-color","#AFEEEE");
+                        $(this).parent().parent().css("background-color","#C8C8E3");
                     }
                 }
                 else{
