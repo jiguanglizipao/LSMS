@@ -34,7 +34,9 @@ ALLOWED_HOSTS = ['*']
 # AUTH_LDAP_SERVER_URI = 'ldap://192.168.56.101:389'
 # AUTH_LDAP_BIND_DN = 'CN=admin,DC=lsms,DC=com'
 # AUTH_LDAP_BIND_PASSWORD = "lsms"
-# AUTH_LDAP_USER_SEARCH = LDAPSearch("OU=People,DC=lsms,DC=com", ldap.SCOPE_SUBTREE, "(&(objectClass=person)(uid=%(user)s))")
+# AUTH_LDAP_USER_SEARCH = LDAPSearch(
+#     "OU=People,DC=lsms,DC=com", ldap.SCOPE_SUBTREE,
+#     "(&(objectClass=person)(uid=%(user)s))")
 # AUTH_LDAP_USER_ATTR_MAP = {
 #     "username": "uid",
 #     "password": "userPassword",
@@ -82,10 +84,10 @@ DATABASES = {
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'aglaia',
-                'USER': 'root',
-                'PASSWORD': 'root',
-                'HOST': '127.0.0.1',
-                'PORT': '3306',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 # Internationalization
@@ -108,7 +110,7 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
