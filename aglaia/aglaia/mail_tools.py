@@ -1,4 +1,6 @@
-import json, datetime, time
+import json
+import datetime
+import time
 
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, render_to_response
@@ -21,9 +23,12 @@ import _thread
 
 
 def simple_manager_notify_mail(request, **kwargs):
-    send_managers_mail(True, 'User Request Submitted',
-                       'User ' + request.user.username +
-                       ' submitted a request on aglaia. Please handle it as soon as possible.')
+    send_managers_mail(
+        True,
+        'User Request Submitted',
+        'User ' +
+        request.user.username +
+        ' submitted a request on aglaia. Please handle it as soon as possible.')
 
 
 def simple_user_notify_mail(request, **kwargs):
@@ -37,17 +42,22 @@ def simple_user_notify_mail(request, **kwargs):
     else:
         raise Exception('No user found when sending mail to user!')
     if account.email_auth:
-        _thread.start_new_thread(send_user_mail,
-                                 (account, 'New changes on your request',
-                                  'Manager ' + request.user.username +
-                                  ' changed the status of your request on aglaia. Please check it.'))
+        _thread.start_new_thread(
+            send_user_mail,
+            (account,
+             'New changes on your request',
+             'Manager ' +
+             request.user.username +
+             ' changed the status of your request on aglaia. Please check it.'))
 
 
 def gen_mail_auth_msg(account):
-    # Generate a email authetication key and sign to the user. Return the message which will be sent to the user.
+    # Generate a email authetication key and sign to the user. Return the
+    # message which will be sent to the user.
     auth_url = EMAIL_AUTH_PREFIX + account.user.username + '/' + account.email_hash + '/'
 
-    message = 'Welcome to AglaiaSys! Please authenticate your email by enter the following address:\n\n\n' + auth_url + '\n\n\nIf you didn\'t sign up on Aglaia, just ignore this email~(^_^)\n'
+    message = 'Welcome to AglaiaSys! Please authenticate your email by enter the following address:\n\n\n' + \
+        auth_url + '\n\n\nIf you didn\'t sign up on Aglaia, just ignore this email~(^_^)\n'
     return message
 
 
@@ -55,8 +65,9 @@ def send_auth_email(account):
     # send the email to authenticate the email
 
     msg = gen_mail_auth_msg(account)
-    _thread.start_new_thread(send_user_mail, (account, 'Hello! Welcome to Aglaia!', msg))
-    return;
+    _thread.start_new_thread(
+        send_user_mail, (account, 'Hello! Welcome to Aglaia!', msg))
+    return
 
 
 def send_user_mail(account, subject, message):

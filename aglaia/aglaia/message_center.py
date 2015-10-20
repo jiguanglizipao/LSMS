@@ -3,66 +3,81 @@ import time
 
 
 class Message:
-	def __init__(self, origin='', max_num=400):
-		if origin:
-			try:
-				self.root = etree.fromstring(origin.encode())
-			except Exception as e:
-				raise e
-		else:
-			self.root = etree.Element("root")
-			self.root.set('max_num', str(max_num))
 
-	def append(self, data):
-		try:
-			message = etree.SubElement(self.root, "message")
+    def __init__(self, origin='', max_num=400):
+        if origin:
+            try:
+                self.root = etree.fromstring(origin.encode())
+            except Exception as e:
+                raise e
+        else:
+            self.root = etree.Element("root")
+            self.root.set('max_num', str(max_num))
 
-			if not (data['direction'] == 'Recv' or data['direction'] == 'Send'):
-				raise KeyError('direction must be Recv or Send')
-			message.set('direction', data['direction'])
-			message.set('info_type', data['info_type'])
-			sub_user = etree.SubElement(message, 'user_name')
-			sub_user.text = data['user_name']
-			sub_time = etree.SubElement(message, 'time')
-			sub_time.text = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-			sub_text = etree.SubElement(message, 'text')
-			sub_text.text = data['text']
-			if data['info_type']:
-				sub_info = etree.SubElement(message, 'info_data')
-				sub_info.text = data['info_data']
+    def append(self, data):
+        try:
+            message = etree.SubElement(self.root, "message")
 
-			while len(self.root) > int(self.root.get('max_num')):
-				self.root.remove(self.root[0])
+            if not (data['direction'] == 'Recv' or data[
+                    'direction'] == 'Send'):
+                raise KeyError('direction must be Recv or Send')
+            message.set('direction', data['direction'])
+            message.set('info_type', data['info_type'])
+            sub_user = etree.SubElement(message, 'user_name')
+            sub_user.text = data['user_name']
+            sub_time = etree.SubElement(message, 'time')
+            sub_time.text = time.strftime(
+                '%Y-%m-%d %H:%M:%S',
+                time.localtime(
+                    time.time()))
+            sub_text = etree.SubElement(message, 'text')
+            sub_text.text = data['text']
+            if data['info_type']:
+                sub_info = etree.SubElement(message, 'info_data')
+                sub_info.text = data['info_data']
 
-		except Exception as e:
-			raise e
+            while len(self.root) > int(self.root.get('max_num')):
+                self.root.remove(self.root[0])
 
-		return etree.tostring(self.root, encoding="utf-8", xml_declaration=True)
+        except Exception as e:
+            raise e
 
-	def __sizeof__(self):
-		return len(self.root)
+        return etree.tostring(
+            self.root,
+            encoding="utf-8",
+            xml_declaration=True)
 
-	def index(self, i):
-		try:
-			message = self.root[i]
-			data = dict()
-			data['direction'] = message.get('direction')
-			data['info_type'] = message.get('info_type')
-			for child in message:
-				data[child.tag] = child.text
-			return data
+    def __sizeof__(self):
+        return len(self.root)
 
-		except Exception as e:
-			raise e
+    def index(self, i):
+        try:
+            message = self.root[i]
+            data = dict()
+            data['direction'] = message.get('direction')
+            data['info_type'] = message.get('info_type')
+            for child in message:
+                data[child.tag] = child.text
+            return data
 
-	def pretty_print(self):
-		return etree.tostring(self.root, pretty_print=True, encoding="utf-8", xml_declaration=True)
+        except Exception as e:
+            raise e
 
-	def tostring(self):
-		return etree.tostring(self.root, encoding="utf-8", xml_declaration=True)
+    def pretty_print(self):
+        return etree.tostring(
+            self.root,
+            pretty_print=True,
+            encoding="utf-8",
+            xml_declaration=True)
 
-	def last(self):
-		return self.index(self.__sizeof__()-1)
+    def tostring(self):
+        return etree.tostring(
+            self.root,
+            encoding="utf-8",
+            xml_declaration=True)
+
+    def last(self):
+        return self.index(self.__sizeof__() - 1)
 
 
 # if __name__ == "__main__":

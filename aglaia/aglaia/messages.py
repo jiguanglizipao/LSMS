@@ -70,7 +70,6 @@ def get_repair_apply_log(*args, **kwargs):
     return '提出维修申请'
 
 
-
 def get_destroy_apply_log(*args, **kwargs):
     return '提出销毁申请'
 
@@ -81,7 +80,6 @@ def get_accept_repair_log(*args, **kwargs):
 
 def get_reject_repair_log(*args, **kwargs):
     return '拒绝维修申请'
-
 
 
 def get_accept_destroy_log(*args, **kwargs):
@@ -192,8 +190,10 @@ def get_set_manager_log(*args, **kwargs):
 def get_rm_manager_log(*args, **kwargs):
     return '取消管理员，并取消相关权限'
 
+
 def get_set_normal_log(*args, **kwargs):
     return '给予普通用户相关权限'
+
 
 def get_set_super_log(*args, **kwargs):
     return '给予超级管理员相关权限'

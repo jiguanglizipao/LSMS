@@ -1,9 +1,8 @@
 *.pyc
 aglaia/db.sqlite3
 aglaia/testtemp/
-aglaia/account/migrations/
-aglaia/computing/migrations/
-aglaia/goods/migrations/
+aglaia/*/migrations/
 nohup.out
 aglaia/.idea
 .idea
+aglaia/reformat.sh
