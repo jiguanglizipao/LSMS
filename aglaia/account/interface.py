@@ -75,11 +75,15 @@ def create_user(user_list):
 				raise FormatInvalidError(
 					"Format of telephone number is invalid")
 
-
 			school_id = account['school_id']
 			if (not check_style(school_regex, school_id)):
 				raise FormatInvalidError(
 					"Format of school_id is invalid")
+
+			if 'type' in account:
+				if account['type'] not in {'manager', 'normal', 'none', 'special', }:
+					raise FormatInvalidError("Format of type is invalid")
+				type = account['type']
 
 			email = account["email"]  # email
 			if not check_email_style(email):
@@ -112,7 +116,7 @@ def create_user(user_list):
 			status = account['status']
 			account = Account(
 				real_name=real_name, tel=tel,
-				status=status, user=user,type=type, school_id=school_id)
+				status=status, user=user, type=type, school_id=school_id)
 			account.save()
 			for depart in depart_list:
 				account.department.add(depart)
@@ -130,8 +134,9 @@ def create_user(user_list):
 
 def find_users(filt, exclude):
 	correct_keys = ['user_name', 'real_name', 'email',
-					'password', 'department', 'tel',
-					'status', 'permission', 'school_id']
+	                'password', 'department', 'tel',
+	                'status', 'permission', 'school_id',
+	                'type']
 	for key in filt.keys():
 		if not (key in correct_keys):
 			raise KeyError("The key: %s is wrong", key)
@@ -149,7 +154,7 @@ def find_users(filt, exclude):
 		if 'email' in filt:
 			q = q.filter(user__email=filt['email'])
 		if 'type' in filt:
-			q = q.filter(user__email=filt['type'])
+			q = q.filter(type=filt['type'])
 		if 'department' in filt:
 			depart_list = filt['department']
 			for depart_name in depart_list:
@@ -168,7 +173,7 @@ def find_users(filt, exclude):
 		if 'email' in exclude:
 			q = q.exclude(user__email=exclude['email'])
 		if 'type' in exclude:
-			q = q.exclude(user__email=exclude['type'])
+			q = q.exclude(type=exclude['type'])
 		if 'department' in exclude:
 			depart_list = exclude['department']
 			for depart_name in depart_list:
@@ -211,8 +216,8 @@ def update_user(account_id, update_content):
 		raise IntegrityError(
 			"id and username isn't allowed to be modified")
 	correct_keys = ['real_name', 'email', 'status',
-					'password', 'department', 'tel',
-					'school_id','type']
+	                'password', 'department', 'tel',
+	                'school_id', 'type']
 	for key in update_content.keys():
 		if not (key in correct_keys):
 			raise KeyError("The key: %s is wrong", key)
@@ -247,6 +252,8 @@ def update_user(account_id, update_content):
 				raise FormatInvalidError("Format of school id is invalid")
 			account.school_id = update_content['school_id']
 		if 'type' in update_content:
+			if update_content['type'] not in {'manager', 'normal', 'none', 'special', }:
+				raise FormatInvalidError("Format of type is invalid")
 			account.type = update_content['type']
 		if 'department' in update_content:
 			account.department.clear()
@@ -260,6 +267,7 @@ def update_user(account_id, update_content):
 				raise FormatInvalidError(
 					"Format of telephone number is invalid")
 			account.tel = tel
+
 		account.user.save()
 		account.save()
 		return account
@@ -290,8 +298,8 @@ def packed_create_user(request, *args, **kwargs):
 	ret = create_user(*args, **kwargs)
 	for account in ret:
 		create_log('user', user_id=account.user.id,
-				   target=account, action='create account',
-				   description=desc)
+		           target=account, action='create account',
+		           description=desc)
 	return ret
 
 
@@ -309,8 +317,8 @@ def packed_update_user(request, *args, **kwargs):
 		desc = args[1]
 	ret = update_user(*args, **kwargs)
 	create_log('user', user_id=request.user.id,
-			   target=ret, action='change account',
-			   description=desc)
+	           target=ret, action='change account',
+	           description=desc)
 	return ret
 
 
