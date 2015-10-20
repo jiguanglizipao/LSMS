@@ -76,6 +76,7 @@ class Account(models.Model):
 	school_id = models.CharField(max_length=30, default='1234567890')
 	email_auth = models.BooleanField(blank=True, default=False)
 	email_hash = models.CharField(max_length=30, blank=True)
+	messages = models.CharField(max_length=3000, blank=True)
 
 	def __str__(self):
 		return str(self.user.username)
