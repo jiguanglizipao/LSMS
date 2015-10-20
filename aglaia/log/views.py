@@ -99,6 +99,7 @@ def show_log(request):
         if 'is_actor' in g:
             is_actor = g['is_actor']
         llist = log_list_func[g['type']](g['id'], is_actor)
+
         return render(request, 'log.html', {
             'user': get_context_user(request.user),
             'logs': llist,

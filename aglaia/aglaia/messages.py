@@ -205,3 +205,9 @@ def get_wrong_goods_status_log(*args, **kwargs):
 
 def get_set_perm_log(perms, perm_set):
     return '手动设置权限：' + perm_set.__str__()
+
+def get_flag_log(flag,data_content):
+    if flag:
+        return '标记为重要数据，重要数据内容为：' + data_content
+    else:
+        return '取消重要数据标记'
