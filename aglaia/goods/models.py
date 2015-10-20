@@ -1,7 +1,7 @@
 # coding:utf8
 from account.models import *
 
-    # Create your models here.
+# Create your models here.
 sep = "!!$$@#@#"
 
 
@@ -198,28 +198,29 @@ class Single(models.Model):
 
 
 class Borrow(models.Model):
-	STATUS_CHOICES = (
-		(BORROW_AUTHING_KEY, BORROW_AUTHING),
-		(REJECTED_KEY, REJECTED),
-		(ACCEPTED_KEY, ACCEPTED),
-		(BORROWED_KEY, BORROWED),
-		(REPAIR_APPLY_KEY, REPAIR_APPLY),
-		(REPAIR_PEND_KEY, REPAIR_PEND),
-		(REPAIRING_KEY, REPAIRING),
-		(FINISH_REPAIR_KEY, FINISH_REPAIR),
-		(RETURN_AUTHING_KEY, RETURN_AUTHING),
-		(RETURN_PENDING_KEY, RETURN_PENDING),
-		(RETURNED_KEY, RETURNED),
-		(LOST_KEY, LOST),
-		(DAMAGED_KEY, DAMAGED),
-		(DESTROY_APPLY_KEY, DESTROY_APPLY),
-		(DESTROY_ACCEPT_KEY, DESTROY_APPLY),
-		(DESTROY_REJECT_KEY, DESTROY_REJECT)
-	)
-	account = models.ForeignKey(Account, default=None)
-	single = models.ForeignKey(Single)
-	status = models.CharField(max_length=5, choices=STATUS_CHOICES)
-	note = models.TextField(max_length=40000)
+    STATUS_CHOICES = (
+        (BORROW_AUTHING_KEY, BORROW_AUTHING),
+        (REJECTED_KEY, REJECTED),
+        (ACCEPTED_KEY, ACCEPTED),
+        (BORROWED_KEY, BORROWED),
+        (REPAIR_APPLY_KEY, REPAIR_APPLY),
+        (REPAIR_PEND_KEY, REPAIR_PEND),
+        (REPAIRING_KEY, REPAIRING),
+        (FINISH_REPAIR_KEY, FINISH_REPAIR),
+        (RETURN_AUTHING_KEY, RETURN_AUTHING),
+        (RETURN_PENDING_KEY, RETURN_PENDING),
+        (RETURNED_KEY, RETURNED),
+        (LOST_KEY, LOST),
+        (DAMAGED_KEY, DAMAGED),
+        (DESTROY_APPLY_KEY, DESTROY_APPLY),
+        (DESTROY_ACCEPT_KEY, DESTROY_APPLY),
+        (DESTROY_REJECT_KEY, DESTROY_REJECT)
+    )
+    account = models.ForeignKey(Account, default=None)
+    single = models.ForeignKey(Single)
+    status = models.CharField(max_length=5, choices=STATUS_CHOICES)
+    note = models.TextField(max_length=40000)
 
-	def __str__(self):
-		return 'name = ' + str(self.single.goods.name) + '------sn=' + str(self.single.sn)
+    def __str__(self):
+        return 'name = ' + str(self.single.goods.name) + \
+            '------sn=' + str(self.single.sn)

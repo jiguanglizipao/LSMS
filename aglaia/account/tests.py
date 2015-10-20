@@ -53,11 +53,15 @@ class AccountTestCase(TestCase):
         self.assertRaises(FormatInvalidError, create_user, [account3])
 
     def test_invalid_password_format(self):
-        account3 = {'user_name': 'yudfaf', 'password': 'ronfasfasddfasdfasddfasfgyu',
-                    'email': 'rongyu@rongy.com',
-                    'real_name': 'rongyu', 'department': ['xxx lab xxx'],
-                    'tel': '12345678',
-                    'status': 'test', }
+        account3 = {
+            'user_name': 'yudfaf',
+            'password': 'ronfasfasddfasdfasddfasfgyu',
+            'email': 'rongyu@rongy.com',
+            'real_name': 'rongyu',
+            'department': ['xxx lab xxx'],
+            'tel': '12345678',
+            'status': 'test',
+        }
         self.assertRaises(FormatInvalidError, create_user, [account3])
 
     def test_invalid_tel_format(self):
@@ -83,11 +87,15 @@ class AccountTestCase(TestCase):
                     'tel': '12345678',
                     'status': 'test', 'school_id': '01234'}
         self.assertRaises(FormatInvalidError, create_user, [account3])
-        account3 = {'user_name': 'rongyu', 'password': 'rongyu',
-                    'email': 'rongyu@rongy.com',
-                    'real_name': 'rongyu', 'department': ['xxx lab xxx'],
-                    'tel': '12345678',
-                    'status': 'test', 'school_id': '01234123131312312312312312'}
+        account3 = {
+            'user_name': 'rongyu',
+            'password': 'rongyu',
+            'email': 'rongyu@rongy.com',
+            'real_name': 'rongyu',
+            'department': ['xxx lab xxx'],
+            'tel': '12345678',
+            'status': 'test',
+            'school_id': '01234123131312312312312312'}
         self.assertRaises(FormatInvalidError, create_user, [account3])
         account3 = {'user_name': 'rongyu', 'password': 'rongyu',
                     'email': 'rongyu@rongy.com',
@@ -202,10 +210,12 @@ class AccountTestCase(TestCase):
         exclude = {'type': 'none'}
         self.assertEqual(find_users(filt, exclude)[0].id, 2)
 
-
     def test_exclude_filter(self):
         filt = {'tel': '12345678', 'status': 'test', 'type': 'manager'}
-        exclude = {'user_name': 'rongyu', 'real_name': 'rongyu', 'type': 'none'}
+        exclude = {
+            'user_name': 'rongyu',
+            'real_name': 'rongyu',
+            'type': 'none'}
         self.assertEqual(find_users(filt, exclude)[0].id, 2)
 
     def test_useless_find(self):
