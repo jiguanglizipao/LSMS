@@ -49,7 +49,6 @@ def create_single_log(user_id, target, action, description):
     except Exception as e:
         raise e
 
-
 create_log_func = {
     'single': create_single_log,
     'computing': create_computing_log,

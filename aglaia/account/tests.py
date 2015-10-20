@@ -4,9 +4,7 @@ from account.interface import *
 from django.contrib.auth.models import User
 from django import forms
 
-
 # from account.models import Department
-
 
 class AccountTestCase(TestCase):
 
@@ -155,7 +153,6 @@ class AccountTestCase(TestCase):
                     'tel': '12345678',
                     'status': 'test', 'school_id': '0123456789'}
         self.assertRaises(TypeError, create_user, [account1])
-
     # 下面是find_users的测试函数
 
     def test_filter(self):

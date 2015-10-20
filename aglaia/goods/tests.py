@@ -1039,7 +1039,6 @@ class ViewTestCase(TestCase):
                              reverse('goods.views.show_list'))
         s2 = Single.objects.get(id=self.s1.id)
         self.assertEqual(s2.status, DESTROYED_KEY)
-
     # --------- show_borrow -----------
 
     def test_do_borrow(self):

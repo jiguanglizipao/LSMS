@@ -45,7 +45,6 @@ super_perms = [NORMAL,
 # ===============================================
 # ===============================================
 
-
 def perm_checkname(perm):
     return APP_NAME + '.' + perm.codename
 
@@ -605,7 +604,6 @@ def do_send_mail(request):
         return show_message(request, 'Send mail succeed!')
     except Exception as e:
         return show_message(request, 'Send mail failed: ' + e.__str__())
-
 
 # ===============================================
 # ===============================================

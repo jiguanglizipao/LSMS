@@ -6,3 +6,4 @@ nohup.out
 aglaia/.idea
 .idea
 aglaia/reformat.sh
+*.bak

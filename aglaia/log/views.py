@@ -82,7 +82,6 @@ def get_account_loglist_context(id, is_actor):
             reverse=False)
     return get_context_list(l, get_context_log)
 
-
 log_list_func = {
     'goods': get_goods_loglist_context,
     'computing': get_computing_loglist_context,
