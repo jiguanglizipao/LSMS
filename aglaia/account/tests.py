@@ -2,7 +2,6 @@ from django.test import TestCase
 from account.models import *
 from account.interface import *
 from django.contrib.auth.models import User
-from django.db import *
 from django import forms
 
 
@@ -18,7 +17,7 @@ class AccountTestCase(TestCase):
                     'tel': '12345678',
                     'status': 'test', 'school_id': '0123456789'}
         account2 = {'user_name': 'yurong', 'password': 'rongyu',
-                    'email': 'rongyu@rongy.com',
+                    'email': 'rongyu@rongy.com', 'type': 'manager',
                     'real_name': 'yurong', 'department': ['a lab', 'b lab'],
                     'tel': '12345678',
                     'status': 'test', 'school_id': '0123456789'}
@@ -36,11 +35,13 @@ class AccountTestCase(TestCase):
         self.assertEqual(account.user.username, 'rongyu')
         self.assertEqual(account.user.email, 'rongyu@rongy.com')
         self.assertEqual(account.real_name, 'rongyu')
+        self.assertEqual(account.type, 'none')
         self.assertEqual(account.department.all()[0].depart_name, 'a lab')
         account = Account.objects.get(id=2)
         self.assertEqual(account.tel, '12345678')
         self.assertEqual(account.status, 'test')
         self.assertEqual(account.school_id, '0123456789')
+        self.assertEqual(account.type, 'manager')
         self.assertEqual(account.department.all()[1].depart_name, 'b lab')
 
     def test_invalid_username_format(self):
@@ -93,6 +94,14 @@ class AccountTestCase(TestCase):
                     'real_name': 'rongyu', 'department': ['xxx lab xxx'],
                     'tel': '12345678',
                     'status': 'test', 'school_id': '0123q4'}
+        self.assertRaises(FormatInvalidError, create_user, [account3])
+
+    def test_invalid_type_format(self):
+        account3 = {'user_name': 'yufaf', 'password': 'rongyu',
+                    'email': 'rongyu@rongy.com', 'type': '123',
+                    'real_name': 'rongyu', 'department': ['xxx lab xxx'],
+                    'tel': '12345678',
+                    'status': 'test', }
         self.assertRaises(FormatInvalidError, create_user, [account3])
 
     def test_key_error1(self):
@@ -159,6 +168,10 @@ class AccountTestCase(TestCase):
         self.assertEqual(find_users(filt, exclude)[1].id, 2)
         filt = {'permission': ['add_department', 'add_account']}
         self.assertEqual(len(find_users(filt, exclude)), 1)
+        filt = {'type': 'manager'}
+        self.assertEqual(find_users(filt, exclude)[0].id, 2)
+        filt = {'type': 'none'}
+        self.assertEqual(find_users(filt, exclude)[0].id, 1)
 
     def test_exclude1(self):
         exclude = {'user_name': 'rongyu'}
@@ -184,10 +197,15 @@ class AccountTestCase(TestCase):
         self.assertEqual(len(find_users(filt, exclude)), 2)
         exclude = {'permission': ['add_department']}
         self.assertEqual(len(find_users(filt, exclude)), 1)
+        exclude = {'type': 'manager'}
+        self.assertEqual(find_users(filt, exclude)[0].id, 1)
+        exclude = {'type': 'none'}
+        self.assertEqual(find_users(filt, exclude)[0].id, 2)
+
 
     def test_exclude_filter(self):
-        filt = {'tel': '12345678', 'status': 'test'}
-        exclude = {'user_name': 'rongyu', 'real_name': 'rongyu'}
+        filt = {'tel': '12345678', 'status': 'test', 'type': 'manager'}
+        exclude = {'user_name': 'rongyu', 'real_name': 'rongyu', 'type': 'none'}
         self.assertEqual(find_users(filt, exclude)[0].id, 2)
 
     def test_useless_find(self):
@@ -210,7 +228,8 @@ class AccountTestCase(TestCase):
                           'department': ['ACM', 'IEEE'],
                           'tel': '1234569',
                           'school_id': '11223344',
-                          'status': 'test1'
+                          'status': 'test1',
+                          'type': 'special'
                           }
         update_user(1, update_content)
         account1 = Account.objects.get(id=1)
@@ -221,6 +240,7 @@ class AccountTestCase(TestCase):
         self.assertEqual(account1.tel, '1234569')
         self.assertEqual(account1.school_id, '11223344')
         self.assertEqual(account1.status, 'test1')
+        self.assertEqual(account1.type, 'special')
 
     def test_update_invalid_id(self):
         self.assertRaises(UserDoesNotExistError, update_user, 10, {})
@@ -247,9 +267,12 @@ class AccountTestCase(TestCase):
         update_content = {'password': '123'}
         self.assertRaises(FormatInvalidError, update_user, 1, update_content)
         update_content = {'password': 'fasfasfasdfasdfasdfasddfa'}
+        self.assertRaises(FormatInvalidError, update_user, 1, update_content)
         update_content = {'email': 'rong@rong'}
         self.assertRaises(FormatInvalidError, update_user, 1, update_content)
         update_content = {'school_id': '12123@1'}
+        self.assertRaises(FormatInvalidError, update_user, 1, update_content)
+        update_content = {'type': '123'}
         self.assertRaises(FormatInvalidError, update_user, 1, update_content)
 
     def test_delete(self):
