@@ -23,7 +23,8 @@ class TestTestCase(TestCase):
                       'expire_time': date.today() + timedelta(days=4),
                       'login': 'rongyu', 'password': 'rongyu',
                       'status': 'vi', 'account': Account.objects.get(id=1),
-                      'note': "what the fuck", 'address': '127.0.0.1', 'flag': True,
+                      'note': "what the fuck", 'address': '127.0.0.1', 'flag': 'True',
+                      'data_content':"I'm important",
                       'name': 'comp1', 'pack_name': 'pack1'}
         computing2 = {'pc_type': 'p',
                       'cpu': 'core',
@@ -39,6 +40,7 @@ class TestTestCase(TestCase):
                       'note': "what the hell",
                       'address': '127.0.0.2',
                       'flag': False,
+                      'data_content':"",
                       'name': 'comp2',
                       'pack_name': 'pack2'}
         c = [computing1, computing2]

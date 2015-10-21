@@ -431,7 +431,7 @@ def do_accept_repair(request):
         return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
     except Exception as e:
-        return show_message(request, 'Accept Destroy failed: ' + e.__str__())
+        return show_message(request, 'Accept Repair failed: ' + e.__str__())
 
 
 @method_required('POST')
