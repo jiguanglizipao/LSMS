@@ -28,6 +28,10 @@
                     使用资源
                     <div class="ui label">{{ inuse_list|length }}</div>
                 </a>
+                <a href="#backup" class="item">
+                    备份重要数据的资源
+                    <div class="ui label">{{ backup_list|length }}</div>
+                </a>
             </div>
         </div>
     </div>
@@ -707,12 +711,7 @@
                             {% endif %}
 
                             虚拟资源
-                            {#                    <form action="{% url "computing.views.do_delete_package" %}" method="post">#}
-                            {#                        <input type="hidden" name="name" value="{{ pkg.name }}">#}
-                            {#                        <button type="submit" class="ui red tiny button">删除</button>#}
-                            {#                    </form>#}
 
-                            {#                        <div class="ui horizontal green label">强制收回</div>#}
 
                         </div>
                         <div class="ui attached segment">
@@ -749,8 +748,126 @@
                                     {{ inuse.note }}
                                 </a>
                                 <a class="item">
-                                    <form action="{% url "computing.views.do_destroy_comp" %}" method="post">
+
+                                    {% if inuse.flag %}
+                                        <form action="{% url "computing.views.do_destroying_comp" %}" method="post">
                                         <input type="hidden" name="id" value="{{ inuse.id }}">
+                                        <button type="submit" class="ui black horizontal label">提醒用户备份数据后收回
+                                        </button>
+                                    {% else %}
+                                        <form action="{% url "computing.views.do_destroyed_comp" %}" method="post">
+                                        <input type="hidden" name="id" value="{{ inuse.id }}">
+                                        <button type="submit" class="ui black horizontal label">强制收回</button>
+                                    {% endif %}
+                                    </form>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="ui divider"></div>
+    <!--backup-->
+    <div class="ui grid" id="backup">
+        <div class="one column row">
+            <h2 class="ui header"><font color="#F05940">备份重要数据</font>资源</h2>
+            {% for backup in backup_list %}
+                {% if backup.type == "real" %}
+                    <div class="column" style="margin-top:10px">
+                        <div class="ui top attached header">
+                            <div class="ui horizontal green label">编号 {{ backup.id }}</div>
+                            {% if backup.flag %}
+                                <div class="ui horizontal red label">含重要信息</div>
+                            {% endif %}
+                            实体资源
+                        </div>
+                        <div class="ui attached segment">
+                            <div class="ui divided selection list">
+                                <a class="item">
+                                    <div class="ui green horizontal label">使用者姓名</div>
+                                    {{ backup.name }}
+                                </a>
+                                <a class="item">
+                                    <div class="ui green horizontal label">资源编号</div>
+                                    {{ backup.sn }}
+                                </a>
+                                <a class="item">
+                                    <div class="ui green horizontal label">登陆用户名</div>
+                                    {{ backup.login }}
+                                </a>
+                                <a class="item">
+                                    <div class="ui green horizontal label" style="margin-top:5px">配置要求</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">CPU: {{ backup.cpu }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">内存: {{ backup.memory }}GB
+                                    </div>
+                                    <div class="ui horizontal label" style="margin-top:5px">
+                                        硬盘类型: {{ backup.disktype }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">硬盘大小: {{ backup.disk }}GB
+                                    </div>
+                                    <div class="ui horizontal label" style="margin-top:5px">IP: {{ backup.ip }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">OS: {{ backup.os }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据:
+                                        {% if backup.flag == True %}是 数据内容:{{ backup.data_content }}{% else %}
+                                            否{% endif %}</div>
+                                </a>
+                                <a class="item">
+                                    <div class="ui green horizontal label">管理员答复</div>
+                                    {{ backup.note }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% elif backup.type == "virtual" %}
+                    <div class="column" style="margin-top:10px">
+                        <div class="ui top attached header">
+                            <div class="ui horizontal blue label">编号 {{ backup.id }}</div>
+
+                            {% if backup.flag %}
+                                <div class="ui horizontal red label">含重要信息</div>
+                            {% endif %}
+
+                            虚拟资源
+
+
+                        </div>
+                        <div class="ui attached segment">
+                            <div class="ui divided selection list">
+                                <a class="item">
+                                    <div class="ui blue horizontal label">使用者姓名</div>
+                                    {{ backup.name }}
+                                </a>
+                                <a class="item">
+                                    <div class="ui blue horizontal label">资源编号</div>
+                                    {{ backup.sn }}
+                                </a>
+                                <a class="item">
+                                    <div class="ui blue horizontal label">登陆用户名</div>
+                                    {{ backup.login }}
+                                </a>
+                                <a class="item">
+                                    <div class="ui blue horizontal label" style="margin-top:5px">配置要求</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">CPU: {{ backup.cpu }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">内存: {{ backup.memory }}GB
+                                    </div>
+                                    <div class="ui horizontal label" style="margin-top:5px">
+                                        硬盘类型: {{ backup.disktype }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">硬盘大小: {{ backup.disk }}GB
+                                    </div>
+                                    <div class="ui horizontal label" style="margin-top:5px">IP: {{ backup.ip }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">OS: {{ backup.os }}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据:
+                                        {% if backup.flag == True %}是 数据内容:{{ backup.data_content }}{% else %}
+                                            否{% endif %}</div>
+                                </a>
+                                <a class="item">
+                                    <div class="ui blue horizontal label">管理员答复</div>
+                                    {{ backup.note }}
+                                </a>
+                                <a class="item">
+                                    <form action="{% url "computing.views.do_destroyed_comp" %}" method="post">
+                                        <input type="hidden" name="id" value="{{ backup.id }}">
                                         <button type="submit" class="ui black horizontal label">强制收回</button>
                                     </form>
                                 </a>

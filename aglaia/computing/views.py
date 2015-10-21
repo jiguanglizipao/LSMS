@@ -128,7 +128,7 @@ def do_return_request(request):
 	try:
 		id = request.POST['id']
 		comp = Computing.objects.get(id=id)
-		if not (comp.status == BORROWED_KEY or comp.status == MODIFY_APPLY_KEY):
+		if not (comp.status == DESTROYING_KEY or comp.status == BORROWED_KEY or comp.status == MODIFY_APPLY_KEY):
 			return HttpResponse('denied')
 		packed_update_computing(
 			request, id, {
@@ -409,6 +409,7 @@ def show_comp_verify(request):
 	borrow = packed_find_computing(request, {'status': VERIFYING_KEY}, {})
 	ret = packed_find_computing(request, {'status': RETURNING_KEY}, {})
 	modif = packed_find_computing(request, {'status': MODIFY_APPLY_KEY}, {})
+	backup = packed_find_computing(request, {'status': DESTROYING_KEY}, {})
 
 	packs = Package.objects.all()
 	cont = {}
@@ -436,6 +437,10 @@ def show_comp_verify(request):
 	user = get_context_user(request.user)
 	cont['user'] = user
 	cont['perm_list'] = request.user.get_all_permissions()
+
+	backup_list = get_context_list(backup, get_context_computing)
+	cont['backup_list'] = backup_list
+	cont['backup_num'] = len(backup_list)
 
 	return render(request, 'calc_resource.html', cont)
 
@@ -498,22 +503,33 @@ def show_computing_list(request):
 			'Error when show computings: ' +
 			e.__str__())
 
+
 @method_required('POST')
 @permission_required(PERM_COMPUT_AUTH)
-def do_destroy_comp(request):
+def do_destroyed_comp(request):
 	try:
 		post = request.POST
 		id = post['id']
 		comp = Computing.objects.get(id=id)
-		flag = comp.flag
-		if flag: # important data is true
-			pass
-		else:
-			packed_update_computing(request, id, {
-				'status': DESTROYED_KEY}, log=get_comp_destroy_log())
-		############################################## TODO
-		# update_computing(comp.id,{'address':'200.200.200.200'})
+		packed_update_computing(request, id, {
+			'status': DESTROYED_KEY}, log=get_comp_destroyed_log())
 		return HttpResponseRedirect(
-		 	reverse('computing.views.show_comp_verify'))
+			reverse('computing.views.show_comp_verify'))
+	except Exception as e:
+		return show_message(request, 'Destroy computing failed: ' + e.__str__())
+
+
+@method_required('POST')
+@permission_required(PERM_COMPUT_AUTH)
+def do_destroying_comp(request):
+	try:
+		post = request.POST
+		id = post['id']
+		comp = Computing.objects.get(id=id)
+		packed_update_computing(request, id, {
+			'status': DESTROYING_KEY}, log=get_comp_destroying_log())
+
+		return HttpResponseRedirect(
+			reverse('computing.views.show_comp_verify'))
 	except Exception as e:
 		return show_message(request, 'Destroy computing failed: ' + e.__str__())

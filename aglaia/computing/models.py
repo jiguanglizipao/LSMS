@@ -39,8 +39,10 @@ NORMAL = 'normal'
 DISABLE_KEY = 'd'
 DISABLE = 'disable'
 
-DESTROY_KEY = 'dt'
-DESTROY = 'destroy'
+DESTROYING_KEY = 'di'
+DESTROYING = 'destroying'
+DESTROYED_KEY = 'dt'
+DESTROYED = 'destroyed'
 
 class Server(models.Model):
     SERVER_CHOICES = (
