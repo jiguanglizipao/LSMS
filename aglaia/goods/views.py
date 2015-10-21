@@ -41,6 +41,7 @@ sgl_sta_map = {
 # ===============================================
 # ===============================================
 
+
 def get_pack_name(pack):
 	return pack.name
 
@@ -458,7 +459,8 @@ def do_accept_destroy(request):
 		return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
 	except Exception as e:
-		return show_message(request, 'Accept Repair failed: ' + e.__str__())
+		return show_message(request, 'Accept Destroy failed: ' + e.__str__())
+
 
 
 @method_required('POST')
@@ -960,6 +962,7 @@ def do_destroy_goods(request):
 
 ##############################
 
+
 @method_required('POST')
 @permission_required(PERM_NORMAL)
 def do_repair_goods(request):
@@ -999,6 +1002,7 @@ def do_repair_goods(request):
 # ===============================================
 # ===============================================
 # ===============================================
+
 
 @method_required('GET')
 @permission_required(PERM_GOODS_AUTH)
@@ -1256,6 +1260,7 @@ def show_borrow_list(request):
 		return show_message(request, 'Error when show borrows: ' + e.__str__())
 
 
+
 @method_required('POST')
 @permission_required(PERM_GOODS_AUTH)
 def MailNotify(request):
@@ -1266,7 +1271,11 @@ def MailNotify(request):
 			itemno = int(numberstr)
 			brw = Borrow.objects.get(id=itemno)
 			print(brw.account)
-			send_user_mail(brw.account, 'Aglaia Item Notify', request.POST['mail-content'])
+			send_user_mail(
+				brw.account,
+				'Aglaia Item Notify',
+				request.POST['mail-content'])
 		except:
 			pass
 	return HttpResponseRedirect(reverse("goods.views.show_list"))
+

@@ -134,7 +134,6 @@ def do_return_request(request):
 			request, id, {
 				'status': RETURNING_KEY}, log=get_comp_ret_log())
 		send_notify_mail(request, CompReturnMail, comp=comp)
-
 		return HttpResponse('ok')
 	except:
 		return HttpResponse('denied')
@@ -411,6 +410,7 @@ def show_comp_verify(request):
 	modif = packed_find_computing(request, {'status': MODIFY_APPLY_KEY}, {})
 	backup = packed_find_computing(request, {'status': DESTROYING_KEY}, {})
 
+
 	packs = Package.objects.all()
 	cont = {}
 
@@ -443,6 +443,7 @@ def show_comp_verify(request):
 	cont['backup_num'] = len(backup_list)
 
 	return render(request, 'calc_resource.html', cont)
+
 
 
 @method_required('GET')
@@ -502,6 +503,7 @@ def show_computing_list(request):
 			request,
 			'Error when show computings: ' +
 			e.__str__())
+
 
 
 @method_required('POST')

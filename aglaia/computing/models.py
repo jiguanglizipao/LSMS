@@ -44,6 +44,7 @@ DESTROYING = 'destroying'
 DESTROYED_KEY = 'dt'
 DESTROYED = 'destroyed'
 
+
 class Server(models.Model):
     SERVER_CHOICES = (
         (BUSY_KEY, BUSY),

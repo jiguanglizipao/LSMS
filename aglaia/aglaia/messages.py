@@ -186,6 +186,7 @@ def get_comp_rej_modf_log(*args, **kwargs):
 def get_comp_destroying_log(*args, **kwargs):
 	return '即将收回包含重要数据的计算资源，等待用户确认'
 
+
 def get_comp_destroyed_log(*args, **kwargs):
 	return '管理员强制收回计算资源'
 
