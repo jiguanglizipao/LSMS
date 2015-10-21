@@ -1201,3 +1201,187 @@ class ViewTestCase(TestCase):
         )
         self.assertIsMessage(wrong_sgl,
                              'The good is not in a borrowed status!')
+
+    #do_destroy_goods#
+
+    def test_do_destroy_goods(self):
+        self.normal = Client()
+        self.assertTrue(
+            self.normal.login(username='normal', password='123456'))
+
+        update_borrow(self.b1.id, {'status': BORROWED_KEY})
+        update_single(self.s1.id, {'status': BORROWED_KEY})
+
+        dic = {}
+        noid = self.normal.post(
+            reverse('goods.views.do_destroy_goods'),
+            dic)
+        self.assertIsMessage(noid,
+                             'Destroy apply failed: "\'id\'"')
+
+        note = 'testnote'
+        dic['id'] = self.b1.id
+        dic['note'] = note
+
+        correct = self.normal.post(
+            reverse('goods.views.do_destroy_goods'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('goods.views.show_borrow'))
+
+        b2 = Borrow.objects.get(id=self.b1.id)
+        self.assertEqual(b2.status, DESTROY_APPLY_KEY)
+        self.assertEqual(Message(b2.note).last()['text'], note)
+
+        wrong_brw = self.normal.post(
+            reverse('goods.views.do_destroy_goods'),
+            dic
+        )
+        self.assertIsMessage(wrong_brw,
+                             'This Request is not in a borrowed status!')
+
+        update_borrow(self.b1.id, {'status': BORROWED_KEY})
+        update_single(self.s1.id, {'status': LOST_KEY})
+
+        wrong_sgl = self.normal.post(
+            reverse('goods.views.do_destroy_goods'),
+            dic
+        )
+        self.assertIsMessage(wrong_sgl,
+                             'The good is not in a borrowed status!')
+
+    def test_do_accept_destroy(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(username='manager', password='123456'))
+
+        update_borrow(self.b1.id, {'status': DESTROY_APPLY_KEY})
+        update_single(self.s1.id, {'status': BORROWED_KEY})
+
+        dic = {}
+        noid = self.manager.post(reverse('goods.views.do_accept_destroy'), dic)
+        self.assertIsMessage(noid,
+                             'Accept Destroy failed: "\'id\'"')
+
+        note = 'testnote'
+        dic['id'] = self.b1.id
+        dic['note'] = note
+
+        correct = self.manager.post(
+            reverse('goods.views.do_accept_destroy'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('goods.views.show_manage'))
+
+        b2 = Borrow.objects.get(id=self.b1.id)
+        self.assertEqual(b2.status, DESTROY_ACCEPT_KEY)
+        self.assertEqual(Message(b2.note).last()['text'], note)
+
+        wrong_brw = self.manager.post(
+            reverse('goods.views.do_accept_destroy'),
+            dic
+        )
+        self.assertIsMessage(wrong_brw,
+                             'This Request is not in a destroy apply status!')
+
+        update_borrow(self.b1.id, {'status': DESTROY_APPLY_KEY})
+        update_single(self.s1.id, {'status': LOST_KEY})
+
+        wrong_sgl = self.manager.post(
+            reverse('goods.views.do_accept_destroy'),
+            dic
+        )
+        self.assertIsMessage(
+            wrong_sgl, 'The good is not in a borrowed status!')
+
+    def test_do_reject_destroy(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(username='manager', password='123456'))
+
+        update_borrow(self.b1.id, {'status': DESTROY_APPLY_KEY})
+        update_single(self.s1.id, {'status': BORROWED_KEY})
+
+        dic = {}
+        noid = self.manager.post(
+            reverse('goods.views.do_reject_destroy'),
+            dic)
+        self.assertIsMessage(noid,
+                             'Reject Destroy failed: "\'id\'"')
+
+        note = 'testnote'
+        dic['id'] = self.b1.id
+        dic['note'] = note
+
+        correct = self.manager.post(
+            reverse('goods.views.do_reject_destroy'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('goods.views.show_manage'))
+
+        b2 = Borrow.objects.get(id=self.b1.id)
+        self.assertEqual(b2.status, BORROWED_KEY)
+        self.assertEqual(Message(b2.note).last()['text'], note)
+
+        wrong_brw = self.manager.post(
+            reverse('goods.views.do_reject_destroy'),
+            dic
+        )
+        self.assertIsMessage(wrong_brw,
+                             'This Request is not in a destroy apply status!')
+
+        update_borrow(self.b1.id, {'status': DESTROY_APPLY_KEY})
+        update_single(self.s1.id, {'status': LOST_KEY})
+
+        wrong_sgl = self.manager.post(
+            reverse('goods.views.do_reject_destroy'),
+            dic
+        )
+        self.assertIsMessage(
+            wrong_sgl, 'The good is not in a borrowed status!')
+
+
+    #apply goods#
+
+    def test_apply_goods(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(username='normal', password='123456'))
+
+        type_name = 'gtype1'
+        prosname = ['pro1', 'pro2', 'pro3', 'pro4']
+
+        gname = 'add_goods_gn1'
+
+        gpros = ['p1', 'p2', 'p3', 'p4']
+        sns = 'ssn1'
+        snss = sns.split(',')
+
+        create_gtype(type_name, prosname)
+
+        dic = {}
+        dic['name'] = gname
+        dic['type_name'] = type_name
+        dic['ext_num'] = '1'
+        dic['note'] = 'note'
+        dic['sn'] = sns
+
+        for i in range(0, len(gpros)):
+            dic['pro' + str(i + 1) + '_value'] = gpros[i]
+
+        dic['pro5_value'] = 'ext_value'
+        dic['pro5_name'] = 'ext_type'
+
+        correct = self.manager.post(reverse('goods.views.apply_goods'), dic)
+        self.assertRedirects(correct, reverse('goods.views.show_list'))
+
+        agls = Apply_Goods.objects.filter(name=gname)
+        self.assertEqual(len(agls), 1)
+        for s in agls:
+            self.assertIn(s.sn, snss)
+
+        dic.pop('name')
+
+        noname = self.manager.post(reverse('goods.views.apply_goods'),
+                                   dic)
+        self.assertIsMessage(noname, 'Key not found: "\'name\'"')
