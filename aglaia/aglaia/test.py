@@ -7,9 +7,10 @@ class MessageCenterTestCase(TestCase):
     def setUp(self):
         self.message = Message(max_num=5)
 
-    def test___init__(self):
+    def test_init(self):
         self.assertEqual(self.message.root.get('max_num'), '5')
         self.assertEqual(len(self.message.root), 0)
+        self.assertRaises(Exception, Message, 'test')
 
     def test_append(self):
         self.message.append(
@@ -113,6 +114,7 @@ class MessageCenterTestCase(TestCase):
         self.assertEqual(self.message.root[0].find('user_name').text, '2')
         self.assertEqual(self.message.root[0].find('text').text, 'text2')
         self.assertEqual(self.message.root[0].find('info_data').text, '111')
+        self.assertRaises(Exception, self.message.index, 6)
 
     def test_index(self):
         self.message.append(
@@ -146,14 +148,12 @@ class MessageCenterTestCase(TestCase):
         self.message.append(
             {'direction': 'Send', 'info_type': 'bbb', 'info_data': '222',
              'user_name': '3', 'text': 'text3'})
-        self.message.append(
-            {'direction': 'Send', 'info_type': 'bbb', 'info_data': '222',
-             'user_name': '4', 'text': 'text4'})
-        self.assertEqual(self.message.index(3)['direction'], 'Send')
-        self.assertEqual(self.message.index(3)['info_type'], 'bbb')
-        self.assertEqual(self.message.index(3)['info_data'], '222')
-        self.assertEqual(self.message.index(3)['user_name'], '4')
-        self.assertEqual(self.message.index(3)['text'], 'text4')
+        last = self.message.last()
+        self.assertEqual(self.message.last()['direction'], 'Send')
+        self.assertEqual(self.message.last()['info_type'], 'bbb')
+        self.assertEqual(self.message.last()['info_data'], '222')
+        self.assertEqual(self.message.last()['user_name'], '3')
+        self.assertEqual(self.message.last()['text'], 'text3')
 
     def test_tostring_origin(self):
         self.message.append(
@@ -173,7 +173,6 @@ class MessageCenterTestCase(TestCase):
              'text': 'text5'})
         tmp = Message(origin=self.message.tostring().decode())
         self.assertEqual(self.message.tostring(), tmp.tostring())
-        self.assertRaises(Exception, self.message.__init__(), 'test')
 
     def test_pretty_print(self):
         self.message.append(
@@ -197,3 +196,21 @@ class MessageCenterTestCase(TestCase):
         self.assertEqual(tmp.index(3)['info_data'], '222')
         self.assertEqual(tmp.index(3)['user_name'], '4')
         self.assertEqual(tmp.index(3)['text'], 'text4')
+
+    def test_sizeof(self):
+        self.message.append(
+            {'direction': 'Recv', 'info_type': 'test', 'info_data': 'TEST',
+             'user_name': '1', 'text': 'text1'})
+        self.message.append(
+            {'direction': 'Send', 'info_type': 'aaa', 'info_data': '111',
+             'user_name': '2', 'text': 'text2'})
+        self.message.append(
+            {'direction': 'Send', 'info_type': 'bbb', 'info_data': '222',
+             'user_name': '3', 'text': 'text3'})
+        self.message.append(
+            {'direction': 'Send', 'info_type': 'bbb', 'info_data': '222',
+             'user_name': '4', 'text': 'text4'})
+        self.message.append(
+            {'direction': 'Send', 'info_type': '', 'user_name': '5',
+             'text': 'text5'})
+        self.assertEqual(self.message.__sizeof__(), 5)

@@ -6,3 +6,7 @@ nohup.out
 aglaia/.idea
 .idea
 aglaia/reformat.sh
+aglaia/covhtml
+aglaia/cov.report
+aglaia/htmlcov
+aglaia/.coverage

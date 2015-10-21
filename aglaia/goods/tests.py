@@ -232,14 +232,12 @@ class TestTestCase(TestCase):
         borrow = Borrow.objects.get(id=1)
         self.assertEqual(borrow.single.id, Single.objects.get(id=2).id)
         self.assertEqual(borrow.status, 'ba')
-        self.assertEqual(borrow.user_note, 'hello world')
-        self.assertEqual(borrow.manager_note, '')
+        self.assertEqual(borrow.note, 'hello world')
         self.assertEqual(borrow.account, Account.objects.get(id=1))
         borrow = Borrow.objects.get(id=2)
         self.assertEqual(borrow.single, Single.objects.get(id=3))
         self.assertEqual(borrow.status, 'rej')
-        self.assertEqual(borrow.user_note, 'a+b problem')
-        self.assertEqual(borrow.manager_note, '')
+        self.assertEqual(borrow.note, 'a+b problem')
         self.assertEqual(borrow.account, Account.objects.get(id=1))
 
     def test_borrow_find_filt(self):
@@ -277,12 +275,11 @@ class TestTestCase(TestCase):
 
     def test_borrow_update(self):
         update_content = {
-            'status': 'aa', 'user_note': 'what', 'manager_note': 'where'}
+            'status': 'aa', 'note': 'what'}
         borrow1 = update_borrow(1, update_content)
         borrow2 = Borrow.objects.get(id=1)
         self.assertEqual(borrow1.status, 'aa')
-        self.assertEqual(borrow2.user_note, 'what')
-        self.assertEqual(borrow1.manager_note, 'where')
+        self.assertEqual(borrow2.note, 'what')
 
     def test_borrow_delete_success(self):
         self.assertEqual(delete_borrow(1), True)
@@ -296,42 +293,30 @@ class TestTestCase(TestCase):
 class ViewTestCase(TestCase):
 
     def setUp(self):
-        supergroup = Group(name='supervisor')
-        supergroup.save()
-
-        mnggroup = Group(name='manager')
-        mnggroup.save()
-
-        nmalgroup = Group(name='normal')
-        nmalgroup.save()
-
         supuser = {'user_name': 'superuser', 'password': '123456',
                    'email': 'lihaoda9@163.com',
                    'real_name': 'lhd', 'department': [],
-                   'tel': '12345678',
+                   'tel': '12345678', 'type': 'supervisor',
                    'status': status_authed_key, 'school_id': '0123456789'}
 
         manager = {'user_name': 'manager', 'password': '123456',
-                   'email': 'lihaoda9@163.com',
+                   'email': 'lihaoda9@163.com', 'type': 'manager',
                    'real_name': 'lhd', 'department': [],
                    'tel': '12345678',
                    'status': status_authed_key, 'school_id': '0123456789'}
         normal = {'user_name': 'normal', 'password': '123456',
-                  'email': 'lihaoda9@163.com',
+                  'email': 'lihaoda9@163.com', 'type': 'normal',
                   'real_name': 'lhd', 'department': [],
                   'tel': '12345678',
                   'status': status_authed_key, 'school_id': '0123456789'}
 
         accounts = create_user([supuser, manager, normal])
 
-        add_group(accounts[0].user, 'supervisor')
-        add_group(accounts[0].user, 'manager')
-        add_group(accounts[0].user, 'normal')
+        accounts[1].user.user_permissions.add(
+            Permission.objects.get(codename="goods_auth"))
 
-        add_group(accounts[1].user, 'manager')
-        add_group(accounts[1].user, 'normal')
-
-        add_group(accounts[2].user, 'normal')
+        accounts[2].user.user_permissions.add(
+            Permission.objects.get(codename="normal"))
 
         settings.SEND_MAIL_NOTIFY = False
 
@@ -345,7 +330,10 @@ class ViewTestCase(TestCase):
         self.s1 = ss[0]
         self.s2 = ss[1]
 
-        self.b1 = create_borrow(accounts[2], 'sn1', 'ba', 'hello world')
+        message = Message()
+        message.append({'direction': 'Recv', 'info_type': '',
+                        'user_name': 'normal', 'text': 'hello world'})
+        self.b1 = create_borrow(accounts[2], 'sn1', 'ba', message.tostring())
 
     # -------- show_manage ---------
     def assertIsMessage(self, resp, message):
@@ -491,7 +479,7 @@ class ViewTestCase(TestCase):
 
         b2 = Borrow.objects.get(id=self.b1.id)
         self.assertEqual(b2.status, ACCEPTED_KEY)
-        self.assertEqual(b2.user_note, note)
+        self.assertEqual(Message(b2.note).last()['text'], note)
 
         update_borrow(self.b1.id, {'status': BORROW_AUTHING_KEY})
         update_single(self.s1.id, {'status': BORROWED_KEY})
@@ -537,7 +525,7 @@ class ViewTestCase(TestCase):
 
         b2 = Borrow.objects.get(id=self.b1.id)
         self.assertEqual(b2.status, REJECTED_KEY)
-        self.assertEqual(b2.user_note, note)
+        self.assertEqual(Message(b2.note).last()['text'], note)
 
         wrong_sgl = self.manager.post(
             reverse('goods.views.do_reject_borrow'),
@@ -736,7 +724,7 @@ class ViewTestCase(TestCase):
 
         b2 = Borrow.objects.get(id=self.b1.id)
         self.assertEqual(b2.status, REPAIR_PEND_KEY)
-        self.assertEqual(b2.user_note, note)
+        self.assertEqual(Message(b2.note).last()['text'], note)
 
         wrong_brw = self.manager.post(
             reverse('goods.views.do_accept_repair'),
@@ -782,7 +770,7 @@ class ViewTestCase(TestCase):
 
         b2 = Borrow.objects.get(id=self.b1.id)
         self.assertEqual(b2.status, BORROWED_KEY)
-        self.assertEqual(b2.user_note, note)
+        self.assertEqual(Message(b2.note).last()['text'], note)
 
         wrong_brw = self.manager.post(
             reverse('goods.views.do_reject_repair'),
@@ -828,7 +816,7 @@ class ViewTestCase(TestCase):
 
         b2 = Borrow.objects.get(id=self.b1.id)
         self.assertEqual(b2.status, REPAIRING_KEY)
-        self.assertEqual(b2.user_note, note)
+        self.assertEqual(Message(b2.note).last()['text'], note)
         s2 = Single.objects.get(id=self.s1.id)
         self.assertEqual(s2.status, REPAIRING_KEY)
 
@@ -876,7 +864,7 @@ class ViewTestCase(TestCase):
 
         b2 = Borrow.objects.get(id=self.b1.id)
         self.assertEqual(b2.status, FINISH_REPAIR_KEY)
-        self.assertEqual(b2.user_note, note)
+        self.assertEqual(Message(b2.note).last()['text'], note)
         s2 = Single.objects.get(id=self.s1.id)
         self.assertEqual(s2.status, REPAIRING_KEY)
 
@@ -924,7 +912,7 @@ class ViewTestCase(TestCase):
 
         b2 = Borrow.objects.get(id=self.b1.id)
         self.assertEqual(b2.status, BORROWED_KEY)
-        self.assertEqual(b2.user_note, note)
+        self.assertEqual(Message(b2.note).last()['text'], note)
         s2 = Single.objects.get(id=self.s1.id)
         self.assertEqual(s2.status, BORROWED_KEY)
 
@@ -1071,7 +1059,7 @@ class ViewTestCase(TestCase):
         brw = Borrow.objects.get(single=self.s2)
         self.assertEqual(brw.account.user.username, 'normal')
         self.assertEqual(brw.status, BORROW_AUTHING_KEY)
-        self.assertEqual(brw.manager_note, note)
+        self.assertEqual(Message(brw.note).last()['text'], note)
 
         update_single(self.s2.id, {'status': UNAVALIABLE_KEY})
         correct = self.normal.post(
@@ -1106,7 +1094,7 @@ class ViewTestCase(TestCase):
 
         b2 = Borrow.objects.get(id=self.b1.id)
         self.assertEqual(b2.status, RETURN_AUTHING_KEY)
-        self.assertEqual(b2.manager_note, USER_RETURN_MESSAGE)
+        self.assertEqual(Message(b2.note).last()['text'], USER_RETURN_MESSAGE)
 
         wrong_brw = self.normal.post(
             reverse('goods.views.do_return_goods'),
@@ -1150,7 +1138,7 @@ class ViewTestCase(TestCase):
 
         b2 = Borrow.objects.get(id=self.b1.id)
         self.assertEqual(b2.status, RETURN_AUTHING_KEY)
-        self.assertEqual(b2.manager_note, USER_MISS_MESSAGE)
+        self.assertEqual(Message(b2.note).last()['text'], USER_MISS_MESSAGE)
 
         wrong_brw = self.normal.post(
             reverse('goods.views.do_miss_goods'),
@@ -1196,7 +1184,7 @@ class ViewTestCase(TestCase):
 
         b2 = Borrow.objects.get(id=self.b1.id)
         self.assertEqual(b2.status, REPAIR_APPLY_KEY)
-        self.assertEqual(b2.manager_note, note)
+        self.assertEqual(Message(b2.note).last()['text'], note)
 
         wrong_brw = self.normal.post(
             reverse('goods.views.do_repair_goods'),
