@@ -163,6 +163,10 @@
             {% endif %}
         {% endfor %}
 
+        {% for item in backup_list %}
+            {% include "comp_item.html" with status="backup" %}
+        {% endfor %}
+
         {% for item in borrowing_list %}
             {% if filtdata and not item.flag %}
             {% else %}

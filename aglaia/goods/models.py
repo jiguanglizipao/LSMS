@@ -12,7 +12,6 @@ class ProNameIndexError(Exception):
 class ProValueIndexError(Exception):
     pass
 
-
 AVALIABLE_KEY = 'av'
 AVALIABLE = 'available'
 UNAVALIABLE_KEY = 'un'

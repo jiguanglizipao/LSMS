@@ -6,6 +6,7 @@ from account.models import *
 from account.interface import *
 from computing.models import *
 from log.interface import *
+from aglaia.messages import *
 
 UNKNOWN_ADDR = '0.0.0.0'
 UNKNOWN_PASS = ''
@@ -428,6 +429,11 @@ def packed_update_computing(request, *args, **kwargs):
         desc = kwargs['update_content']
     else:
         desc = args[1]
+        flag = desc['flag']
+        data_content = ''
+        if flag:
+            data_content = desc['data_content']
+        desc = get_flag_log(flag, data_content)
     ret = update_computing(*args, **kwargs)
     create_log('computing', user_id=request.user.id,
                target=ret, action='update computing',

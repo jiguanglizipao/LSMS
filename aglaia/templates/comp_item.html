@@ -1,32 +1,38 @@
-<tr class="resource-item {% if status == "inuse" %}positive{% endif %}" data-request-id="{{ item.id }}">
-  <td>
-    {% if status == "borrowing" %}
-      <i class="orange question icon"></i>借用申请中
-    {% elif status == "inuse" %}
-      <i class="lock icon"></i>使用中
-      {% if item.server_status == "fatal" %}
-        <span>(服务器维护中)</span>
-      {% endif %}
-    {% elif status == "modifying" %}
-      <i class="orange edit icon"></i>修改申请中
-    {% elif status == "returning" %}
-      <i class="orange reply mail icon"></i>归还申请中
-    {% endif %}
-    {% if item.flag == True %}
-      <i class="orange flag icon tip" data-content="重要数据"></i>
-    {% endif %}
-  </td>
-  
-  <td class="description">
-    {{ item.name }}
-  </td>
+<tr class="resource-item
+    {% if status == "inuse" %}positive
+    {% elif status == "backup" %}negative
+    {% endif %}"
+    data-request-id="{{ item.id }}">
+    <td>
+        {% if status == "borrowing" %}
+            <i class="orange question icon"></i>借用申请中
+        {% elif status == "inuse" %}
+            <i class="lock icon"></i>使用中
+        {% elif status == "backup" %}
+            <i class="bell icon"></i>请及时备份数据
+            {% if item.server_status == "fatal" %}
+                <span>(服务器维护中)</span>
+            {% endif %}
+        {% elif status == "modifying" %}
+            <i class="orange edit icon"></i>修改申请中
+        {% elif status == "returning" %}
+            <i class="orange reply mail icon"></i>归还申请中
+        {% endif %}
+        {% if item.flag == True %}
+            <i class="orange flag icon tip" data-content="重要数据"></i>
+        {% endif %}
+    </td>
 
-  <td>
-    {{ item.sn }}
-  </td>
+    <td class="description">
+        {{ item.name }}
+    </td>
 
-  <td>
-    <div class="ui basic tiny button tip" data-content="
+    <td>
+        {{ item.sn }}
+    </td>
+
+    <td>
+        <div class="ui basic tiny button tip" data-content="
       {% if item.type == "real" %}实体机{% else %}虚拟机{% endif %}<br>
       套餐：{{ item.package_name | default:"无" }}<br>
       CPU: {{ item.cpu }}<br>
@@ -36,30 +42,31 @@
       用户名: {{ item.login }}<br>
       初始密码: {{ item.initial_password }}<br>
       IP: {{ item.ip }}<br>
-      是否含有重要数据：{% if item.flag == True %}是<br>数据内容:{{ item.data_content }}<br>{% else%}否<br>{% endif %}
-      ">详细配置</div>
-  </td>
-  <td>
-    {{ item.note }}
-  </td>
-  <td>
-    {% if status == "inuse" %}
-      <button class="ui circular tiny inverted icon teal tip return button" data-content="释放">
-        <i class="unlock icon"></i>
-      </button>
-      <button class="ui circular tiny inverted icon blue tip modify button" data-content="修改">
-          <i class="edit icon"></i>
-      </button>
-    {% if not item.flag %}
-    <button class="ui compact circular mini inverted orange icon button agree-button" data-content="销毁"
-                             data-destiny="{% if item.flag == True %}false{% else %}true{% endif %}"
-                             data-position="top center"
+      是否含有重要数据：{% if item.flag == True %}是<br>数据内容:{{ item.data_content }}<br>{% else %}否<br>{% endif %}
+      ">详细配置
+        </div>
+    </td>
+    <td>
+        {{ item.note }}
+    </td>
+    <td>
+        {% if status == "inuse" or status == "backup" %}
+            <button class="ui circular tiny inverted icon teal tip return button" data-content="释放">
+                <i class="unlock icon"></i>
+            </button>
+            <button class="ui circular tiny inverted icon blue tip modify button" data-content="修改">
+                <i class="edit icon"></i>
+            </button>
+            {% if not item.flag %}
+                <button class="ui compact circular mini inverted orange icon button agree-button" data-content="销毁"
+                        data-destiny="{% if item.flag == True %}false{% else %}true{% endif %}"
+                        data-position="top center"
 
-            data-html='
+                        data-html='
                     <h5 class="ui header">数据内容</h5>
                     <form method="post" action="{% url "computing.views.do_set_flag" %}">
                     <input type="text" name="id" value="{{ item.id }}" hidden>
-                    <input type="text" name="flag" value={%if item.flag %} false {% else %} true {% endif %} hidden>
+                    <input type="text" name="flag" value={% if item.flag %} false {% else %} true {% endif %} hidden>
                     <div class="ui form">
                       <div class="inline field">
                           <!--<label><font color="red">原因</font></label>-->
@@ -74,38 +81,42 @@
                       });
                     </script>
                     ' style="visibility:visible;margin:0;padding:0">
-                  <div type = "submit" class="ui circular tiny inverted icon orange tip miss button" data-content="{% if item.flag == True %}取消{% else %}标记{% endif %}重要数据">
-                      <i class="flag icon"></i>
-                  </div>
-      </button>
-      {% else %}
-        <form method="post" action="{% url "computing.views.do_set_flag" %}" style="display:inline-block;">
-        <input type="text" name="id" value="{{ item.id }}" hidden>
-        <input type="text" name="flag" value={%if item.flag %} false {% else %} true {% endif %} hidden>
-          <button type = "submit" class="ui circular tiny inverted icon orange tip miss button" data-content="{% if item.flag == True %}取消{% else %}标记{% endif %}重要数据">
-              <i class="flag icon"></i>
-          </button>
-        </form>
-      {% endif %}
-      <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-            <input type="hidden" name="id" value="{{ item.id }}">
-            <input type="hidden" name="type" value="computing">
-            <button type="submit" class="ui circular tiny inverted icon teal tip button" data-content="日志">
+                    <div type="submit" class="ui circular tiny inverted icon orange tip miss button"
+                         data-content="{% if item.flag == True %}取消{% else %}标记{% endif %}重要数据">
+                        <i class="flag icon"></i>
+                    </div>
+                </button>
+            {% else %}
+                <form method="post" action="{% url "computing.views.do_set_flag" %}" style="display:inline-block;">
+                    <input type="text" name="id" value="{{ item.id }}" hidden>
+                    <input type="text" name="flag" value={% if item.flag %} false {% else %} true {% endif %} hidden>
+                    <button type="submit" class="ui circular tiny inverted icon orange tip miss button"
+                            data-content="{% if item.flag == True %}取消{% else %}标记{% endif %}重要数据">
+                        <i class="flag icon"></i>
+                    </button>
+                </form>
+            {% endif %}
+            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                <input type="hidden" name="id" value="{{ item.id }}">
+                <input type="hidden" name="type" value="computing">
+                <button type="submit" class="ui circular tiny inverted icon teal tip button" data-content="日志">
+                    <i class="unordered list icon"></i>
+                </button>
+            </form>
+        {% else %}
+            <button class="ui circular tiny inverted icon teal tip disabled button" data-content="释放">
+                <i class="unlock icon"></i>
+            </button>
+            <button class="ui circular tiny inverted icon blue tip disabled button" data-content="修改">
+                <i class="edit icon"></i>
+            </button>
+            <button class="ui circular tiny inverted icon orange tip disabled button"
+                    data-content="{% if item.flag == True %}取消{% else %}标记{% endif %}重要数据"
+                    data-destiny="{% if item.flag == True %}false{% else %}true{% endif %}" data-fuckyou="verymuch">
+                <i class="flag icon"></i></button>
+            <button class="ui circular tiny inverted icon teal disabled tip button" data-content="日志">
                 <i class="unordered list icon"></i>
             </button>
-      </form>
-    {% else %}
-      <button class="ui circular tiny inverted icon teal tip disabled button" data-content="释放">
-        <i class="unlock icon"></i>
-      </button>
-      <button class="ui circular tiny inverted icon blue tip disabled button" data-content="修改">
-          <i class="edit icon"></i>
-      </button>
-      <button class="ui circular tiny inverted icon orange tip disabled button" data-content="{% if item.flag == True %}取消{% else %}标记{% endif %}重要数据" data-destiny="{% if item.flag == True %}false{% else %}true{% endif %}" data-fuckyou="verymuch">
-          <i class="flag icon"></i></button>
-      <button class="ui circular tiny inverted icon teal disabled tip button" data-content="日志">
-                <i class="unordered list icon"></i>
-      </button>
-    {% endif %}
-  </td>
+        {% endif %}
+    </td>
 </tr>

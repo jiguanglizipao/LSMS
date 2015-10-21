@@ -24,24 +24,25 @@ DEBUG = True
 TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = ['*']
-
 # import ldap
 # from django_auth_ldap.config import LDAPSearch
 #
 # AUTHENTICATION_BACKENDS = (
-# 	'django_auth_ldap.backend.LDAPBackend',
-# 	'django.contrib.auth.backends.ModelBackend',
+#     'django_auth_ldap.backend.LDAPBackend',
+#     'django.contrib.auth.backends.ModelBackend',
 # )
 # AUTH_LDAP_SERVER_URI = 'ldap://192.168.56.101:389'
 # AUTH_LDAP_BIND_DN = 'CN=admin,DC=lsms,DC=com'
 # AUTH_LDAP_BIND_PASSWORD = "lsms"
-# AUTH_LDAP_USER_SEARCH = LDAPSearch("OU=People,DC=lsms,DC=com", ldap.SCOPE_SUBTREE, "(&(objectClass=person)(uid=%(user)s))")
+# AUTH_LDAP_USER_SEARCH = LDAPSearch(
+#     "OU=People,DC=lsms,DC=com", ldap.SCOPE_SUBTREE,
+#     "(&(objectClass=person)(uid=%(user)s))")
 # AUTH_LDAP_USER_ATTR_MAP = {
-# 	"username": "uid",
-# 	"password": "userPassword",
-# 	"first_name": "givenName",
-# 	"last_name": "sn",
-# 	"email": "mail",
+#     "username": "uid",
+#     "password": "userPassword",
+#     "first_name": "givenName",
+#     "last_name": "sn",
+#     "email": "mail",
 # }
 # AUTH_LDAP_ALWAYS_UPDATE_USER = True
 
@@ -74,11 +75,8 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'aglaia.urls'
 
 WSGI_APPLICATION = 'aglaia.wsgi.application'
-
-
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
 
 DATABASES = {
     'default': {
@@ -86,13 +84,12 @@ DATABASES = {
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'aglaia',
-                'USER': 'root',
-                'PASSWORD': 'root',
-                'HOST': '127.0.0.1',
-                'PORT': '3306',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
@@ -109,23 +106,19 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-
 # Template directories
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
-
 # Some redirect url
 
 ROOT_ADDRESS = 'http://166.111.206.89/'
@@ -133,7 +126,6 @@ ROOT_ADDRESS = 'http://166.111.206.89/'
 LOGIN_URL = '/account/signin/'
 
 ACCOUNT_HOME_URL = '/account/'
-
 
 # E-mail settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

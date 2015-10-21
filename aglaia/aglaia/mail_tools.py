@@ -81,7 +81,7 @@ def send_multi_mails(accounts_list, subject, message):
 
 
 def send_managers_mail(use_thread, subject, message):
-    ms = Account.objects.filter(user__groups=Group.objects.get(name='manager'))
+    ms = Account.objects.filter(type='manager')
 
     # database query before creating thread
     length = len(ms)
@@ -95,7 +95,6 @@ def send_managers_mail(use_thread, subject, message):
 
 def send_all_user_mail(subject, message):
     send_multi_mails(Account.objects.all(), subject, message)
-
 
 # User operation, send mail to managers
 CompRequestMail = 0

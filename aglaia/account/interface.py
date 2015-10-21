@@ -14,7 +14,6 @@ class FormatInvalidError(Exception):
 class UserDoesNotExistError(Exception):
     pass
 
-
 username_regex = '''[0-9A-Za-z]{6,20}'''
 password_regex = '''.{6,20}'''
 tel_regex = '''[0-9]{0,30}'''
@@ -82,7 +81,12 @@ def create_user(user_list):
 
             if 'type' in account:
                 if account['type'] not in {
-                        'manager', 'normal', 'none', 'special', }:
+                    'supervisor',
+                    'manager',
+                    'normal',
+                    'none',
+                    'special',
+                }:
                     raise FormatInvalidError("Format of type is invalid")
                 type = account['type']
 
@@ -255,7 +259,7 @@ def update_user(account_id, update_content):
             account.school_id = update_content['school_id']
         if 'type' in update_content:
             if update_content['type'] not in {
-                    'manager', 'normal', 'none', 'special', }:
+                    'supervisor', 'manager', 'normal', 'none', 'special', }:
                 raise FormatInvalidError("Format of type is invalid")
             account.type = update_content['type']
         if 'department' in update_content:
