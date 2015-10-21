@@ -373,8 +373,8 @@ def do_set_flag(request):
 				request, id, {
 					'flag': flag, 'data_content': request.POST['content']})
 		else:
-			packed_update_computing(request, id, {'flag': flag})
-		comp = Computing.objects.get(id=id)
+			packed_update_computing(request, id, {'status': BORROWED_KEY, 'flag': flag})
+			comp = Computing.objects.get(id=id)
 		return HttpResponseRedirect(reverse('goods.views.show_borrow'))
 	except Exception as e:
 		return show_message(request, 'Set flag failed: ' + e.__str__())
@@ -410,7 +410,6 @@ def show_comp_verify(request):
 	modif = packed_find_computing(request, {'status': MODIFY_APPLY_KEY}, {})
 	backup = packed_find_computing(request, {'status': DESTROYING_KEY}, {})
 
-
 	packs = Package.objects.all()
 	cont = {}
 
@@ -443,7 +442,6 @@ def show_comp_verify(request):
 	cont['backup_num'] = len(backup_list)
 
 	return render(request, 'calc_resource.html', cont)
-
 
 
 @method_required('GET')
@@ -503,7 +501,6 @@ def show_computing_list(request):
 			request,
 			'Error when show computings: ' +
 			e.__str__())
-
 
 
 @method_required('POST')
