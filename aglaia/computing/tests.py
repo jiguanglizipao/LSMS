@@ -491,7 +491,6 @@ class TestTestCase(TestCase):
                     # 'memory': 1024, 'disk': 1024, 'os': 'windows',
                     'disk_type': 's', 'name': 'package1'}
         self.assertRaises(Exception, create_package, package1)
-
     # create_package(package1)
 
     def test_package_update_success(self):

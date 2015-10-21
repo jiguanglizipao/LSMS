@@ -82,7 +82,6 @@ def get_account_loglist_context(id, is_actor):
             reverse=False)
     return get_context_list(l, get_context_log)
 
-
 log_list_func = {
     'goods': get_goods_loglist_context,
     'computing': get_computing_loglist_context,
@@ -100,6 +99,7 @@ def show_log(request):
         if 'is_actor' in g:
             is_actor = g['is_actor']
         llist = log_list_func[g['type']](g['id'], is_actor)
+
         return render(request, 'log.html', {
             'user': get_context_user(request.user),
             'logs': llist,

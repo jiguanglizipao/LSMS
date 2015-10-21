@@ -90,6 +90,10 @@
             <th>配置</th>
             <th>备注</th>
             <th>操作</th>
+            <th><div class="ui icon blue button mini send-mail" data-variation="inverted" data-content="发送邮件">
+                <i class="icon mail circle"></i>
+            </div>
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -98,7 +102,7 @@
                 <tr class="positive">
                     <td class="goods-sn">{{ goods.sn }}</td>
                     <td class="goods-name">{{ goods.name }}</td>
-                    <td>在库</td>
+                    <td class="good-status" data-value='{{ goods.status }}'>在库</td>
                     <td class="goods-typename">{{ goods.type_name }}</td>
                     <td>
                         <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
@@ -130,12 +134,16 @@
                             </button>
                         </form>
                     </td>
+                    <td>
+                        <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
+                             data-content="选择"><i class="icon star sign"></i></div>
+                    </td>
                 </tr>
             {% elif goods.status == "unavailable" %}
                 <tr>
                     <td class="goods-sn">{{ goods.sn }}</td>
                     <td class="goods-name">{{ goods.name }}</td>
-                    <td>不在库</td>
+                    <td class="good-status" data-value='{{ goods.status }}'>不在库</td>
                     <td class="goods-typename">{{ goods.type_name }}</td>
                     <td>
                         <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
@@ -167,12 +175,16 @@
                             </button>
                         </form>
                     </td>
+                    <td>
+                        <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
+                             data-content="选择"><i class="icon star sign"></i></div>
+                    </td>
                 </tr>
             {% elif goods.status == "borrowed" %}
                 <tr>
                     <td class="goods-sn">{{ goods.sn }}</td>
                     <td class="goods-name">{{ goods.name }}</td>
-                    <td>已借出</td>
+                    <td class="good-status" data-value='{{ goods.status }}'>已借出</td>
                     <td class="goods-typename">{{ goods.type_name }}</td>
                     <td>
                         <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
@@ -204,12 +216,16 @@
                             </button>
                         </form>
                     </td>
+                    <td>
+                        <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
+                             data-content="选择"><i class="icon star sign"></i></div>
+                    </td>
                 </tr>
             {% elif goods.status == "destroyed" %}
                 <tr class="disabled">
                     <td class="goods-sn">{{ goods.sn }}</td>
                     <td class="goods-name">{{ goods.name }}</td>
-                    <td>已销毁</td>
+                    <td class="good-status" data-value='{{ goods.status }}'>已销毁</td>
                     <td class="goods-typename">{{ goods.type_name }}</td>
                     <td>
                         <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
@@ -241,12 +257,16 @@
                             </button>
                         </form>
                     </td>
+                    <td>
+                        <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
+                             data-content="选择"><i class="icon star sign"></i></div>
+                    </td>
                 </tr>
             {% elif goods.status == "lost" %}
                 <tr>
                     <td class="goods-sn">{{ goods.sn }}</td>
                     <td class="goods-name">{{ goods.name }}</td>
-                    <td>已挂失</td>
+                    <td class="good-status" data-value='{{ goods.status }}'>已挂失</td>
                     <td class="goods-typename">{{ goods.type_name }}</td>
                     <td>
                         <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
@@ -278,12 +298,16 @@
                             </button>
                         </form>
                     </td>
+                    <td>
+                        <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
+                             data-content="选择"><i class="icon star sign"></i></div>
+                    </td>
                 </tr>
             {% elif goods.status == "repairing" %}
                 <tr>
                     <td class="goods-sn">{{ goods.sn }}</td>
                     <td class="goods-name">{{ goods.name }}</td>
-                    <td>维修中</td>
+                    <td class="good-status" data-value='{{ goods.status }}'>维修中</td>
                     <td class="goods-typename">{{ goods.type_name }}</td>
                     <td>
                         <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
@@ -315,6 +339,10 @@
                             </button>
                         </form>
                     </td>
+                    <td>
+                        <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
+                             data-content="选择"><i class="icon star sign"></i></div>
+                    </td>
                 </tr>
             {% endif %}
         {% endfor %}
@@ -322,6 +350,26 @@
     </table>
 
     <!-- 提价提交信息 -->
+
+    <div class="ui small modal" id="mail-action">
+        <i class="close icon"></i>
+        <div class="header">通知内容</div>
+        <div class="ui form" style="padding:2em">
+            <form method="post" action='{% url "goods.views.MailNotify" %}' id="mail-action-form" class="content">
+                <input type="text" id="mail-content" name="mail-content" placeholder="通知内容"/>
+                <input type="hidden" name="mail-targets" class="mail-targets" value=""/>
+            </form>
+        </div>
+        <div class="actions">
+            <div class="ui black button" id="mail-action-cancel">
+                取消
+            </div>
+            <div class="ui positive right labeled icon button" id="mail-action-confirm">
+                确认<span id="mail-action-confirm-content"></span><!--动态生成-->
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
 
     <!--<form method="post" action="" id="post-action-form"> <!-- 后台接口 -->
     <div class="ui small modal" id="post-action">
@@ -386,10 +434,40 @@
         var do_set_unavailable = '{% url "goods.views.do_set_unavailable" %}';
         var do_set_available = '{% url "goods.views.do_set_available" %}';
         var do_destroy = '{% url "goods.views.do_destroy" %}';
+
         $(function () {
             $('.ui.dropdown').dropdown();
             $('.config-detail').popup({
                 on: 'hover'
+            });
+            $('.send-mail').popup({
+                on: 'hover'
+            });
+            $('.choose-mail').popup({
+                on: 'hover'
+            });
+            $('.choose-mail').click(function () {
+                if($(this).attr('data-value')=='false'){
+                    if($(this).parent().parent().children('.good-status').attr('data-value')=='borrowed'){
+                        $(this).attr('data-value','true');
+                        $(this).parent().parent().css("background-color","#C8C8E3");
+                    }
+                }
+                else{
+                    $(this).attr('data-value','false');
+                    $(this).parent().parent().css("background-color","white");
+                }
+            });
+            $('.send-mail').click(function () {
+                $('.modal#mail-action').modal('show');
+                var ans = "";
+                for(var i=0;i<$('.choose-mail').length;++i){
+                    if($($('.choose-mail')[i]).attr('data-value')=='true'){
+                        ans += $($('.choose-mail')[i]).parent().parent().children().children('.goods-id').text();
+                        ans += "&";
+                    }
+                }
+                $('.mail-targets').attr('value',ans);
             });
             $('.borrow-goods').popup({
                 on: 'hover'
@@ -445,7 +523,10 @@
             });
             $('#post-action-confirm').click(function () {
                 $('#post-action-form').trigger('submit');
-            })
+            });
+            $('#mail-action-confirm').click(function () {
+                $('#mail-action-form').trigger('submit');
+            });
         });
 
     </script>

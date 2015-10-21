@@ -96,7 +96,6 @@ def send_managers_mail(use_thread, subject, message):
 def send_all_user_mail(subject, message):
     send_multi_mails(Account.objects.all(), subject, message)
 
-
 # User operation, send mail to managers
 CompRequestMail = 0
 CompReturnMail = CompRequestMail + 1

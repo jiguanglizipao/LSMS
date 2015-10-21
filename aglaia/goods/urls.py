@@ -38,4 +38,5 @@ urlpatterns = patterns("goods.views",
                        url(r"^do_start_apply_goods", "do_start_apply_goods"),
                        url(r"^do_finish_apply_goods", "do_finish_apply_goods"),
                        url(r"^do_input_apply_goods", "do_input_apply_goods"),
+                       url(r"^MailNotify", "MailNotify"),
                        )

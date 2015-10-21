@@ -14,7 +14,6 @@ class FormatInvalidError(Exception):
 class UserDoesNotExistError(Exception):
     pass
 
-
 username_regex = '''[0-9A-Za-z]{6,20}'''
 password_regex = '''.{6,20}'''
 tel_regex = '''[0-9]{0,30}'''

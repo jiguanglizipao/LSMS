@@ -24,7 +24,6 @@ DEBUG = True
 TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = ['*']
-
 # import ldap
 # from django_auth_ldap.config import LDAPSearch
 #
@@ -76,11 +75,8 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'aglaia.urls'
 
 WSGI_APPLICATION = 'aglaia.wsgi.application'
-
-
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
 
 DATABASES = {
     'default': {
@@ -94,7 +90,6 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
@@ -111,8 +106,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
@@ -121,13 +114,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-
 # Template directories
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
-
 # Some redirect url
 
 ROOT_ADDRESS = 'http://166.111.206.89/'
@@ -135,7 +126,6 @@ ROOT_ADDRESS = 'http://166.111.206.89/'
 LOGIN_URL = '/account/signin/'
 
 ACCOUNT_HOME_URL = '/account/'
-
 
 # E-mail settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

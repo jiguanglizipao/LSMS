@@ -33,7 +33,6 @@ sgl_sta_map = {
     'repairing': REPAIRING_KEY,
 }
 
-
 # ===============================================
 # ===============================================
 # ===============================================
@@ -957,7 +956,6 @@ def do_destroy_goods(request):
     except Exception as e:
         return show_message(request, 'Destroy apply failed: ' + e.__str__())
 
-
 ##############################
 
 @method_required('POST')
@@ -991,7 +989,6 @@ def do_repair_goods(request):
 
     except Exception as e:
         return show_message(request, 'Repair apply failed: ' + e.__str__())
-
 
 # ===============================================
 # ===============================================
@@ -1250,3 +1247,18 @@ def show_borrow_list(request):
         })
     except Exception as e:
         return show_message(request, 'Error when show borrows: ' + e.__str__())
+
+@method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def MailNotify(request):
+    numberstrs = request.POST['mail-targets'].split('&')
+    print(request.POST['mail-content'])
+    for numberstr in numberstrs:
+        try:
+            itemno = int(numberstr)
+            brw = Borrow.objects.get(id=itemno)
+            print(brw.account)
+            send_user_mail(brw.account, 'Aglaia Item Notify', request.POST['mail-content'])
+        except:
+            pass
+    return HttpResponseRedirect(reverse("goods.views.show_list"))
