@@ -1103,6 +1103,9 @@ def show_borrow(request):
     modif = packed_find_computing(
         request, {'account': account, 'status': computing.models.MODIFY_APPLY_KEY}, {})
 
+    backup = packed_find_computing(
+        request, {'account': account, 'status': computing.models.DESTROYING_KEY}, {})
+
     packs = Package.objects.all()
     pack_list = get_context_list(packs, get_pack_name)
     cont['package_list'] = pack_list
@@ -1116,6 +1119,7 @@ def show_borrow(request):
     cont['inuse_list'] = get_context_list(inuse, get_context_computing)
     cont['modifying_list'] = get_context_list(modif, get_context_computing)
     cont['returning_list'] = get_context_list(ret, get_context_computing)
+    cont['backup_list'] = get_context_list(backup,get_context_computing)
 
     brws = packed_find_borrow(request, {'account': account}, {})
     brwing = brws.filter(status=BORROW_AUTHING_KEY)
