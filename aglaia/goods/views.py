@@ -33,6 +33,7 @@ sgl_sta_map = {
     'repairing': REPAIRING_KEY,
 }
 
+
 # ===============================================
 # ===============================================
 # ===============================================
@@ -87,6 +88,18 @@ def get_context_apply_goods(brw):
     dc['name'] = brw.name
     dc['applyer_name'] = brw.account.user.username
     dc['note'] = brw.note  # Message(brw.note).last()['text']
+    # OnionYST
+    dc['type_name'] = brw.type_name
+    pro_names = brw.pro_names.split(sep)
+    pro_values = brw.pro_values.split(sep)
+    props = []
+    for i in range(0, len(pro_names)):
+        if pro_names[i]:
+            props.append({
+                'pro_name': pro_names[i],
+                'pro_value': pro_values[i],
+            })
+    dc['prop'] = props
     return dc
 
 
@@ -164,15 +177,11 @@ def apply_goods(request):
 
         sns = request.POST['sn'].split(',')
         account = Account.objects.get(user=request.user)
+
         packed_create_apply_goods(
-            request,
-            name,
-            pro_name,
-            pro_value,
-            sns,
-            GOODS_APPLY_KEY,
-            account,
-            note)
+            request, name, type_name, pro_name, pro_value,
+            sns, GOODS_APPLY_KEY, account, note
+        )
 
         return HttpResponseRedirect(reverse("goods.views.show_list"))
     except KeyError as e:
@@ -641,10 +650,8 @@ def do_accept_apply_goods(request):
             return show_message(
                 request, 'This Request is not in a apply_goods apply satus!')
 
-        packed_update_apply_goods(request,
-                                  id,
-                                  {'status': GOODS_APPLY_PEND_KEY,
-                                   'manager_note': note},
+        packed_update_apply_goods(request, id,
+                                  {'status': GOODS_APPLY_PEND_KEY, 'note': note},
                                   log=get_accept_apply_goods_log())
         # sent_notify_mail
 
@@ -670,10 +677,8 @@ def do_reject_apply_goods(request):
             return show_message(
                 request, "This Request is not in a apply_goods apply status!")
 
-        packed_update_apply_goods(request,
-                                  id,
-                                  {'status': GOODS_APPLY_REJECT_KEY,
-                                   'manager_note': note},
+        packed_update_apply_goods(request, id,
+                                  {'status': GOODS_APPLY_REJECT_KEY, 'note': note},
                                   log=get_reject_apply_goods_log())
         # send_notify_mail
 
@@ -699,10 +704,8 @@ def do_start_apply_goods(request):
             return show_message(
                 request, "This Request is not in a apply_goods apply status!")
 
-        packed_update_apply_goods(request,
-                                  id,
-                                  {'status': GOODS_APPLYING_KEY,
-                                   'manager_note': note},
+        packed_update_apply_goods(request, id,
+                                  {'status': GOODS_APPLYING_KEY, 'note': note},
                                   log=get_apply_goods_applying_log())
         # send_notify_mail
 
@@ -728,10 +731,8 @@ def do_finish_apply_goods(request):
             return show_message(
                 request, "This Request is not in a apply_goods apply status!")
 
-        packed_update_apply_goods(request,
-                                  id,
-                                  {'status': FINISH_GOODS_APPLY_KEY,
-                                   'manager_note': note},
+        packed_update_apply_goods(request, id,
+                                  {'status': FINISH_GOODS_APPLY_KEY, 'note': note},
                                   log=get_finish_goods_apply_log())
         # send_notify_mail
 
@@ -747,10 +748,46 @@ def do_finish_apply_goods(request):
 @method_required('POST')
 @permission_required(PERM_GOODS_AUTH)
 def do_input_apply_goods(request):
-    return show_message(
-        request,
-        'This function is to automatically add all purchased objects to the database. '
-        'Needs to be completed.')
+    try:
+        id = request.POST['id']
+        sn = request.POST['sn']
+        name = request.POST['name']
+        type_name = request.POST['type_name']
+        note = request.POST['note']
+
+        apgd = Apply_Goods.objects.get(id=id)
+
+        if packed_find_single(request, {'sn': sn}, {}):
+            raise Exception("sn already exists")
+        tp = packed_find_gtypes(request, type_name)
+        if tp and tp[0].get_all_pros() != apgd.pro_names.split(sep):
+            raise Exception("type cannot use this name")
+        if not apgd.status == FINISH_GOODS_APPLY_KEY:
+            return show_message(request, "This Request is not in a apply_goods finish status!")
+
+        packed_update_apply_goods(
+            request, id, {
+                'status': INPUT_GOODS_APPLY_KEY, 'note': note, 'sn': sn, 'name': name, 'type_name': type_name
+            }, log=get_input_goods_apply_log()
+        )
+
+        type_key = []
+        for name in apgd.pro_names.split(sep):
+            if name:
+                type_key.append(name)
+        tp = packed_create_gtype(request, type_name, type_key)
+        type_value = []
+        for value in apgd.pro_values.split(sep):
+            if value:
+                type_value.append(value)
+        gd = packed_create_goods(request, name, tp, type_value)
+        sns = sn.split(',')
+        packed_create_single(request, gd, sns, AVALIABLE_KEY, '')
+
+        # send_notify_mail
+        return HttpResponseRedirect(reverse('goods.views.show_manage'))
+    except Exception as e:
+        return show_message(request, 'Input Apply_Goods failed: ' + e.__str__())
 
 
 # -------------------------
@@ -956,6 +993,7 @@ def do_destroy_goods(request):
     except Exception as e:
         return show_message(request, 'Destroy apply failed: ' + e.__str__())
 
+
 ##############################
 
 @method_required('POST')
@@ -989,6 +1027,7 @@ def do_repair_goods(request):
 
     except Exception as e:
         return show_message(request, 'Repair apply failed: ' + e.__str__())
+
 
 # ===============================================
 # ===============================================
@@ -1154,7 +1193,7 @@ def show_borrow(request):
     cont['filtdata'] = False
     if 'filtdata' in request.POST:
         if request.POST['filtdata'] == 'true' or request.POST[
-                'filtdata'] == 'True' or request.POST['filtdata'] == 'TRUE':
+            'filtdata'] == 'True' or request.POST['filtdata'] == 'TRUE':
             print("true!")
             cont['filtdata'] = True
 
@@ -1212,6 +1251,12 @@ def show_manage(request):
     gaing_list = get_context_list(gaing, get_context_apply_goods)
     gaed_list = get_context_list(gaed, get_context_apply_goods)
 
+    # only check
+    gainput = packed_find_apply_goods(
+        request, {'status': INPUT_GOODS_APPLY_KEY}, {}
+    )
+    gainput_list = get_context_list(gainput, get_context_apply_goods)
+
     return render(request, 'goods_manage.html', {
         'user': get_context_user(request.user),
         'borrow_requests': b_req_list,
@@ -1227,6 +1272,9 @@ def show_manage(request):
         'goods_apply_requests': ga_pend_list,
         'goods_applying_requests': gaing_list,
         'goods_applied_requests': gaed_list,
+
+        # only check
+        'goods_input_requests': gainput_list,
 
         'perm_list': request.user.get_all_permissions(),
     })
@@ -1247,6 +1295,7 @@ def show_borrow_list(request):
         })
     except Exception as e:
         return show_message(request, 'Error when show borrows: ' + e.__str__())
+
 
 @method_required('POST')
 @permission_required(PERM_GOODS_AUTH)

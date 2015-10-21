@@ -5,7 +5,7 @@ from goods.models import *
 from log.interface import *
 from aglaia.message_center import Message
 
-sep = "!!$$@#@#"
+# sep = "!!$$@#@#"
 
 
 class GTypeDoesNotExistError(Exception):
@@ -229,7 +229,7 @@ def find_apply(filt, exclude):
 
 # OnionYST
 def update_apply_goods(apply_id, update_content):
-    correct_keys = ['status', 'user_note', 'manager_note']
+    correct_keys = ['status', 'note', 'sn', 'name', 'type_name']
     for key in update_content:
         if not (key in correct_keys):
             raise KeyError("The key: %s is wrong", key)
@@ -241,10 +241,14 @@ def update_apply_goods(apply_id, update_content):
     try:
         if 'status' in update_content:
             g_apply.status = update_content['status']
-        if 'user_note' in update_content:
-            g_apply.user_note = update_content['user_note']
-        if 'manager_note' in update_content:
-            g_apply.manager_note = update_content['manager_note']
+        if 'note' in update_content:
+            g_apply.note = update_content['note']
+        if 'sn' in update_content:
+            g_apply.sn = update_content['sn']
+        if 'name' in update_content:
+            g_apply.name = update_content['name']
+        if 'type_name' in update_content:
+            g_apply.type_name = update_content['type_name']
         g_apply.save()
         return g_apply
     except:
@@ -267,15 +271,8 @@ def packed_create_goods(request, *args, **kwargs):
     return create_goods(*args, **kwargs)
 
 
-def packed_create_apply_goods(
-        request,
-        name,
-        pro_name,
-        pro_value,
-        sns,
-        status,
-        account,
-        note):
+# OnionYST do not use sn for check!
+def packed_create_apply_goods(request, name, type_name, pro_name, pro_value, sns, status, account, note):
     pro_values = ''
     for v in pro_value:
         pro_values += (v + sep)
@@ -286,16 +283,31 @@ def packed_create_apply_goods(
 
     for sn in sns:
         if sn:
-            goods = Apply_Goods(
-                name=name,
-                pro_values=pro_values,
-                pro_names=pro_names,
-                status=status,
-                account=account,
-                note=note,
-                sn=sn)
+            goods = Apply_Goods(name=name, type_name=type_name, pro_values=pro_values, pro_names=pro_names,
+                                status=status, account=account, note=note, sn=sn)
             goods.save()
             return goods
+
+
+def find_single(filt, exclude):
+    correct_keys = ['sn']
+    for key in filt.keys():
+        if not (key in correct_keys):
+            raise KeyError("The key: %s is wrong", key)
+    q = Single.objects.all()
+    try:
+        if 'sn' in filt:
+            q = q.filter(sn=filt['sn'])
+
+        if 'sn' in exclude:
+            q = q.exclude(sn=exclude['sn'])
+        return q
+    except Exception:
+        raise Exception("Error in find single")
+
+
+def packed_find_single(request, *args, **kwargs):
+    return find_single(*args, **kwargs)
 
 
 def packed_find_goods(request, *args, **kwargs):

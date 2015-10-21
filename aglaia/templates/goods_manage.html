@@ -5,96 +5,95 @@
 {% block title %}实物资源管理{% endblock %}
 
 {% block leftside %}
-    <div class="ui vertical menu">
-        <div class="header item">
-            <i class="cloud icon"></i>
-            实物资源管理
-        </div>
-        <div class="item">
-            <div class="menu">
-                <a href="#b-r" class="item">
-                    借用请求列表
-                    <div class="ui label">{{ borrow_requests|length }}</div>
-                </a>
-                <a href="#r-r" class="item">
-                    归还请求列表
-                    <div class="ui label">{{ return_requests|length }}</div>
-                </a>
-                <a href="#bp-r" class="item">
-                    已同意借用的请求列表
-                    <div class="ui label">{{ borrow_pending_requests|length }}</div>
-                </a>
-                <a href="#rp-r" class="item">
-                    已同意归还的请求列表
-                    <div class="ui label">{{ return_pending_requests|length }}</div>
-                </a>
-                <a href="#tr-r" class="item">
-                    待审核维修的请求列表
-                    <div class="ui label">{{ torepair_requests|length }}</div>
-                </a>
-                <a href="#rr-r" class="item">
-                    已审核维修的请求列表
-                    <div class="ui label">{{ repair_requests|length }}</div>
-                </a>
-                <a href="#ri-r" class="item">
-                    维修中的请求列表
-                    <div class="ui label">{{ repairing_requests|length }}</div>
-                </a>
-                <a href="#rd-r" class="item">
-                    维修完成的请求列表
-                    <div class="ui label">{{ repaired_requests|length }}</div>
-                </a>
-                <a href="#td-r" class="item">
-                    待审核销毁的请求列表
-                    <div class="ui label">{{ todestroy_requests|length }}</div>
-                </a>
-	            <a href="#tga-r" class="item">
-                    待审核采购的请求列表
-                    <div class="ui label">{{ togoods_apply_requests|length }}</div>
-                </a>
-				<a href="#ga-r" class="item">
-					已同意采购的请求列表
-					<div class="ui label">{{ goods_apply_requests|length }}</div>
-				</a>
-				<a href="#gai-r" class="item">
-					采购中的请求列表
-					<div class="ui label">{{ goods_applying_requests|length }}</div>
-				</a>
-				<a href="#gad-r" class="item">
-					采购完成的请求列表
-					<div class="ui label">{{ goods_applied_requests|length }}</div>
-				</a>
-
-            </div>
+<div class="ui vertical menu">
+    <div class="header item">
+        <i class="cloud icon"></i>
+        实物资源管理
+    </div>
+    <div class="item">
+        <div class="menu">
+            <a href="#b-r" class="item">
+                借用请求列表
+                <div class="ui label">{{ borrow_requests|length }}</div>
+            </a>
+            <a href="#r-r" class="item">
+                归还请求列表
+                <div class="ui label">{{ return_requests|length }}</div>
+            </a>
+            <a href="#bp-r" class="item">
+                已同意借用的请求列表
+                <div class="ui label">{{ borrow_pending_requests|length }}</div>
+            </a>
+            <a href="#rp-r" class="item">
+                已同意归还的请求列表
+                <div class="ui label">{{ return_pending_requests|length }}</div>
+            </a>
+            <a href="#tr-r" class="item">
+                待审核维修的请求列表
+                <div class="ui label">{{ torepair_requests|length }}</div>
+            </a>
+            <a href="#rr-r" class="item">
+                已审核维修的请求列表
+                <div class="ui label">{{ repair_requests|length }}</div>
+            </a>
+            <a href="#ri-r" class="item">
+                维修中的请求列表
+                <div class="ui label">{{ repairing_requests|length }}</div>
+            </a>
+            <a href="#rd-r" class="item">
+                维修完成的请求列表
+                <div class="ui label">{{ repaired_requests|length }}</div>
+            </a>
+            <a href="#td-r" class="item">
+                待审核销毁的请求列表
+                <div class="ui label">{{ todestroy_requests|length }}</div>
+            </a>
+            <a href="#tga-r" class="item">
+                待审核采购的请求列表
+                <div class="ui label">{{ togoods_apply_requests|length }}</div>
+            </a>
+            <a href="#ga-r" class="item">
+                已同意采购的请求列表
+                <div class="ui label">{{ goods_apply_requests|length }}</div>
+            </a>
+            <a href="#gai-r" class="item">
+                采购中的请求列表
+                <div class="ui label">{{ goods_applying_requests|length }}</div>
+            </a>
+            <a href="#gad-r" class="item">
+                采购完成的请求列表
+                <div class="ui label">{{ goods_applied_requests|length }}</div>
+            </a>
         </div>
     </div>
+</div>
 {% endblock %}
 
 {% block content %}
-    <!--借用请求列表-->
-    {% if borrow_requests %}
-        <h3 id="b-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">借用</font>请求列表</h3>
-        <table class="ui small segment table attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物</th>
-                <th>借用者</th>
-                <th>说明</th>
-                <th>操作</th>
-            </tr>
+<!--借用请求列表-->
+{% if borrow_requests %}
+<h3 id="b-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">借用</font>请求列表</h3>
+<table class="ui small segment table attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物</th>
+        <th>借用者</th>
+        <th>说明</th>
+        <th>操作</th>
+    </tr>
 
-            </thead>
-            <tbody>
-            {% for borrow in borrow_requests %}
-                <tr>
-                    <td>{{ borrow.sn }}</td>
-                    <td>{{ borrow.goods_name }}</td>
-                    <td>{{ borrow.borrower_name }}</td>
-                    <td>{{ borrow.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+    </thead>
+    <tbody>
+    {% for borrow in borrow_requests %}
+    <tr>
+        <td>{{ borrow.sn }}</td>
+        <td>{{ borrow.goods_name }}</td>
+        <td>{{ borrow.borrower_name }}</td>
+        <td>{{ borrow.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">同意借用</h5>
 		                  <form method="post" action="{% url "goods.views.do_accept_borrow" %}">
@@ -121,10 +120,10 @@
 		                  </script>
 	              	 </span>
 	          '>
-                            借出
-                        </a>
-                        <a class="negative ui tiny circular button reject-button" data-variation="inverted"
-                           data-position="top center" data-html='
+                借出
+            </a>
+            <a class="negative ui tiny circular button reject-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">拒绝借用</h5>
 		                  <form  method="post" action="{% url "goods.views.do_reject_borrow" %}">
@@ -151,39 +150,39 @@
 		                  </script>
 	              	 </span>
 	              	 '>
-                            拒绝
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="ui divider"></div>
-    {% endif %}
+                拒绝
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
 
-    <!--归还请求列表-->
-    {% if return_requests %}
-        <h3 id="r-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">归还</font>请求列表</h3>
-        <table class="ui table segment small attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物</th>
-                <th>借用者</th>
-                <th>说明</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for return in return_requests %}
-                <tr>
-                    <td>{{ return.sn }}</td>
-                    <td>{{ return.goods_name }}</td>
-                    <td>{{ return.borrower_name }}</td>
-                    <td>{{ return.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+<!--归还请求列表-->
+{% if return_requests %}
+<h3 id="r-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">归还</font>请求列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物</th>
+        <th>借用者</th>
+        <th>说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for return in return_requests %}
+    <tr>
+        <td>{{ return.sn }}</td>
+        <td>{{ return.goods_name }}</td>
+        <td>{{ return.borrower_name }}</td>
+        <td>{{ return.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">同意归还</h5>
 		                  <form  method="post" action="{% url "goods.views.do_accept_return" %}">
@@ -211,8 +210,8 @@
 		                  </script>
 	              	 </span>
 	                  '>归还</a>
-                        <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+            <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">物品挂失</h5>
 		                  <form  method="post" action="{% url "goods.views.do_accept_return" %}">
@@ -240,37 +239,37 @@
 		                  </script>
 	              	 </span>
 	                  '>挂失</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-        <div class="ui divider"></div>
-    {% endif %}
-    <!--已同意借用的请求列表-->
-    {% if borrow_pending_requests %}
-        <h3 id="bp-r" class="ui header top attached" style="margin-top:10px">已同意<font color="#F05940">借用</font>的列表</h3>
-        <table class="ui table segment small attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物</th>
-                <th>借用者</th>
-                <th>说明</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for borrow in borrow_pending_requests %}
-                <tr>
-                    <td>{{ borrow.sn }}</td>
-                    <td>{{ borrow.goods_name }}</td>
-                    <td>{{ borrow.borrower_name }}</td>
-                    <td>{{ borrow.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+<div class="ui divider"></div>
+{% endif %}
+<!--已同意借用的请求列表-->
+{% if borrow_pending_requests %}
+<h3 id="bp-r" class="ui header top attached" style="margin-top:10px">已同意<font color="#F05940">借用</font>的列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物</th>
+        <th>借用者</th>
+        <th>说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for borrow in borrow_pending_requests %}
+    <tr>
+        <td>{{ borrow.sn }}</td>
+        <td>{{ borrow.goods_name }}</td>
+        <td>{{ borrow.borrower_name }}</td>
+        <td>{{ borrow.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">确认已经借出</h5>
 		                  <form  method="post" action="{% url "goods.views.do_finish_borrow" %}">
@@ -294,38 +293,38 @@
 		                  </script>
 	              	 </span>
 	                  '>确认借出</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-        <div class="ui divider"></div>
-    {% endif %}
+<div class="ui divider"></div>
+{% endif %}
 
-    <!--已同意归还的请求列表-->
-    {% if return_pending_requests %}
-        <h3 id="rp-r" class="ui header top attached" style="margin-top:10px">已同意<font color="#F05940">归还</font>的列表</h3>
-        <table class="ui table segment small attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物</th>
-                <th>借用者</th>
-                <th>说明</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for return in return_pending_requests %}
-                <tr>
-                    <td>{{ return.sn }}</td>
-                    <td>{{ return.goods_name }}</td>
-                    <td>{{ return.borrower_name }}</td>
-                    <td>{{ return.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+<!--已同意归还的请求列表-->
+{% if return_pending_requests %}
+<h3 id="rp-r" class="ui header top attached" style="margin-top:10px">已同意<font color="#F05940">归还</font>的列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物</th>
+        <th>借用者</th>
+        <th>说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for return in return_pending_requests %}
+    <tr>
+        <td>{{ return.sn }}</td>
+        <td>{{ return.goods_name }}</td>
+        <td>{{ return.borrower_name }}</td>
+        <td>{{ return.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">确认已经归还</h5>
 		                  <form  method="post" action="{% url "goods.views.do_finish_return" %}">
@@ -350,9 +349,9 @@
 		                  </script>
 	              	 </span>
 	                  '>确认归还
-                        </a>
-                        <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+            </a>
+            <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">确认物品损坏</h5>
 		                  <form  method="post" action="{% url "goods.views.do_finish_return" %}">
@@ -377,37 +376,37 @@
 		                  </script>
 	              	 </span>
 	                  '>物品损坏
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="ui divider"></div>
-    {% endif %}
-    <!--待审核维修的列表-->
-    {% if torepair_requests %}
-        <h3 id="tr-r" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">维修</font>的列表</h3>
-        <table class="ui table segment small attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物</th>
-                <th>借用者</th>
-                <th>说明</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in torepair_requests %}
-                <tr>
-                    <td>{{ item.sn }}</td>
-                    <td>{{ item.goods_name }}</td>
-                    <td>{{ item.borrower_name }}</td>
-                    <td>{{ item.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
+<!--待审核维修的列表-->
+{% if torepair_requests %}
+<h3 id="tr-r" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">维修</font>的列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物</th>
+        <th>借用者</th>
+        <th>说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in torepair_requests %}
+    <tr>
+        <td>{{ item.sn }}</td>
+        <td>{{ item.goods_name }}</td>
+        <td>{{ item.borrower_name }}</td>
+        <td>{{ item.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">同意维修</h5>
 		                  <form  method="post" action="{% url "goods.views.do_accept_repair" %}">
@@ -430,9 +429,9 @@
 		                  </form>
 	              	 </span>
 	                  '>同意
-                        </a>
-                        <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+            </a>
+            <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">拒绝维修</h5>
 		                  <form  method="post" action="{% url "goods.views.do_reject_repair" %}">
@@ -455,38 +454,38 @@
 		                  </form>
 	              	 </span>
 	                  '>拒绝
-                        </a>
+            </a>
 
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="ui divider"></div>
-    {% endif %}
-    <!--已同意维修的列表-->
-    {% if repair_requests %}
-        <h3 td="rr-r" class="ui header top attached" style="margin-top:10px">已同意<font color="#F05940">维修</font>的列表</h3>
-        <table class="ui table segment small attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物</th>
-                <th>借用者</th>
-                <th>说明</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in repair_requests %}
-                <tr>
-                    <td>{{ item.sn }}</td>
-                    <td>{{ item.goods_name }}</td>
-                    <td>{{ item.borrower_name }}</td>
-                    <td>{{ item.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
+<!--已同意维修的列表-->
+{% if repair_requests %}
+<h3 td="rr-r" class="ui header top attached" style="margin-top:10px">已同意<font color="#F05940">维修</font>的列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物</th>
+        <th>借用者</th>
+        <th>说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in repair_requests %}
+    <tr>
+        <td>{{ item.sn }}</td>
+        <td>{{ item.goods_name }}</td>
+        <td>{{ item.borrower_name }}</td>
+        <td>{{ item.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">请确认已收到实物</h5>
 		                  <form  method="post" action="{% url "goods.views.do_start_repair" %}">
@@ -509,38 +508,38 @@
 		                  </form>
 	              	 </span>
 	                  '>确认维修
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="ui divider"></div>
-    {% endif %}
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
 
-    <!--维修中的列表-->
-    {% if repairing_requests %}
-        <h3 id="ri-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">维修中</font>的列表</h3>
-        <table class="ui table segment small attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物</th>
-                <th>借用者</th>
-                <th>说明</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in repairing_requests %}
-                <tr>
-                    <td>{{ item.sn }}</td>
-                    <td>{{ item.goods_name }}</td>
-                    <td>{{ item.borrower_name }}</td>
-                    <td>{{ item.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+<!--维修中的列表-->
+{% if repairing_requests %}
+<h3 id="ri-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">维修中</font>的列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物</th>
+        <th>借用者</th>
+        <th>说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in repairing_requests %}
+    <tr>
+        <td>{{ item.sn }}</td>
+        <td>{{ item.goods_name }}</td>
+        <td>{{ item.borrower_name }}</td>
+        <td>{{ item.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">请确认实物维修完成</h5>
 		                  <form  method="post" action="{% url "goods.views.do_finish_repair" %}">
@@ -563,37 +562,37 @@
 		                  </form>
 	              	 </span>
 	                  '>维修完成
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="ui divider"></div>
-    {% endif %}
-    <!--维修完成的列表-->
-    {% if repaired_requests %}
-        <h3 id="rd-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">维修</font>完成的列表</h3>
-        <table class="ui table segment small attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物</th>
-                <th>借用者</th>
-                <th>说明</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in repaired_requests %}
-                <tr>
-                    <td>{{ item.sn }}</td>
-                    <td>{{ item.goods_name }}</td>
-                    <td>{{ item.borrower_name }}</td>
-                    <td>{{ item.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
+<!--维修完成的列表-->
+{% if repaired_requests %}
+<h3 id="rd-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">维修</font>完成的列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物</th>
+        <th>借用者</th>
+        <th>说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in repaired_requests %}
+    <tr>
+        <td>{{ item.sn }}</td>
+        <td>{{ item.goods_name }}</td>
+        <td>{{ item.borrower_name }}</td>
+        <td>{{ item.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">请确认用户取回物品</h5>
 		                  <form  method="post" action="{% url "goods.views.do_return_repair" %}">
@@ -616,37 +615,37 @@
 		                  </form>
 	              	 </span>
 	                  '>确认取回
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="ui divider"></div>
-    {% endif %}
-    <!--待审核销毁的列表-->
-    {% if todestroy_requests %}
-        <h3 id="td-r" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">销毁</font>的列表</h3>
-        <table class="ui table segment small attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物</th>
-                <th>借用者</th>
-                <th>原因</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in todestroy_requests %}
-                <tr>
-                    <td>{{ item.sn }}</td>
-                    <td>{{ item.goods_name }}</td>
-                    <td>{{ item.borrower_name }}</td>
-                    <td>{{ item.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
+<!--待审核销毁的列表-->
+{% if todestroy_requests %}
+<h3 id="td-r" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">销毁</font>的列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物</th>
+        <th>借用者</th>
+        <th>原因</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in todestroy_requests %}
+    <tr>
+        <td>{{ item.sn }}</td>
+        <td>{{ item.goods_name }}</td>
+        <td>{{ item.borrower_name }}</td>
+        <td>{{ item.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">同意销毁</h5>
 		                  <form  method="post" action="{% url "goods.views.do_accept_destroy" %}">
@@ -669,9 +668,9 @@
 		                  </form>
 	              	 </span>
 	                  '>同意
-                        </a>
-                        <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+            </a>
+            <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">拒绝销毁</h5>
 		                  <form  method="post" action="{% url "goods.views.do_reject_destroy" %}">
@@ -694,39 +693,56 @@
 		                  </form>
 	              	 </span>
 	                  '>拒绝
-                        </a>
+            </a>
 
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="ui divider"></div>
-    {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
 
-	<!--待审核采购的列表-->
-    {% if togoods_apply_requests %}
-        <h3 id="tga-r" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">采购</font>的列表</h3>
-        <table class="ui table segment small attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物名称</th>
-                <th>申请者</th>
-                <th>原因</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in togoods_apply_requests %}
-                <tr>
-                    <td>{{ item.sn }}</td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.applyer_name }}</td>
-                    <td>{{ item.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+<!--待审核采购的列表-->
+{% if togoods_apply_requests %}
+<h3 id="tga-r" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">采购</font>的列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物名称</th>
+        <!--OnionYST-->
+        <th>类型</th>
+        <th>配置</th>
+        <th>申请者</th>
+        <th>原因</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in togoods_apply_requests %}
+    <tr>
+        <td>{{ item.sn }}</td>
+        <td>{{ item.name }}</td>
+        <!--OnionYST-->
+        <td>{{ item.type_name }}</td>
+        <td>
+            <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
+                {% for pro in item.prop %}
+                    {% if pro.pro_name %}
+                        <div class="ui label" style="margin-top:5px">
+                            {{ pro.pro_name }}: {{ pro.pro_value }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            '>详细
+            </div>
+        </td>
+        <td>{{ item.applyer_name }}</td>
+        <td>{{ item.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">同意采购</h5>
 		                  <form  method="post" action="{% url "goods.views.do_accept_apply_goods" %}">
@@ -749,9 +765,9 @@
 		                  </form>
 	              	 </span>
 	                  '>同意
-                        </a>
-                        <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+            </a>
+            <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">拒绝采购</h5>
 		                  <form  method="post" action="{% url "goods.views.do_reject_apply_goods" %}">
@@ -774,39 +790,54 @@
 		                  </form>
 	              	 </span>
 	                  '>拒绝
-                        </a>
+            </a>
 
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="ui divider"></div>
-    {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
 
-	<!--已同意采购的列表-->
-    {% if goods_apply_requests %}
-        <h3 td="ga-r" class="ui header top attached" style="margin-top:10px">已同意<font color="#F05940">采购</font>的列表</h3>
-        <table class="ui table segment small attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物名称</th>
-                <th>申请者</th>
-                <th>说明</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in goods_apply_requests %}
-                <tr>
-                    <td>{{ item.sn }}</td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.applyer_name }}</td>
-                    <td>{{ item.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+<!--已同意采购的列表-->
+{% if goods_apply_requests %}
+<h3 td="ga-r" class="ui header top attached" style="margin-top:10px">已同意<font color="#F05940">采购</font>的列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物名称</th>
+        <th>类型</th>
+        <th>配置</th>
+        <th>申请者</th>
+        <th>说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in goods_apply_requests %}
+    <tr>
+        <td>{{ item.sn }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.type_name }}</td>
+        <td>
+            <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
+                {% for pro in item.prop %}
+                    {% if pro.pro_name %}
+                        <div class="ui label" style="margin-top:5px">
+                            {{ pro.pro_name }}: {{ pro.pro_value }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            '>详细
+            </div>
+        </td>
+        <td>{{ item.applyer_name }}</td>
+        <td>{{ item.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">请确认已进行采购</h5>
 		                  <form  method="post" action="{% url "goods.views.do_start_apply_goods" %}">
@@ -829,38 +860,53 @@
 		                  </form>
 	              	 </span>
 	                  '>确认采购
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="ui divider"></div>
-    {% endif %}
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
 
-	<!--采购中的列表-->
-    {% if goods_applying_requests %}
-        <h3 id="gai-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">采购中</font>的列表</h3>
-        <table class="ui table segment small attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物名称</th>
-                <th>申请者</th>
-                <th>说明</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in goods_applying_requests %}
-                <tr>
-                    <td>{{ item.sn }}</td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.applyer_name }}</td>
-                    <td>{{ item.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+<!--采购中的列表-->
+{% if goods_applying_requests %}
+<h3 id="gai-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">采购中</font>的列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物名称</th>
+        <th>类型</th>
+        <th>配置</th>
+        <th>申请者</th>
+        <th>说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in goods_applying_requests %}
+    <tr>
+        <td>{{ item.sn }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.type_name }}</td>
+        <td>
+            <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
+                {% for pro in item.prop %}
+                    {% if pro.pro_name %}
+                        <div class="ui label" style="margin-top:5px">
+                            {{ pro.pro_name }}: {{ pro.pro_value }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            '>详细
+            </div>
+        </td>
+        <td>{{ item.applyer_name }}</td>
+        <td>{{ item.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">请确认采购完成</h5>
 		                  <form  method="post" action="{% url "goods.views.do_finish_apply_goods" %}">
@@ -883,75 +929,140 @@
 		                  </form>
 	              	 </span>
 	                  '>采购完成
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="ui divider"></div>
-    {% endif %}
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
 
-	<!--采购完成的列表-->
-    {% if goods_applied_requests %}
-        <h3 id="gad-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">采购</font>完成的列表</h3>
-        <table class="ui table segment small attached">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>实物名称</th>
-                <th>申请者</th>
-                <th>说明</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in goods_applied_requests %}
-                <tr>
-                    <td>{{ item.sn }}</td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.applyer_name }}</td>
-                    <td>{{ item.note }}</td>
-                    <td>
-                        <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
-                           data-position="top center" data-html='
+<!--采购完成的列表-->
+{% if goods_applied_requests %}
+<h3 id="gad-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">采购</font>完成的列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物名称</th>
+        <th>类型</th>
+        <th>配置</th>
+        <th>申请者</th>
+        <th>说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in goods_applied_requests %}
+    <tr>
+        <td>{{ item.sn }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.type_name }}</td>
+        <td>
+            <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
+                {% for pro in item.prop %}
+                    {% if pro.pro_name %}
+                        <div class="ui label" style="margin-top:5px">
+                            {{ pro.pro_name }}: {{ pro.pro_value }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            '>详细
+            </div>
+        </td>
+        <td>{{ item.applyer_name }}</td>
+        <td>{{ item.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+               data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">请确认一键入库</h5>
 		                  <form  method="post" action="{% url "goods.views.do_input_apply_goods" %}">
-			                  <div class="ui form">
+			                   <div class="ui form">
 			              			<input type="hidden" name="id" value="{{ item.id }}">
 			                    <div class="field">
 			                        <label><font color="#FFFFFF">实物SN</font></label>
-			                        <input type="text" placeholder="id" name="id" value="{{ item.sn }}" disabled>
+			                        <input type="text" placeholder="sn" name="sn" value="{{ item.sn }}">
 			                    </div>
 			                    <div class="field">
 			                        <label><font color="#FFFFFF">实物名称</font></label>
-			                        <input type="text" placeholder="实物名称" name="name" value="{{ item.name }}" disabled>
+			                        <input type="text" placeholder="实物名称" name="name" value="{{ item.name }}">
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物类型</font></label>
+			                        <input type="text" placeholder="实物类型" name="type_name" value="{{ item.type_name }}">
 			                    </div>
 			                    <div class="field">
 			                        <label><font color="#FFFFFF">说明</font></label>
 			                        <input type="text" name="note">
 			                    </div>
 			                  </div>
-			                  <button type="submit" class="ui tiny circular button floated right fluid positive">确认取回</button>
+			                  <button type="submit" class="ui tiny circular button floated right fluid positive">确认入库</button>
 		                  </form>
 	              	 </span>
 	                  '>一键入库
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="ui divider"></div>
-    {% endif %}
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
+
+
+<!--入库完成的列表 only check -->
+{% if goods_input_requests %}
+<h3 id="gainput-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">入库</font>完成的列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物名称</th>
+        <th>类型</th>
+        <th>配置</th>
+        <th>申请者</th>
+        <th>说明</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in goods_input_requests %}
+    <tr>
+        <td>{{ item.sn }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.type_name }}</td>
+        <td>
+            <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
+                {% for pro in item.prop %}
+                    {% if pro.pro_name %}
+                        <div class="ui label" style="margin-top:5px">
+                            {{ pro.pro_name }}: {{ pro.pro_value }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            '>详细
+            </div>
+        </td>
+        <td>{{ item.applyer_name }}</td>
+        <td>{{ item.note }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
+
 
 {% endblock %}
 
 {% block js %}
 
-    <script type="text/javascript">
+<script type="text/javascript">
         $(function () {
+            $('.config-detail').popup({
+                on: 'hover'
+            });
             $('.agree-button').popup({
                 on: 'click'
             });
@@ -960,6 +1071,10 @@
             });
         });
 
-    </script>
+
+
+
+
+</script>
 
 {% endblock %}

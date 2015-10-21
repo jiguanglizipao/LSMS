@@ -84,9 +84,11 @@
 
 
 
-var pro_origin = 0;
-var pro_num = 0;
+var pro_origin = 1;
+var pro_num = 1;
 var pro_max = 32;
+
+var origin_type_name;
 
 $(function () {
     // 更新数量
@@ -222,13 +224,23 @@ function update_type_pros() {
 
     if ($('#type_name').val() == "新增实物类型") {
         pro_origin = 0;
-        pro_num = 0;
+        pro_num = 1;
         $('#properties').children().remove();
-        $('#properties').append(
-            '<div class="ui horizontal divider">类型信息</div>'
+        $('#properties').append(''
+            + '<div class="ui horizontal divider">类型信息</div>'
             + '<div class="field">'
-            + '<label>类型名称</label>'
-            + '<input placeholder="类型名称" type="text" id="type_name" name="type_name">'
+                + '<label>类型名称</label>'
+                + '<input placeholder="类型名称" type="text" id="type_name" name="type_name">'
+            + '</div>'
+            + '<div class="two fields" id="pro' + pro_num + '">'
+                + '<div class="field fluid">'
+                    + '<label>属性' + pro_num + '的名称</label>'
+                    + '<input placeholder="属性' + pro_num + '的名称" type="text" id="pro' + pro_num + '_name" name="pro' + pro_num + '_name">'
+                + '</div>'
+                + '<div class="field fluid">'
+                    + '<label>属性值</label>'
+                    + '<input placeholder="属性值" type="text" id="pro' + pro_num + '_value" name="pro' + pro_num + '_value">'
+                + '</div>'
             + '</div>'
         );
         $('#properties').append(''

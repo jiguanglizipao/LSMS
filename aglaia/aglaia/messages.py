@@ -127,6 +127,10 @@ def get_finish_goods_apply_log(*args, **kwargs):
     return '采购完成'
 
 
+def get_input_goods_apply_log(*args, **kwargs):
+    return '入库完成'
+
+
 def get_account_modif_log(*args, **kwargs):
     return '修改账户信息'
 
@@ -206,7 +210,8 @@ def get_wrong_goods_status_log(*args, **kwargs):
 def get_set_perm_log(perms, perm_set):
     return '手动设置权限：' + perm_set.__str__()
 
-def get_flag_log(flag,data_content):
+
+def get_flag_log(flag, data_content):
     if flag:
         return '标记为重要数据，重要数据内容为：' + data_content
     else:
