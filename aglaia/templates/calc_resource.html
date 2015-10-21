@@ -74,7 +74,9 @@
                                     </div>
                                     <div class="ui horizontal label" style="margin-top:5px">IP: {{ borrowing.ip }}</div>
                                     <div class="ui horizontal label" style="margin-top:5px">OS: {{ borrowing.os }}</div>
-                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据: {% if borrowing.flag == True %}是 数据内容:{{ borrowing.data_content }}{% else %}否{% endif %}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据:
+                                        {% if borrowing.flag == True %}是 数据内容:{{ borrowing.data_content }}{% else %}
+                                            否{% endif %}</div>
                                 </a>
                                 <a class="item">
                                     <div class="ui green horizontal label">申请登陆用户名</div>
@@ -177,7 +179,9 @@
                                     </div>
                                     <div class="ui horizontal label" style="margin-top:5px">IP: {{ borrowing.ip }}</div>
                                     <div class="ui horizontal label" style="margin-top:5px">OS: {{ borrowing.os }}</div>
-                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据: {% if borrowing.flag == True %}是 数据内容:{{ borrowing.data_content }}{% else %}否{% endif %}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据:
+                                        {% if borrowing.flag == True %}是 数据内容:{{ borrowing.data_content }}{% else %}
+                                            否{% endif %}</div>
                                 </a>
                                 <a class="item">
                                     <div class="ui blue horizontal label">申请登陆用户名</div>
@@ -402,9 +406,11 @@
                                     </div>
                                     <div class="ui horizontal label" style="margin-top:5px">IP: {{ modifying.ip }}</div>
                                     <div class="ui horizontal label" style="margin-top:5px">OS: {{ modifying.os }}</div>
-                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据: {% if modifying.flag == True %}是 数据内容:{{ modifying.data_content }}{% else %}否{% endif %}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据:
+                                        {% if modifying.flag == True %}是 数据内容:{{ modifying.data_content }}{% else %}
+                                            否{% endif %}</div>
                                 </a>
-<!--
+                                <!--
                                 <div class="positive ui float right button agree-button" data-variation="inverted"
                                      data-position="top center" data-html='
                   <h5 class="ui header">同意配置调整</h5>
@@ -506,7 +512,9 @@
                                     </div>
                                     <div class="ui horizontal label" style="margin-top:5px">IP: {{ modifying.ip }}</div>
                                     <div class="ui horizontal label" style="margin-top:5px">OS: {{ modifying.os }}</div>
-                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据: {% if modifying.flag == True %}是 数据内容:{{ modifying.data_content }}{% else %}否{% endif %}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据:
+                                        {% if modifying.flag == True %}是 数据内容:{{ modifying.data_content }}{% else %}
+                                            否{% endif %}</div>
                                 </a>
 
                                 <div class="positive ui float button right agree-button final-ultimate-approve-unique-button"
@@ -678,7 +686,9 @@
                                     </div>
                                     <div class="ui horizontal label" style="margin-top:5px">IP: {{ inuse.ip }}</div>
                                     <div class="ui horizontal label" style="margin-top:5px">OS: {{ inuse.os }}</div>
-                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据: {% if inuse.flag == True %}是 数据内容:{{ inuse.data_content }}{% else %}否{% endif %}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据:
+                                        {% if inuse.flag == True %}是 数据内容:{{ inuse.data_content }}{% else %}
+                                            否{% endif %}</div>
                                 </a>
                                 <a class="item">
                                     <div class="ui green horizontal label">管理员答复</div>
@@ -691,10 +701,19 @@
                     <div class="column" style="margin-top:10px">
                         <div class="ui top attached header">
                             <div class="ui horizontal blue label">编号 {{ inuse.id }}</div>
+
                             {% if inuse.flag %}
                                 <div class="ui horizontal red label">含重要信息</div>
                             {% endif %}
+
                             虚拟资源
+                            {#                    <form action="{% url "computing.views.do_delete_package" %}" method="post">#}
+                            {#                        <input type="hidden" name="name" value="{{ pkg.name }}">#}
+                            {#                        <button type="submit" class="ui red tiny button">删除</button>#}
+                            {#                    </form>#}
+
+                            {#                        <div class="ui horizontal green label">强制收回</div>#}
+
                         </div>
                         <div class="ui attached segment">
                             <div class="ui divided selection list">
@@ -721,11 +740,19 @@
                                     </div>
                                     <div class="ui horizontal label" style="margin-top:5px">IP: {{ inuse.ip }}</div>
                                     <div class="ui horizontal label" style="margin-top:5px">OS: {{ inuse.os }}</div>
-                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据: {% if inuse.flag == True %}是 数据内容:{{ inuse.data_content }}{% else %}否{% endif %}</div>
+                                    <div class="ui horizontal label" style="margin-top:5px">是否含有重要数据:
+                                        {% if inuse.flag == True %}是 数据内容:{{ inuse.data_content }}{% else %}
+                                            否{% endif %}</div>
                                 </a>
                                 <a class="item">
                                     <div class="ui blue horizontal label">管理员答复</div>
                                     {{ inuse.note }}
+                                </a>
+                                <a class="item">
+                                    <form action="{% url "computing.views.do_destroy_comp" %}" method="post">
+                                        <input type="hidden" name="id" value="{{ inuse.id }}">
+                                        <button type="submit" class="ui black horizontal label">强制收回</button>
+                                    </form>
                                 </a>
                             </div>
                         </div>
@@ -772,11 +799,12 @@
 
     <div class="ui divider"></div>
     <h2 class="ui header">创建套餐</h2>
-    <form action="{% url "computing.views.do_create_package" %}" method="post" class="ui form segment" id = "create-package">
-          <div class="ui error message">
-              <div class="header">错误</div>
-              <p></p>
-          </div>
+    <form action="{% url "computing.views.do_create_package" %}" method="post" class="ui form segment"
+          id="create-package">
+        <div class="ui error message">
+            <div class="header">错误</div>
+            <p></p>
+        </div>
         <div class="field">
             <label>套餐名字</label>
 
@@ -846,7 +874,7 @@
                 </div>
             </div>
         </div>
-        <button type="button" class="ui green button" id="create-button" >创建新套餐</button>
+        <button type="button" class="ui green button" id="create-button">创建新套餐</button>
     </form>
 
 
@@ -863,72 +891,68 @@
                 on: 'click'
             });
             var error_info = "";
-            $('#create-button').click(function(){
-                if($("#name").val() == "")
-                {
-                  $('#create-package').addClass('error');
-                  $('.error.message').children('p').text('套餐名称不可为空！');
-                  error_info = "name";
-                  return;
+            $('#create-button').click(function () {
+                if ($("#name").val() == "") {
+                    $('#create-package').addClass('error');
+                    $('.error.message').children('p').text('套餐名称不可为空！');
+                    error_info = "name";
+                    return;
                 }
                 {% for pkg in package_list %}
-                    if($("#name").val() == "{{pkg.name}}")
-                    {
-                      $('#create-package').addClass('error');
-                      $('.error.message').children('p').text('创建套餐名称与已有套餐名相同！');
-                      error_info = "name";
-                      return;
+                    if ($("#name").val() == "{{pkg.name}}") {
+                        $('#create-package').addClass('error');
+                        $('.error.message').children('p').text('创建套餐名称与已有套餐名相同！');
+                        error_info = "name";
+                        return;
                     }
                 {% endfor%}
-                if($("#cpu").val() == "")
-                {
-                  $('#create-package').addClass('error');
-                  $('.error.message').children('p').text('CPU不可为空！');
-                  error_info = "name";
-                  return;
+                if ($("#cpu").val() == "") {
+                    $('#create-package').addClass('error');
+                    $('.error.message').children('p').text('CPU不可为空！');
+                    error_info = "name";
+                    return;
                 }
-                if($("#os").val() == "")
-                {
-                  $('#create-package').addClass('error');
-                  $('.error.message').children('p').text('操作系统不可为空！');
-                  error_info = "name";
-                  return;
+                if ($("#os").val() == "") {
+                    $('#create-package').addClass('error');
+                    $('.error.message').children('p').text('操作系统不可为空！');
+                    error_info = "name";
+                    return;
                 }
-                var regexp=/^[1-9][0-9]*$/;
-                if(!regexp.test($("#memory").val())){
-                  $('#create-package').addClass('error');
-                  $('.error.message').children('p').text('内存大小必须为合法数字！');
-                  error_info = "memory";
-                  return;
+                var regexp = /^[1-9][0-9]*$/;
+                if (!regexp.test($("#memory").val())) {
+                    $('#create-package').addClass('error');
+                    $('.error.message').children('p').text('内存大小必须为合法数字！');
+                    error_info = "memory";
+                    return;
                 }
-                if(!regexp.test($("#disk").val())){
-                  $('#create-package').addClass('error');
-                  $('.error.message').children('p').text('硬盘大小必须为合法数字！');
-                  error_info = "disk";
-                  return;
+                if (!regexp.test($("#disk").val())) {
+                    $('#create-package').addClass('error');
+                    $('.error.message').children('p').text('硬盘大小必须为合法数字！');
+                    error_info = "disk";
+                    return;
                 }
                 $('#create-package').trigger('submit');
             });
-              $('#name').click(function(){
-                if(error_info == "name")
+            $('#name').click(function () {
+                if (error_info == "name")
                     $('#create-package').removeClass('error');
-              });
-              $('#name').click(function(){
-                if(error_info == "cpu")
+            });
+            $('#name').click(function () {
+                if (error_info == "cpu")
                     $('#create-package').removeClass('error');
-              });
-              $('#name').click(function(){
-                if(error_info == "os")
+            });
+            $('#name').click(function () {
+                if (error_info == "os")
                     $('#create-package').removeClass('error');
-              });
-              $('#memory').click(function(){
-                if(error_info == "memory")
+            });
+            $('#memory').click(function () {
+                if (error_info == "memory")
                     $('#create-package').removeClass('error');
-              });
-              $('#disk').click(function(){
-                if(error_info == "disk")
+            });
+            $('#disk').click(function () {
+                if (error_info == "disk")
                     $('#create-package').removeClass('error');
-              });
+            });
 
             $('.final-ultimate-approve-unique-button').click(function () {
                 $.ajax({
@@ -961,7 +985,7 @@
                             $('.res-modif .disktype input').val(prop.disktype);
                             $('.res-modif .disktype .text').html(prop.disktype);
                             $('.res-modif .data_content input').val(prop.data_content);
-                            if(!prop.flag) {
+                            if (!prop.flag) {
                                 $('.res-modif .data_content').hide();
                             }
                             $('.res-modif').modal('show');
