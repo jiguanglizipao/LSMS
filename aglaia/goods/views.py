@@ -648,21 +648,17 @@ def do_accept_apply_goods(request):
         apgd = Apply_Goods.objects.get(id=id)
 
         if not apgd.status == GOODS_APPLY_KEY:
-            return show_message(
-                request, 'This Request is not in a apply_goods apply satus!')
+            return show_message(request, 'This Request is not in a apply_goods apply satus!')
 
-    packed_update_apply_goods(request, id,
-                              {'status': GOODS_APPLY_PEND_KEY, 'note': note},
-                              log=get_accept_apply_goods_log())
-    # sent_notify_mail
+        packed_update_apply_goods(request, id,
+                                  {'status': GOODS_APPLY_PEND_KEY, 'note': note},
+                                  log=get_accept_apply_goods_log())
+        # sent_notify_mail
 
-    return HttpResponseRedirect(reverse('goods.views.show_manage'))
+        return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
-except Exception as e:
-return show_message(
-    request,
-    'Accept Apply_Goods failed: ' +
-    e.__str__())
+    except Exception as e:
+        return show_message(request, 'Accept Apply_Goods failed: ' + e.__str__())
 
 
 @method_required('POST')
@@ -678,18 +674,16 @@ def do_reject_apply_goods(request):
             return show_message(
                 request, "This Request is not in a apply_goods apply status!")
 
-    packed_update_apply_goods(request, id,
-                              {'status': GOODS_APPLY_REJECT_KEY, 'note': note},
-                              log=get_reject_apply_goods_log())
-    # send_notify_mail
+        packed_update_apply_goods(request, id,
+                                  {'status': GOODS_APPLY_REJECT_KEY, 'note': note},
+                                  log=get_reject_apply_goods_log())
 
-    return HttpResponseRedirect(reverse('goods.views.show_manage'))
+        # send_notify_mail
 
-except Exception as e:
-return show_message(
-    request,
-    'Reject Apply_Goods failed: ' +
-    e.__str__())
+        return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+    except Exception as e:
+        return show_message(request, 'Reject Apply_Goods failed: ' + e.__str__())
 
 
 @method_required('POST')
@@ -705,18 +699,15 @@ def do_start_apply_goods(request):
             return show_message(
                 request, "This Request is not in a apply_goods apply status!")
 
-    packed_update_apply_goods(request, id,
-                              {'status': GOODS_APPLYING_KEY, 'note': note},
-                              log=get_apply_goods_applying_log())
-    # send_notify_mail
+        packed_update_apply_goods(request, id,
+                                  {'status': GOODS_APPLYING_KEY, 'note': note},
+                                  log=get_apply_goods_applying_log())
+        # send_notify_mail
 
-    return HttpResponseRedirect(reverse('goods.views.show_manage'))
+        return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
-except Exception as e:
-return show_message(
-    request,
-    'Reject Apply_Goods failed: ' +
-    e.__str__())
+    except Exception as e:
+        return show_message(request, 'Reject Apply_Goods failed: ' + e.__str__())
 
 
 @method_required('POST')
@@ -732,18 +723,16 @@ def do_finish_apply_goods(request):
             return show_message(
                 request, "This Request is not in a apply_goods apply status!")
 
-    packed_update_apply_goods(request, id,
-                              {'status': FINISH_GOODS_APPLY_KEY, 'note': note},
-                              log=get_finish_goods_apply_log())
-    # send_notify_mail
+        packed_update_apply_goods(request, id,
+                                  {'status': FINISH_GOODS_APPLY_KEY, 'note': note},
+                                  log=get_finish_goods_apply_log())
 
-    return HttpResponseRedirect(reverse('goods.views.show_manage'))
+        # send_notify_mail
 
-except Exception as e:
-return show_message(
-    request,
-    'Reject Apply_Goods failed: ' +
-    e.__str__())
+        return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+    except Exception as e:
+        return show_message(request, 'Reject Apply_Goods failed: ' + e.__str__())
 
 
 @method_required('POST')
