@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% load static from staticfiles %}
@@ -68,6 +69,7 @@
               <i class="dropdown icon"></i>
               <div class="menu">
                 {% if 'account.modf_perm' in perm_list %}
+                  {% if not account.type == 'supervisor' or account.username == user.username %}
 
                 <div class="item set-perm" data-user="{{ account.username }}">
                   <i class="unlock icon"></i>
@@ -85,6 +87,7 @@
                     <i class="cloud icon"></i>
                     分配超级管理员权限
                   </div>
+                  {% endif %}
                 {% endif %}
                 <a class="item" href="{% url "log.views.show_log" %}?id={{ account.id }}&type=user&is_actor=true">
                   <i class="unordered list icon"></i>

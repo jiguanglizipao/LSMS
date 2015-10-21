@@ -116,6 +116,7 @@ def get_context_user(user):
     c_user['email'] = user.email
     c_user['email_verified'] = account.email_auth
     c_user['tel'] = account.tel
+    c_user['type'] = account.type
     depts = []
     for d in account.department.all():
         depts.append(d.depart_name)
