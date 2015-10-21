@@ -65,6 +65,8 @@ GOODS_APPLYING_KEY = 'gaai'
 GOODS_APPLYING = 'goods_applying'
 FINISH_GOODS_APPLY_KEY = 'fga'
 FINISH_GOODS_APPLY = 'finish_goods_apply'
+INPUT_GOODS_APPLY_KEY = 'iga'
+INPUT_GOODS_APPLY = 'input_goods_apply'
 GOODS_APPLY_REJECT_KEY = 'grej'
 GOODS_APPLY_REJECT = 'goods_apply_reject'
 
@@ -163,15 +165,20 @@ class Apply_Goods(models.Model):
     STATUS_CHOICES = (
         (GOODS_APPLY_KEY, GOODS_APPLY),
         (GOODS_APPLY_ACCEPT_KEY, GOODS_APPLY_ACCEPT),
-        (GOODS_APPLY_REJECT_KEY, GOODS_APPLY_REJECT)
+        (GOODS_APPLY_REJECT_KEY, GOODS_APPLY_REJECT),
+        (GOODS_APPLY_PEND_KEY, GOODS_APPLY_PEND),
+        (GOODS_APPLYING_KEY, GOODS_APPLYING),
+        (FINISH_GOODS_APPLY_KEY, FINISH_GOODS_APPLY),
+        (INPUT_GOODS_APPLY_KEY, INPUT_GOODS_APPLY),
     )
     name = models.CharField(max_length=50)
-    sn = models.CharField(max_length=60, unique=True)
+    sn = models.CharField(max_length=60)
     status = models.CharField(max_length=5, choices=STATUS_CHOICES)
     account = models.ForeignKey(Account, default=None)
     note = models.CharField(max_length=1000)
-    pro_values = models.TextField(max_length=40000)
+    type_name = models.CharField(max_length=50)
     pro_names = models.TextField(max_length=40000)
+    pro_values = models.TextField(max_length=40000)
 
     def __str__(self):
         return str(self.name) + '-' + str(self.sn)
