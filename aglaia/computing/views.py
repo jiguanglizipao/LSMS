@@ -505,7 +505,14 @@ def do_destroy_comp(request):
 		post = request.POST
 		id = post['id']
 		comp = Computing.objects.get(id=id)
-		####################################### TODO
+		flag = comp.flag
+		if flag: # important data is true
+			pass
+		else:
+			packed_update_computing(request, id, {
+				'status': DESTROYED_KEY}, log=get_comp_destroy_log())
+		############################################## TODO
+		# update_computing(comp.id,{'address':'200.200.200.200'})
 		return HttpResponseRedirect(
 		 	reverse('computing.views.show_comp_verify'))
 	except Exception as e:
