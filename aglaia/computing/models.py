@@ -42,6 +42,7 @@ DISABLE = 'disable'
 DESTROY_KEY = 'dt'
 DESTROY = 'destroy'
 
+
 class Server(models.Model):
     SERVER_CHOICES = (
         (BUSY_KEY, BUSY),

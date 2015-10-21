@@ -6,6 +6,7 @@ from django import forms
 
 # from account.models import Department
 
+
 class AccountTestCase(TestCase):
 
     def setUp(self):

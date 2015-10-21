@@ -1340,7 +1340,6 @@ class ViewTestCase(TestCase):
         self.assertIsMessage(
             wrong_sgl, 'The good is not in a borrowed status!')
 
-
     #apply goods#
 
     def test_apply_goods(self):
