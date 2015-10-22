@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="ui selection dropdown fluid">
-            <input type="hidden" id="filter-status" name="status">
+            <input type="hidden" id="filter-status" name="status" value="">
 
             <div class="text">状态</div>
             <i class="dropdown icon"></i>
@@ -49,7 +49,7 @@
         <br/>
 
         <div class="ui selection dropdown fluid">
-            <input type="hidden" id="filter-type" name="type">
+            <input type="hidden" id="filter-type" name="type" value="">
 
             <div class="text">类型</div>
             <i class="dropdown icon"></i>
@@ -62,7 +62,7 @@
             </div>
         </div>
         <br/>
-        <button type="submit" class="ui blue button fluid">提交筛选</button>
+        <div type="text" id="confirm-sift" class="ui blue button fluid">提交筛选</div>
 
         <div class="ui vertical menu">
         <div class="header item">
@@ -526,6 +526,19 @@
             });
             $('#mail-action-confirm').click(function () {
                 $('#mail-action-form').trigger('submit');
+            });
+            $('#confirm-sift').click(function () {
+                var tdset = $('.goods-typename').parent();
+                for(var i=0;i<tdset.length;++i){
+                    if( ($('#filter-type').attr('value')=="" || $('#filter-type').attr('value')== $(tdset[i]).children('.goods-typename').get(0).innerHTML)
+                    && ($('#filter-status').attr('value')=="" || $('#filter-status').attr('value')== $(tdset[i]).children('.good-status').attr('data-value')))
+                    {
+                        $(tdset[i]).show();
+                    }
+                    else{
+                        $(tdset[i]).hide();
+                    }
+                }
             });
         });
 

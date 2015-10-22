@@ -405,10 +405,10 @@
         <td>{{ item.borrower_name }}</td>
         <td>{{ item.note }}</td>
         <td>
-            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+            <a class="ui teal tiny circular button agree-button" data-variation="inverted"
                data-position="top center" data-html='
 	                  <span>
-		                  <h5 class="ui header">同意维修</h5>
+		                  <h5 class="ui header">管理员维修</h5>
 		                  <form  method="post" action="{% url "goods.views.do_accept_repair" %}">
 			                  <div class="ui form">
 			              			<input type="hidden" name="id" value="{{ item.id }}">
@@ -425,15 +425,15 @@
 			                        <input type="text" name="note">
 			                    </div>
 			                  </div>
-			                  <button type="submit" class="ui tiny circular button floated right fluid positive">同意</button>
+			                  <button type="submit" class="ui tiny circular button floated right fluid positive">确认</button>
 		                  </form>
 	              	 </span>
-	                  '>同意
+	                  '>管理员维修
             </a>
-            <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
+            <a class="ui purple tiny circular button agree-button" data-variation="inverted"
                data-position="top center" data-html='
 	                  <span>
-		                  <h5 class="ui header">拒绝维修</h5>
+		                  <h5 class="ui header">用户维修</h5>
 		                  <form  method="post" action="{% url "goods.views.do_reject_repair" %}">
 			                  <div class="ui form">
 			              			<input type="hidden" name="id" value="{{ item.id }}">
@@ -450,10 +450,10 @@
 			                        <input type="text" name="note">
 			                    </div>
 			                  </div>
-			                  <button type="submit" class="ui tiny circular button floated right fluid negative">拒绝</button>
+			                  <button type="submit" class="ui tiny circular button floated right fluid positive">确认</button>
 		                  </form>
 	              	 </span>
-	                  '>拒绝
+	                  '>用户维修
             </a>
 
         </td>

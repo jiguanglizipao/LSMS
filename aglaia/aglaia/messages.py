@@ -75,11 +75,11 @@ def get_destroy_apply_log(*args, **kwargs):
 
 
 def get_accept_repair_log(*args, **kwargs):
-    return '同意维修申请'
+    return '管理员进行维修'
 
 
 def get_reject_repair_log(*args, **kwargs):
-    return '拒绝维修申请'
+    return '用户进行维修'
 
 
 def get_accept_destroy_log(*args, **kwargs):
