@@ -272,7 +272,16 @@ def packed_create_goods(request, *args, **kwargs):
 
 
 # OnionYST do not use sn for check!
-def packed_create_apply_goods(request, name, type_name, pro_name, pro_value, sns, status, account, note):
+def packed_create_apply_goods(
+        request,
+        name,
+        type_name,
+        pro_name,
+        pro_value,
+        sns,
+        status,
+        account,
+        note):
     pro_values = ''
     for v in pro_value:
         pro_values += (v + sep)
@@ -283,8 +292,15 @@ def packed_create_apply_goods(request, name, type_name, pro_name, pro_value, sns
 
     for sn in sns:
         if sn:
-            goods = Apply_Goods(name=name, type_name=type_name, pro_values=pro_values, pro_names=pro_names,
-                                status=status, account=account, note=note, sn=sn)
+            goods = Apply_Goods(
+                name=name,
+                type_name=type_name,
+                pro_values=pro_values,
+                pro_names=pro_names,
+                status=status,
+                account=account,
+                note=note,
+                sn=sn)
             goods.save()
             return goods
 

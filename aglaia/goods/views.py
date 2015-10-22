@@ -648,7 +648,8 @@ def do_accept_apply_goods(request):
         apgd = Apply_Goods.objects.get(id=id)
 
         if not apgd.status == GOODS_APPLY_KEY:
-            return show_message(request, 'This Request is not in a apply_goods apply satus!')
+            return show_message(
+                request, 'This Request is not in a apply_goods apply satus!')
 
         packed_update_apply_goods(request, id,
                                   {'status': GOODS_APPLY_PEND_KEY, 'note': note},
@@ -658,7 +659,10 @@ def do_accept_apply_goods(request):
         return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
     except Exception as e:
-        return show_message(request, 'Accept Apply_Goods failed: ' + e.__str__())
+        return show_message(
+            request,
+            'Accept Apply_Goods failed: ' +
+            e.__str__())
 
 
 @method_required('POST')
@@ -683,7 +687,10 @@ def do_reject_apply_goods(request):
         return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
     except Exception as e:
-        return show_message(request, 'Reject Apply_Goods failed: ' + e.__str__())
+        return show_message(
+            request,
+            'Reject Apply_Goods failed: ' +
+            e.__str__())
 
 
 @method_required('POST')
@@ -707,7 +714,10 @@ def do_start_apply_goods(request):
         return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
     except Exception as e:
-        return show_message(request, 'Reject Apply_Goods failed: ' + e.__str__())
+        return show_message(
+            request,
+            'Reject Apply_Goods failed: ' +
+            e.__str__())
 
 
 @method_required('POST')
@@ -732,7 +742,10 @@ def do_finish_apply_goods(request):
         return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
     except Exception as e:
-        return show_message(request, 'Reject Apply_Goods failed: ' + e.__str__())
+        return show_message(
+            request,
+            'Reject Apply_Goods failed: ' +
+            e.__str__())
 
 
 @method_required('POST')
@@ -753,13 +766,17 @@ def do_input_apply_goods(request):
         if tp and tp[0].get_all_pros() != apgd.pro_names.split(sep):
             raise Exception("type cannot use this name")
         if not apgd.status == FINISH_GOODS_APPLY_KEY:
-            return show_message(request, "This Request is not in a apply_goods finish status!")
+            return show_message(
+                request, "This Request is not in a apply_goods finish status!")
 
-        packed_update_apply_goods(
-            request, id, {
-                'status': INPUT_GOODS_APPLY_KEY, 'note': note, 'sn': sn, 'name': name, 'type_name': type_name
-            }, log=get_input_goods_apply_log()
-        )
+        packed_update_apply_goods(request,
+                                  id,
+                                  {'status': INPUT_GOODS_APPLY_KEY,
+                                   'note': note,
+                                   'sn': sn,
+                                   'name': name,
+                                   'type_name': type_name},
+                                  log=get_input_goods_apply_log())
 
         type_key = []
         for name in apgd.pro_names.split(sep):
@@ -777,7 +794,10 @@ def do_input_apply_goods(request):
         # send_notify_mail
         return HttpResponseRedirect(reverse('goods.views.show_manage'))
     except Exception as e:
-        return show_message(request, 'Input Apply_Goods failed: ' + e.__str__())
+        return show_message(
+            request,
+            'Input Apply_Goods failed: ' +
+            e.__str__())
 
 
 # -------------------------
@@ -1119,7 +1139,7 @@ def show_borrow(request):
     cont['inuse_list'] = get_context_list(inuse, get_context_computing)
     cont['modifying_list'] = get_context_list(modif, get_context_computing)
     cont['returning_list'] = get_context_list(ret, get_context_computing)
-    cont['backup_list'] = get_context_list(backup,get_context_computing)
+    cont['backup_list'] = get_context_list(backup, get_context_computing)
 
     brws = packed_find_borrow(request, {'account': account}, {})
     brwing = brws.filter(status=BORROW_AUTHING_KEY)
@@ -1189,7 +1209,7 @@ def show_borrow(request):
     cont['filtdata'] = False
     if 'filtdata' in request.POST:
         if request.POST['filtdata'] == 'true' or request.POST[
-            'filtdata'] == 'True' or request.POST['filtdata'] == 'TRUE':
+                'filtdata'] == 'True' or request.POST['filtdata'] == 'TRUE':
             print("true!")
             cont['filtdata'] = True
 
@@ -1303,7 +1323,10 @@ def MailNotify(request):
             itemno = int(numberstr)
             brw = Borrow.objects.get(id=itemno)
             print(brw.account)
-            send_user_mail(brw.account, 'Aglaia Item Notify', request.POST['mail-content'])
+            send_user_mail(
+                brw.account,
+                'Aglaia Item Notify',
+                request.POST['mail-content'])
         except:
             pass
     return HttpResponseRedirect(reverse("goods.views.show_list"))
