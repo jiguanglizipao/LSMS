@@ -13,5 +13,6 @@ urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^goods/', include('goods.urls')),
                        url(r'^computing/', include('computing.urls')),
-                       url(r'^log/', include('log.urls'))
+                       url(r'^log/', include('log.urls')),
+                       url(r'^excel/', include('excel.urls'))
                        )
