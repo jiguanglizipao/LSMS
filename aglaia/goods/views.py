@@ -426,7 +426,7 @@ def do_accept_repair(request):
                              {'status': REPAIR_PEND_KEY,
                               'note': message.tostring()},
                              log=get_accept_repair_log())
-        # send_notify_mail(request, AcceptRepairMail, borrow=brw)
+        send_notify_mail(request, AcceptRepairMail, borrow=brw)
 
         return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
@@ -492,7 +492,7 @@ def do_reject_repair(request):
 
         packed_update_borrow(request,
                              id,
-                             {'status': BORROWED_KEY,
+                             {'status': REPAIR_USER_PEND_KEY,
                               'note': message.tostring()},
                              log=get_reject_repair_log())
         send_notify_mail(request, RejectRepairMail, borrow=brw)
@@ -500,7 +500,7 @@ def do_reject_repair(request):
         return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
     except Exception as e:
-        return show_message(request, 'Reject Repair failed: ' + e.__str__())
+        return show_message(request, 'Let User Repair failed: ' + e.__str__())
 
 
 @method_required('POST')
@@ -579,10 +579,10 @@ def do_finish_repair(request):
 
         brw = Borrow.objects.get(id=id)
 
-        if not brw.status == REPAIRING_KEY:
+        if not (brw.status == REPAIRING_KEY):
             return show_message(
                 request, 'This Request is not in a repairing status!')
-        if not brw.single.status == REPAIRING_KEY:
+        if not (brw.single.status == REPAIRING_KEY):
             return show_message(
                 request, 'The good is not in a repairing status!')
 
@@ -633,6 +633,41 @@ def do_return_repair(request):
                 'status': BORROWED_KEY}, log=get_good_repaired_log())
 
         return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+    except Exception as e:
+        return show_message(request, 'Return Repair failed: ' + e.__str__())
+
+
+@method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def do_user_finish_repair(request):
+    try:
+        id = request.POST['id']
+        note = request.POST['note']
+
+        brw = Borrow.objects.get(id=id)
+
+        if not brw.status == REPAIR_USER_PEND_KEY:
+            return show_message(
+                request, 'This Request is not in a user-repair status!')
+        if not brw.single.status == BORROWED_KEY:
+            return show_message(
+                request, 'This Request is not in a borrowed status!')
+
+        message = Message(brw.note)
+        message.append({'direction': 'Send', 'info_type': '',
+                        'user_name': request.user.username, 'text': note})
+
+        packed_update_borrow(request,
+                             id,
+                             {'status': BORROWED_KEY,
+                              'note': message.tostring()},
+                             log=get_finish_repair_log())
+        packed_update_single(
+            request, brw.single.id, {
+                'status': BORROWED_KEY}, log=get_good_repaired_log())
+
+        return HttpResponseRedirect(reverse('goods.views.show_borrow'))
 
     except Exception as e:
         return show_message(request, 'Return Repair failed: ' + e.__str__())
@@ -1151,6 +1186,7 @@ def show_borrow(request):
 
     rp_apply = brws.filter(status=REPAIR_APPLY_KEY)
     rp_pend = brws.filter(status=REPAIR_PEND_KEY)
+    rpu_pend = brws.filter(status=REPAIR_USER_PEND_KEY)
     rping = brws.filter(status=REPAIRING_KEY)
     rped = brws.filter(status=FINISH_REPAIR_KEY)
 
@@ -1184,6 +1220,7 @@ def show_borrow(request):
     cont['goods_torepair_list'] = get_context_list(
         rp_apply, get_context_userbrw)
     cont['goods_repair_list'] = get_context_list(rp_pend, get_context_userbrw)
+    cont['goods_user_repair_list'] = get_context_list(rpu_pend, get_context_userbrw)
     cont['goods_repairing_list'] = get_context_list(rping, get_context_userbrw)
     cont['goods_repaired_list'] = get_context_list(rped, get_context_userbrw)
 
@@ -1236,6 +1273,7 @@ def show_manage(request):
     rp_pend = packed_find_borrow(request, {'status': REPAIR_PEND_KEY}, {})
     rping = packed_find_borrow(request, {'status': REPAIRING_KEY}, {})
     rped = packed_find_borrow(request, {'status': FINISH_REPAIR_KEY}, {})
+    rpu_pend = packed_find_borrow(request, {'status': REPAIR_USER_PEND_KEY}, {})
 
     de_apply = packed_find_borrow(request, {'status': DESTROY_APPLY_KEY}, {})
 
@@ -1258,6 +1296,7 @@ def show_manage(request):
     rp_pend_list = get_context_list(rp_pend, get_context_borrow)
     rping_list = get_context_list(rping, get_context_borrow)
     rped_list = get_context_list(rped, get_context_borrow)
+    rpu_pend_list = get_context_list(rpu_pend, get_context_borrow)
 
     de_apply_list = get_context_list(de_apply, get_context_borrow)
 
@@ -1281,6 +1320,7 @@ def show_manage(request):
         'return_pending_requests': r_pend_list,
         'torepair_requests': rp_apply_list,
         'repair_requests': rp_pend_list,
+        'repair_user_requests': rpu_pend_list,
         'repairing_requests': rping_list,
         'repaired_requests': rped_list,
         'todestroy_requests': de_apply_list,

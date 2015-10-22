@@ -22,7 +22,9 @@
         {% elif status == "torepair" %}
             <i class="orange wrench icon"></i>维修/审核中
         {% elif status == "repair" %}
-            <i class="green wrench icon"></i>维修/已通过
+            <i class="green wrench icon"></i>管理员维修
+        {% elif status == "repairuser" %}
+            <i class="yellow wrench icon"></i>用户维修中
         {% elif status == "repairing" %}
             <i class="wrench icon"></i>维修中
         {% elif status == "repaired" %}
@@ -131,9 +133,36 @@
             <button type="submit" class="ui circular tiny inverted icon black tip disabled button" data-content="销毁">
                 <i class="trash circle icon"></i>
             </button>
+            {% if status == "repairuser"%}
+            <button class="ui circular tiny inverted icon red button agree-button" data-content="维修完成"
+                             data-variation="inverted"
+                             data-position="top center"
+                    data-html='
+                    <h5 class="ui header">维修完成</h5>
+                    <form method="post" action="{% url "goods.views.do_user_finish_repair" %}">
+                    <input type="text" name="id" value="{{ item.id }}" hidden>
+                    <div class="ui form">
+                      <div class="inline field">
+                          <label><font color="#FFFFFF">状况</font></label>
+                          <input type="text" name="note" placeholder="状况说明">
+                      </div>
+                    </div>
+                    <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认</div>
+                    </form>
+                    <script type="text/javascript">
+                      $(".agree-confirm-button").click(function(){
+                        $(this).parent().trigger("submit");
+                      });
+                    </script>
+                    ' style="visibility:visible;margin:0;padding:0">
+                <div type="submit" class="ui circular tiny inverted icon red tip miss button" data-content="维修完成" style="visibility:visible">
+                <i class="wrench circle icon"></i>
+            </button>
+            {% else %}
             <button type="submit" class="ui circular tiny inverted icon orange tip disabled button" data-content="维修">
                 <i class="wrench circle icon"></i>
             </button>
+            {% endif %}
         {% endif %}
         <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
             <input type="hidden" name="id" value="{{ item.id }}">

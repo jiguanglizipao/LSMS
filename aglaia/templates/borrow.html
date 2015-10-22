@@ -104,6 +104,9 @@
         {% for item in goods_repair_list %}
             {% include "goods_item.html" with status="repair" %}
         {% endfor %}
+        {% for item in goods_user_repair_list %}
+            {% include "goods_item.html" with status="repairuser" %}
+        {% endfor %}
         {% for item in goods_repairing_list %}
             {% include "goods_item.html" with status="repairing" %}
         {% endfor %}
