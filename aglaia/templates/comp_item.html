@@ -1,4 +1,4 @@
-<tr class="resource-item
+<tr data-value="{% if item.flag == True %}True{% else %}False{% endif %}" class="resource-item
     {% if status == "inuse" %}positive
     {% elif status == "backup" %}negative
     {% endif %}"

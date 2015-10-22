@@ -27,6 +27,8 @@ REPAIR_APPLY_KEY = 'rpa'
 REPAIR_APPLY = 'repair_applys'
 REPAIR_PEND_KEY = 'repn'
 REPAIR_PEND = 'repair_pend'
+REPAIR_USER_PEND_KEY = 'reupn'
+REPAIR_USER_PEND = 'reup'
 FINISH_REPAIR_KEY = 'fr'
 FINISH_REPAIR = 'finish_repair'
 
@@ -211,6 +213,7 @@ class Borrow(models.Model):
         (BORROWED_KEY, BORROWED),
         (REPAIR_APPLY_KEY, REPAIR_APPLY),
         (REPAIR_PEND_KEY, REPAIR_PEND),
+        (REPAIR_USER_PEND_KEY, REPAIR_USER_PEND),
         (REPAIRING_KEY, REPAIRING),
         (FINISH_REPAIR_KEY, FINISH_REPAIR),
         (RETURN_AUTHING_KEY, RETURN_AUTHING),
