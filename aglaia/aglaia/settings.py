@@ -10,20 +10,6 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'b^jrfnul^@=#2@gu!8jxs9y#xz30!(uhol1f3h+o6uu!@$mr$w'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = False
-
-ALLOWED_HOSTS = ['*']
 # import ldap
 # from django_auth_ldap.config import LDAPSearch
 #
@@ -46,6 +32,19 @@ ALLOWED_HOSTS = ['*']
 # }
 # AUTH_LDAP_ALWAYS_UPDATE_USER = True
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'b^jrfnul^@=#2@gu!8jxs9y#xz30!(uhol1f3h+o6uu!@$mr$w'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+TEMPLATE_DEBUG = False
+
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -99,7 +98,7 @@ DEFAULT_CHARSET = 'utf-8'
 
 FILE_CHARSET = 'utf-8'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
