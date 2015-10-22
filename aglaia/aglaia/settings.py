@@ -59,6 +59,7 @@ INSTALLED_APPS = (
     'computing',
     'goods',
     'log',
+    'excel',
 )
 
 MIDDLEWARE_CLASSES = (

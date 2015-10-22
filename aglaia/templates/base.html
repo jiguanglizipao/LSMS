@@ -183,6 +183,10 @@
 
     <a href="{% url "log.views.show_message_center" %}" class="item">消息中心</a>
 
+    {% if "account.goods_auth" in perm_list %}
+        <a href="{% url "excel.views.index" %}" class="item">数据导入/导出</a>
+    {% endif %}
+
     <div class="right menu">
         <a class="item" id="account-sidebar-toggler">
             <i class="user icon"></i>{{ user.username }}
