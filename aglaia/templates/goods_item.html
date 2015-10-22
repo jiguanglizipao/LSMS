@@ -73,28 +73,8 @@
             <button class="ui compact circular mini inverted black icon button agree-button" data-content="销毁"
                     data-variation="inverted"
                     data-position="top center"
-
-                    data-html='
-
-                <h5 class="ui header">销毁申请</h5>
-                <form method="post" action="{% url "goods.views.do_destroy_goods" %}">
-                    <input type="text" name="id" value="{{ item.id }}" hidden>
-
-                    <div class="ui form">
-                        <div class="inline field">
-                            <label><font color="#FFFFFF">原因</font></label>
-                            <input type="text" name="note" placeholder="附加原因">
-                        </div>
-                    </div>
-                    <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认</div>
-                </form>
-                <script type="text/javascript">
-                    $(".agree-confirm-button").click(function () {
-                        $(this).parent().trigger("submit");
-                    });
-                </script>
-
-            ' style="visibility:visible;margin:0;padding:0">
+                    data-html='{% include 'confirm_with_reason.html' with title="销毁申请" explanation="说明" placeholder="附加说明" url="goods.views.do_destroy_goods" %}'
+                    style="visibility:visible;margin:0;padding:0">
                 <div type="submit" class="ui circular tiny inverted icon black tip miss button" data-content="销毁"
                      style="visibility:visible">
                     <i class="trash circle icon"></i>
@@ -103,25 +83,8 @@
             <button class="ui circular tiny inverted icon orange button agree-button" data-content="测试"
                     data-variation="inverted"
                     data-position="top center"
-
-                    data-html='
-                    <h5 class="ui header">维修申请</h5>
-                    <form method="post" action="{% url "goods.views.do_repair_goods" %}">
-                    <input type="text" name="id" value="{{ item.id }}" hidden>
-                    <div class="ui form">
-                      <div class="inline field">
-                          <label><font color="#FFFFFF">说明</font></label>
-                          <input type="text" name="note" placeholder="附加说明">
-                      </div>
-                    </div>
-                    <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认</div>
-                    </form>
-                    <script type="text/javascript">
-                      $(".agree-confirm-button").click(function(){
-                        $(this).parent().trigger("submit");
-                      });
-                    </script>
-                    ' style="visibility:visible;margin:0;padding:0">
+                    data-html='{% include 'confirm_with_reason.html' with title="维修申请" explanation="说明" placeholder="附加说明" url="goods.views.do_repair_goods" %}'
+                    style="visibility:visible;margin:0;padding:0">
                 <div type="submit" class="ui circular tiny inverted icon orange tip miss button" data-content="维修"
                      style="visibility:visible">
                     <i class="wrench circle icon"></i></div>
@@ -137,35 +100,21 @@
             <button type="submit" class="ui circular tiny inverted icon black tip disabled button" data-content="销毁">
                 <i class="trash circle icon"></i>
             </button>
-            {% if status == "repairuser"%}
-            <button class="ui circular tiny inverted icon red button agree-button" data-content="维修完成"
-                             data-variation="inverted"
-                             data-position="top center"
-                    data-html='
-                    <h5 class="ui header">维修完成</h5>
-                    <form method="post" action="{% url "goods.views.do_user_finish_repair" %}">
-                    <input type="text" name="id" value="{{ item.id }}" hidden>
-                    <div class="ui form">
-                      <div class="inline field">
-                          <label><font color="#FFFFFF">状况</font></label>
-                          <input type="text" name="note" placeholder="状况说明">
-                      </div>
-                    </div>
-                    <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认</div>
-                    </form>
-                    <script type="text/javascript">
-                      $(".agree-confirm-button").click(function(){
-                        $(this).parent().trigger("submit");
-                      });
-                    </script>
-                    ' style="visibility:visible;margin:0;padding:0">
-                <div type="submit" class="ui circular tiny inverted icon red tip miss button" data-content="维修完成" style="visibility:visible">
-                <i class="wrench circle icon"></i>
-            </button>
+            {% if status == "repairuser" %}
+                <button class="ui circular tiny inverted icon red button agree-button" data-content="维修完成"
+                        data-variation="inverted"
+                        data-position="top center"
+                        data-html='{% include 'confirm_with_reason.html' with title="维修完成" explanation="状况" placeholder="状况说明" url="goods.views.do_user_finish_repair" %}'
+                        style="visibility:visible;margin:0;padding:0">
+                    <div type="submit" class="ui circular tiny inverted icon red tip miss button" data-content="维修完成"
+                         style="visibility:visible">
+                        <i class="wrench circle icon"></i>
+                </button>
             {% else %}
-            <button type="submit" class="ui circular tiny inverted icon orange tip disabled button" data-content="维修">
-                <i class="wrench circle icon"></i>
-            </button>
+                <button type="submit" class="ui circular tiny inverted icon orange tip disabled button"
+                        data-content="维修">
+                    <i class="wrench circle icon"></i>
+                </button>
             {% endif %}
         {% endif %}
 
