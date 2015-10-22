@@ -172,11 +172,6 @@
 
 <div class="ui fixed inverted topbar main menu">
     <a href="/" class="title item"><i class="home icon"></i>Aglaia</a>
-    <!--{% include "topbar_user.html" %}-->
-    <!--{% if user.type != "normal"%}-->
-        <!--{% include "topbar_manager.html" %}-->
-        <!--{% include "topbar_admin.html" %}-->
-        <!--{% endif %}-->
     {% if "account.normal" in perm_list %}
         <a href="{% url "goods.views.show_borrow" %}"
            class="{% ifequal curpage "borrow" %} active {% endifequal %} item">借还物资</a>

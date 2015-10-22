@@ -1,0 +1,29 @@
+<button class="ui compact circular mini inverted black icon button agree-button" data-content="销毁"
+                    data-variation="inverted"
+                    data-position="top center"
+
+                    data-html='
+
+                <h5 class="ui header">销毁申请</h5>
+                <form method="post" action="{% url "goods.views.do_destroy_goods" %}">
+                    <input type="text" name="id" value="{{ item.id }}" hidden>
+
+                    <div class="ui form">
+                        <div class="inline field">
+                            <label><font color="#FFFFFF">原因</font></label>
+                            <input type="text" name="note" placeholder="附加原因">
+                        </div>
+                    </div>
+                    <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认</div>
+                </form>
+                <script type="text/javascript">
+                    $(".agree-confirm-button").click(function () {
+                        $(this).parent().trigger("submit");
+                    });
+                </script>
+
+            ' style="visibility:visible;margin:0;padding:0">
+                <div type="submit" class="ui circular tiny inverted icon black tip miss button" data-content="销毁"
+                     style="visibility:visible">
+                    <i class="trash circle icon"></i></div>
+            </button>
