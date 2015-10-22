@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="ui selection dropdown fluid">
-            <input type="hidden" id="filter-status" name="status">
+            <input type="hidden" id="filter-status" name="status" value="">
 
             <div class="text">状态</div>
             <i class="dropdown icon"></i>
@@ -528,16 +528,15 @@
                 $('#mail-action-form').trigger('submit');
             });
             $('#confirm-sift').click(function () {
-                var tdset = $('.goods-typename');
+                var tdset = $('.goods-typename').parent();
                 for(var i=0;i<tdset.length;++i){
-                    if($('#filter-type').attr('value')==""){
-                        $(tdset[i]).parent().show();
-                    }
-                    else if($('#filter-type').attr('value')==tdset[i].innerHTML){
-                        $(tdset[i]).parent().show();
+                    if( ($('#filter-type').attr('value')=="" || $('#filter-type').attr('value')== $(tdset[i]).children('.goods-typename').get(0).innerHTML)
+                    && ($('#filter-status').attr('value')=="" || $('#filter-status').attr('value')== $(tdset[i]).children('.good-status').attr('data-value')))
+                    {
+                        $(tdset[i]).show();
                     }
                     else{
-                        $(tdset[i]).parent().hide();
+                        $(tdset[i]).hide();
                     }
                 }
             });
