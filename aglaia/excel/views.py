@@ -28,6 +28,8 @@ import sys
 import time
 from django import forms
 import hashlib
+import xlrd
+import xlwt
 
 
 class UploadFileForm(forms.Form):
@@ -93,3 +95,33 @@ def index(request):
     else:
         return HttpResponseRedirect('')
 
+
+def export_excel(request):
+    workbook = xlwt.Workbook('utf-8')
+    workbook.set_owner('LSMS')
+    workbook.set_country_code(86)
+
+    sheet = workbook.add_sheet('在库物品')
+    sheet.write(0, 0, 'SN号')
+    sheet.write(0, 1, '物品种类')
+    sheet.write_merge(0, 0, 2, 128, '物品属性')
+    singles = Single.objects.all().filter(status=AVALIABLE_KEY)
+
+    i = 1
+    for item in singles:
+        sheet.write(i, 0, item.sn)
+        sheet.write(i, 1, item.goods.gtype.name)
+        pro_names = item.goods.gtype.pro_names
+        pro_names = pro_names.split(',')
+        pro_values = item.goods.pro_values
+        pro_values = pro_values.split(sep)
+        j = 0
+        for pro in pro_names:
+            if not pro:
+                continue
+            sheet.write(i, 2+j, pro+" : "+pro_values[j])
+            j += 1
+        i += 1
+
+    workbook.save('tmp.xls')
+    return show_message(request, '123')
