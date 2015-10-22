@@ -136,13 +136,11 @@
     </table>
 
     <div class="ui header attached top">
-        <form action = "/goods/borrow/" method="POST">
-            计算资源&nbsp;&nbsp;
-            <button class="ui circular mini icon orange tip return button" data-content="筛选重要数据" name="filtdata" value="True" type="submit">
-            <i class="tags icon"></i></button>
-            <button class="ui circular mini icon white tip return button" data-content="显示全部数据" name="filtdata" value="False" type="submit">
-            <i class="tags icon"></i></button>
-        </form>
+        计算资源&nbsp;&nbsp;
+        <button id="siftvipbtn" class="ui circular mini icon orange tip return button" data-content="筛选重要数据" name="filtdata" value="True">
+        <i class="tags icon"></i></button>
+        <button id="unsiftvipbtn" class="ui circular mini icon white tip return button" data-content="显示全部数据" name="filtdata" value="False">
+        <i class="tags icon"></i></button>
     </div>
     <table class="ui table segment small attached">
         <thead>
@@ -382,6 +380,20 @@
     <script src="{% static "javascript/borrow.js" %}"></script>
     <script>
         $(function () {
+            $('#siftvipbtn').click(function () {
+                var trset = $('.resource-item');
+                for(var i = 0; i < trset.length; ++i){
+                    if($(trset[i]).attr('data-value') == 'False'){
+                        $(trset[i]).attr('hidden','')
+                    }
+                }
+            })
+            $('#unsiftvipbtn').click(function () {
+                var trset = $('.resource-item');
+                for(var i = 0; i < trset.length; ++i){
+                   $(trset[i]).removeAttr('hidden')
+                }
+            })
             $('.res-modif .submit').click(function () {
                 if ($('.res-borrow .submit').hasClass('disabled'))
                     return;
