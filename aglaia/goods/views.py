@@ -1316,6 +1316,7 @@ def show_borrow_list(request):
 @method_required('POST')
 @permission_required(PERM_GOODS_AUTH)
 def MailNotify(request):
+    print("aaa")
     numberstrs = request.POST['mail-targets'].split('&')
     print(request.POST['mail-content'])
     for numberstr in numberstrs:
