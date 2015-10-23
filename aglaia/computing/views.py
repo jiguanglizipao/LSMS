@@ -135,7 +135,8 @@ def do_return_request(request):
 			request, id, {
 				'status': RETURNING_KEY}, log=get_comp_ret_log())
 		send_notify_mail(request, CompReturnMail, comp=comp)
-		return HttpResponse('ok')
+		return HttpResponseRedirect(reverse('goods.views.show_borrow'))
+#		return HttpResponse('ok')
 	except:
 		return HttpResponse('denied')
 
