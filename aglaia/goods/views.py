@@ -735,7 +735,7 @@ def do_update_repair(request):
                              log=get_good_update_repair_log(note=note))
         packed_update_single(
             request, brw.single.id, {
-                'status': BORROWED_KEY}, log=get_good_update_repair_log(note=note))
+                'status': REPAIRING_KEY}, log=get_good_update_repair_log(note=note))
 
         return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
