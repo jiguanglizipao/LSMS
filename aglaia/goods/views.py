@@ -192,7 +192,7 @@ def apply_goods(request):
 
 
 @method_required('POST')
-@permission_required(PERM_GOODS_AUTH, http_denied)
+#@permission_required(PERM_GOODS_AUTH, http_denied)
 def do_type_props(request):
     '''list all the properties' name of a type'''
     try:
