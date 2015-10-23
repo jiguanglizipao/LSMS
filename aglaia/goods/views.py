@@ -1057,6 +1057,7 @@ def show_add_goods(request):
     return render(request, "add_goods.html", {
         'user': get_context_user(request.user),
         "type_list": type_list,
+        'perm_list': request.user.get_all_permissions(),
     })
 
 
@@ -1069,6 +1070,7 @@ def show_apply_goods(request):
     return render(request, "apply_goods.html", {
         'user': get_context_user(request.user),
         "type_list": type_list,
+        'perm_list': request.user.get_all_permissions(),
     })
 
 
@@ -1221,6 +1223,7 @@ def show_borrow(request):
 def show_add_type(request):
     return render(request, "add_type.html", {
         'user': get_context_user(request.user),
+        'perm_list': request.user.get_all_permissions(),
     })
 
 
