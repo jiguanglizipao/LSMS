@@ -75,11 +75,11 @@ def get_destroy_apply_log(*args, **kwargs):
 
 
 def get_accept_repair_log(*args, **kwargs):
-    return '同意维修申请'
+    return '管理员进行维修'
 
 
 def get_reject_repair_log(*args, **kwargs):
-    return '拒绝维修申请'
+    return '用户进行维修'
 
 
 def get_accept_destroy_log(*args, **kwargs):
@@ -104,6 +104,12 @@ def get_finish_repair_log(*args, **kwargs):
 
 def get_ret_repaired_log(*args, **kwargs):
     return '维修完的物品被取回'
+
+
+def get_good_update_repair_log(*args, **kwargs):
+    if 'note' in kwargs:
+        return '更新维修进度：'+str(kwargs['note'])
+    return '更新维修进度'
 
 
 def get_good_repaired_log(*args, **kwargs):
@@ -190,6 +196,8 @@ def get_comp_rej_modf_log(*args, **kwargs):
 def get_comp_destroying_log(*args, **kwargs):
     return '即将收回包含重要数据的计算资源，等待用户确认'
 
+def get_comp_destroying_mail(*args,**kwargs):
+    return '您的计算资源即将被收回，请尽快备份重要数据。'
 
 def get_comp_destroyed_log(*args, **kwargs):
     return '管理员强制收回计算资源'

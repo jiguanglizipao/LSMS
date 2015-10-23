@@ -42,7 +42,7 @@ SECRET_KEY = 'b^jrfnul^@=#2@gu!8jxs9y#xz30!(uhol1f3h+o6uu!@$mr$w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = False
+TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -59,6 +59,7 @@ INSTALLED_APPS = (
     'computing',
     'goods',
     'log',
+    'excel',
 )
 
 MIDDLEWARE_CLASSES = (

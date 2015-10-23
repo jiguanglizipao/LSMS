@@ -1,0 +1,17 @@
+<div class="ui header" style="background:rgba(255,255,255,0);">{{ title }}</div>
+<form method="post" action="{% url url %}">
+    <input type="text" name="id" value="{{ item.id }}" hidden>
+
+    <div class="ui form">
+        <div class="inline field">
+            <label><font color="#FFFFFF">{{ explanation }}</font></label>
+            <input type="text" name="note" placeholder={{ placeholder }}>
+        </div>
+    </div>
+    <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认</div>
+</form>
+<script type="text/javascript">
+    $(".agree-confirm-button").click(function () {
+        $(this).parent().trigger("submit");
+    });
+</script>

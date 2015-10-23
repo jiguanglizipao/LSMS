@@ -1,4 +1,4 @@
-<tr class="resource-item
+<tr data-value="{% if item.flag == True %}True{% else %}False{% endif %}" class="resource-item
     {% if status == "inuse" %}positive
     {% elif status == "backup" %}negative
     {% endif %}"
@@ -51,9 +51,19 @@
     </td>
     <td>
         {% if status == "inuse" or status == "backup" %}
-            <button class="ui circular tiny inverted icon teal tip return button" data-content="释放">
-                <i class="unlock icon"></i>
+            <button class="ui compact circular mini inverted blue icon button agree-button" data-content="释放"
+                    data-variation="inverted"
+                    data-position="top center"
+                    data-html='{% include 'confirm_with_yesno.html' with title="确定要释放吗？" url="computing.views.do_return_request" %}'
+                    style="visibility:visible;margin:0px;padding:0px">
+                <div type="submit" class="ui circular tiny inverted icon teal tip miss button" data-content="释放"
+                     style="visibility:visible">
+                    <i class="unlock icon"></i>
             </button>
+
+{#            <button class="ui circular tiny inverted icon teal tip return button" data-content="释放">#}
+{#                <i class="unlock icon"></i>#}
+{#            </button>#}
             <button class="ui circular tiny inverted icon blue tip modify button" data-content="修改">
                 <i class="edit icon"></i>
             </button>

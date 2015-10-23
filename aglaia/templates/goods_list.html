@@ -10,11 +10,14 @@
         <div class="ui vertical menu">
             <div class="header item">
                 <i class="cloud icon"></i>
-                新增
+                添加/申请
             </div>
         </div>
         <a class="ui green button  fluid" href='{% url "goods.views.show_add_goods" %}'>新增实物</a>
         <br/>
+        <a class="ui orange button fluid" href='{% url "goods.views.show_apply_goods" %}'>申请采购</a>
+        <br />
+
     {% endif %}
 
     <div class="ui vertical menu">
@@ -27,11 +30,11 @@
     <form action="" method="get">
         <div class="ui form fluid">
             <div class="field">
-                <input type="text" placeholder="实物名称" id="filter-name" name="name">
+                <input type="text" placeholder="实物名称" id="filter-name" name="name" value="">
             </div>
         </div>
         <div class="ui selection dropdown fluid">
-            <input type="hidden" id="filter-status" name="status">
+            <input type="hidden" id="filter-status" name="status" value="">
 
             <div class="text">状态</div>
             <i class="dropdown icon"></i>
@@ -49,7 +52,7 @@
         <br/>
 
         <div class="ui selection dropdown fluid">
-            <input type="hidden" id="filter-type" name="type">
+            <input type="hidden" id="filter-type" name="type" value="">
 
             <div class="text">类型</div>
             <i class="dropdown icon"></i>
@@ -62,17 +65,7 @@
             </div>
         </div>
         <br/>
-        <button type="submit" class="ui blue button fluid">提交筛选</button>
-
-        <div class="ui vertical menu">
-        <div class="header item">
-            <i class="cloud icon"></i>
-            采购
-        </div>
-    </div>
-    <a class="ui orange button fluid" href='{% url "goods.views.show_apply_goods" %}'>申请采购</a>
-
-
+        <div type="text" id="confirm-sift" class="ui blue button fluid">提交筛选</div>
     </form>
 {% endblock %}
 
@@ -341,7 +334,7 @@
                     </td>
                     <td>
                         <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
-                             data-content="选择"><i class="icon star sign"></i></div>
+                              data-content="选择"><i class="icon star sign"></i></div>
                     </td>
                 </tr>
             {% endif %}
@@ -526,6 +519,20 @@
             });
             $('#mail-action-confirm').click(function () {
                 $('#mail-action-form').trigger('submit');
+            });
+            $('#confirm-sift').click(function () {
+                var tdset = $('.goods-typename').parent();
+                for(var i=0;i<tdset.length;++i){
+                    if( ($('#filter-type').attr('value')=="" || $('#filter-type').attr('value')== $(tdset[i]).children('.goods-typename').get(0).innerHTML)
+                    && ($('#filter-status').attr('value')=="" || $('#filter-status').attr('value')== $(tdset[i]).children('.good-status').attr('data-value'))
+                    && ($('#filter-name').val()=="" || $('#filter-name').val()== $(tdset[i]).children('.goods-name').get(0).innerHTML ))
+                    {
+                        $(tdset[i]).show();
+                    }
+                    else{
+                        $(tdset[i]).hide();
+                    }
+                }
             });
         });
 
