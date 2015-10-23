@@ -538,7 +538,32 @@
         <td>{{ item.borrower_name }}</td>
         <td>{{ item.note }}</td>
         <td>
-            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+            <a class="ui tiny circular button agree-button blue" data-variation="inverted"
+               data-position="top center" data-html='
+	                  <span>
+		                  <h5 class="ui header">更新实物维修进度</h5>
+		                  <form  method="post" action="{% url "goods.views.do_update_repair" %}">
+			                  <div class="ui form">
+			              			<input type="hidden" name="id" value="{{ item.id }}">
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物SN</font></label>
+			                        <input type="text" placeholder="id" name="id" value="{{ item.sn }}" disabled>
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物名称</font></label>
+			                        <input type="text" placeholder="实物名称" name="name" value="{{ item.goods_name }}" disabled>
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">状况说明</font></label>
+			                        <input type="text" name="note">
+			                    </div>
+			                  </div>
+			                  <button type="submit" class="ui tiny circular button floated right fluid positive">确认</button>
+		                  </form>
+	              	 </span>
+	                  '>更新维修进度
+            </a>
+			<a class="positive ui tiny circular button  agree-button" data-variation="inverted"
                data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">请确认实物维修完成</h5>

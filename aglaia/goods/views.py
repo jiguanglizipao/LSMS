@@ -674,6 +674,76 @@ def do_user_finish_repair(request):
 
 
 @method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def do_user_update_repair(request):
+    try:
+        id = request.POST['id']
+        note = request.POST['note']
+
+        brw = Borrow.objects.get(id=id)
+
+        if not brw.status == REPAIR_USER_PEND_KEY:
+            return show_message(
+                request, 'This Request is not in a user-repair status!')
+        if not brw.single.status == BORROWED_KEY:
+            return show_message(
+                request, 'This Request is not in a borrowed status!')
+
+        message = Message(brw.note)
+        message.append({'direction': 'Send', 'info_type': '',
+                        'user_name': request.user.username, 'text': note})
+
+        packed_update_borrow(request,
+                             id,
+                             {'status': REPAIR_USER_PEND_KEY,
+                              'note': message.tostring()},
+                             log=get_good_update_repair_log(note=note))
+        packed_update_single(
+            request, brw.single.id, {
+                'status': BORROWED_KEY}, log=get_good_update_repair_log(note=note))
+
+        return HttpResponseRedirect(reverse('goods.views.show_borrow'))
+
+    except Exception as e:
+        return show_message(request, 'Update Repair failed: ' + e.__str__())
+
+
+@method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def do_update_repair(request):
+    try:
+        id = request.POST['id']
+        note = request.POST['note']
+
+        brw = Borrow.objects.get(id=id)
+
+        if not brw.status == REPAIRING_KEY:
+            return show_message(
+                request, 'This Request is not in a repair status!')
+        if not brw.single.status == REPAIRING_KEY:
+            return show_message(
+                request, 'This Request is not in a repair status!')
+
+        message = Message(brw.note)
+        message.append({'direction': 'Send', 'info_type': '',
+                        'user_name': request.user.username, 'text': note})
+
+        packed_update_borrow(request,
+                             id,
+                             {'status': REPAIRING_KEY,
+                              'note': message.tostring()},
+                             log=get_good_update_repair_log(note=note))
+        packed_update_single(
+            request, brw.single.id, {
+                'status': BORROWED_KEY}, log=get_good_update_repair_log(note=note))
+
+        return HttpResponseRedirect(reverse('goods.views.show_manage'))
+
+    except Exception as e:
+        return show_message(request, 'Update Repair failed: ' + e.__str__())
+
+
+@method_required('POST')
 @permission_required(PERM_NORMAL)
 def do_accept_apply_goods(request):
     try:

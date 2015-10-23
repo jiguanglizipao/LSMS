@@ -40,4 +40,6 @@ urlpatterns = patterns("goods.views",
                        url(r"^do_input_apply_goods", "do_input_apply_goods"),
                        url(r"^MailNotify", "MailNotify"),
                        url(r"^do_user_finish_repair", "do_user_finish_repair"),
+                       url(r"^do_user_update_repair", "do_user_update_repair"),
+                       url(r"^do_update_repair", "do_update_repair"),
                        )
