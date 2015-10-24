@@ -11,6 +11,8 @@
             <i class="lock icon"></i>使用中
         {% elif status == "returning" %}
             <i class="orange question icon"></i>归还/审核中
+        {% elif status == "lost_apply" %}
+            <i class="orange question icon"></i>挂失/审核中
         {% elif status == "return_pending" %}
             <i class="green checkmark icon"></i>归还/已批准
         {% elif status == "returned" %}

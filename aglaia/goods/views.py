@@ -335,7 +335,6 @@ def do_accept_return(request):
 
         brw = Borrow.objects.get(id=id)
         note = request.POST['note']
-        lost = request.POST['lost']
 
         if not brw.status == RETURN_AUTHING_KEY:
             return show_message(
@@ -347,20 +346,11 @@ def do_accept_return(request):
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
-
-        if (lost == 'false'):
-            packed_update_borrow(request,
-                                 id,
-                                 {'status': RETURN_PENDING_KEY,
-                                  'note': message.tostring()},
-                                 log=get_accept_ret_log())
-        else:
-            packed_update_borrow(
-                request, id, {
-                    'status': LOST_KEY, 'note': message.tostring()}, log=get_lost_ret_log())
-            packed_update_single(
-                request, brw.single.id, {
-                    'status': LOST_KEY}, log=get_good_lost_log())
+        packed_update_borrow(request,
+                             id,
+                             {'status': RETURN_PENDING_KEY,
+                              'note': message.tostring()},
+                             log=get_accept_ret_log())
         return HttpResponseRedirect(reverse('goods.views.show_manage'))
     except Exception as e:
         return show_message(request, 'Accept return failed: ' + e.__str__())
@@ -904,6 +894,36 @@ def do_input_apply_goods(request):
             'Input Apply_Goods failed: ' +
             e.__str__())
 
+@method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def do_finish_lost(request):
+    try:
+        id = request.POST['id']
+
+        brw = Borrow.objects.get(id=id)
+        note = request.POST['note']
+        lost = request.POST['lost']
+
+        if not brw.status == LOST_APPLY_KEY:
+            return show_message(
+                request, 'This Request is not in a lost apply status!')
+        if not brw.single.status == BORROWED_KEY:
+            return show_message(
+                request, 'The good is not in a borrowed status!')
+
+        message = Message(brw.note)
+        message.append({'direction': 'Send', 'info_type': '',
+                        'user_name': request.user.username, 'text': note})
+        packed_update_borrow(
+            request, id, {
+                'status': LOST_KEY, 'note': message.tostring()}, log=get_lost_ret_log())
+        packed_update_single(
+            request, brw.single.id, {
+                'status': LOST_KEY}, log=get_good_lost_log())
+        return HttpResponseRedirect(reverse('goods.views.show_manage'))
+    except Exception as e:
+        return show_message(request, 'Accept lost failed: ' + e.__str__())
+
 
 # -------------------------
 # -------------------------
@@ -960,6 +980,28 @@ def do_set_available(request):
         return show_message(
             request,
             'Set single good available failed: ' +
+            e.__str__())
+
+@method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def do_find_back(request):
+    try:
+        id = request.POST['id']
+
+        sgl = Single.objects.get(id=id)
+        if not sgl.status == LOST_KEY:
+            return show_message(
+                request, 'The goods cannot be find back!')
+
+        packed_update_single(
+            request, id, {
+                'status': AVALIABLE_KEY}, log=get_good_findback_log())
+
+        return HttpResponseRedirect(reverse("goods.views.show_list"))
+    except Exception as e:
+        return show_message(
+            request,
+            'Find single good back failed: ' +
             e.__str__())
 
 
@@ -1065,7 +1107,7 @@ def do_miss_goods(request):
 
         packed_update_borrow(request,
                              id,
-                             {'status': RETURN_AUTHING_KEY,
+                             {'status': LOST_APPLY_KEY,
                               'note': message.tostring()},
                              log=get_miss_request_log())
         send_notify_mail(request, MissRequstMail, borrow=brw)
@@ -1255,6 +1297,7 @@ def show_borrow(request):
     brw_inuse = brws.filter(status=BORROWED_KEY)
     reting = brws.filter(status=RETURN_AUTHING_KEY)
     ret_pend = brws.filter(status=RETURN_PENDING_KEY)
+    lost_apply = brws.filter(status=LOST_APPLY_KEY)
 
     rp_apply = brws.filter(status=REPAIR_APPLY_KEY)
     rp_pend = brws.filter(status=REPAIR_PEND_KEY)
@@ -1276,6 +1319,7 @@ def show_borrow(request):
     cont['num_goods_used'] = len(brw_inuse)
     cont['num_goods_borrow'] = len(brwing) + len(brw_pend)
     cont['num_goods_return'] = len(reting) + len(ret_pend)
+    cont['num_goods_lost'] = len(lost_apply)
 
     cont['goods_borrowing_list'] = get_context_list(
         brwing, get_context_userbrw)
@@ -1286,6 +1330,8 @@ def show_borrow(request):
     cont['goods_inuse_list'] = get_context_list(brw_inuse, get_context_userbrw)
     cont['goods_returning_list'] = get_context_list(
         reting, get_context_userbrw)
+    cont['goods_lost_apply_list'] = get_context_list(
+        lost_apply, get_context_userbrw)
     cont['goods_return_pending_list'] = get_context_list(
         ret_pend, get_context_userbrw)
 
@@ -1341,6 +1387,7 @@ def show_manage(request):
     b_pend = packed_find_borrow(request, {'status': ACCEPTED_KEY}, {})
     r_req = packed_find_borrow(request, {'status': RETURN_AUTHING_KEY}, {})
     r_pend = packed_find_borrow(request, {'status': RETURN_PENDING_KEY}, {})
+    lost_apply = packed_find_borrow(request, {'status': LOST_APPLY_KEY}, {})
 
     rp_apply = packed_find_borrow(request, {'status': REPAIR_APPLY_KEY}, {})
     rp_pend = packed_find_borrow(request, {'status': REPAIR_PEND_KEY}, {})
@@ -1364,6 +1411,7 @@ def show_manage(request):
     b_pend_list = get_context_list(b_pend, get_context_borrow)
     r_req_list = get_context_list(r_req, get_context_borrow)
     r_pend_list = get_context_list(r_pend, get_context_borrow)
+    lost_apply_list = get_context_list(lost_apply, get_context_borrow)
 
     rp_apply_list = get_context_list(rp_apply, get_context_borrow)
     rp_pend_list = get_context_list(rp_pend, get_context_borrow)
@@ -1389,6 +1437,7 @@ def show_manage(request):
         'user': get_context_user(request.user),
         'borrow_requests': b_req_list,
         'return_requests': r_req_list,
+        'lost_apply_requests': lost_apply_list,
         'borrow_pending_requests': b_pend_list,
         'return_pending_requests': r_pend_list,
         'torepair_requests': rp_apply_list,

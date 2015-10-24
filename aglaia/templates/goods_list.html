@@ -295,6 +295,8 @@
                                  data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
                             <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted"
                                  data-content="销毁"><i class="icon trash"></i></div>
+                            <div class="circular ui icon green button tiny find-goods" data-variation="inverted"
+                                 data-content="找回物品"><i class="icon checkmark sign"></i></div>
                         {% endif %}
                         <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
                             <input type="hidden" name="id" value="{{ goods.id }}">
@@ -440,6 +442,7 @@
         var do_borrow = '{% url "goods.views.do_borrow" %}';
         var do_set_unavailable = '{% url "goods.views.do_set_unavailable" %}';
         var do_set_available = '{% url "goods.views.do_set_available" %}';
+        var do_find_back = '{% url "goods.views.do_find_back" %}';
         var do_destroy = '{% url "goods.views.do_destroy" %}';
 
         $(function () {
@@ -500,6 +503,19 @@
                 $('#name').val($(this).parent().parent().children('.goods-name').text());
                 $('#type').val($(this).parent().parent().children('.goods-typename').text());
                 $('post-action-confirm-content').text('设置为在库');
+                $('.modal#post-action').modal('show');
+            });
+            $('.find-goods').popup({
+                on: 'hover'
+            });
+            $('.find-goods').click(function () {
+                $('#post-action-form').attr('action', do_find_back);
+                $('#post-action-header').text('找回物品');
+                $('#id').val($(this).parent().children('.goods-id').text());
+                $('#sn').val($(this).parent().parent().children('.goods-sn').text());
+                $('#name').val($(this).parent().parent().children('.goods-name').text());
+                $('#type').val($(this).parent().parent().children('.goods-typename').text());
+                $('post-action-confirm-content').text('找回物品');
                 $('.modal#post-action').modal('show');
             });
             $('.do-unavailable').popup({
