@@ -554,7 +554,7 @@
                 var tdset = $('.goods-typename').parent();
                 for(var i=0;i<tdset.length;++i){
                     if( ($('#filter-type').attr('value')=="" || $('#filter-type').attr('value')== $(tdset[i]).children('.goods-typename').get(0).innerHTML)
-                    && ($('#filter-status').attr('value')=="" || $('#filter-status').attr('value')== $(tdset[i]).children('.good-status').attr('data-value'))
+                    && ($('#filter-status').attr('value')=="all" || $('#filter-status').attr('value')=="" || $('#filter-status').attr('value')== $(tdset[i]).children('.good-status').attr('data-value'))
                     && ($('#filter-name').val()=="" || $('#filter-name').val()== $(tdset[i]).children('.goods-name').get(0).innerHTML ))
                     {
                         $(tdset[i]).show();
