@@ -37,7 +37,7 @@
         </div>
     </div>
 
-    <form action="" method="get">
+    <!--<form action="" method="get">-->
         <div class="ui form fluid">
             <div class="field">
                 <input type="text" placeholder="实物名称" id="filter-name" name="name" value="">
@@ -76,7 +76,7 @@
         </div>
         <br/>
         <div type="text" id="confirm-sift" class="ui blue button fluid">提交筛选</div>
-    </form>
+    <!--</form>-->
 {% endblock %}
 
 {% block content %}
@@ -423,7 +423,7 @@
             </div>
         </form>
         <div class="actions">
-            <div class="ui black button" id="post-action-cancel">
+            <div class="ui black button" id="post-action-cancel" action="cancel">
                 取消
             </div>
             <div class="ui positive right labeled icon button" id="post-action-confirm">
@@ -491,6 +491,12 @@
                 $('#type').val($(this).parent().parent().children('.goods-typename').text());
                 $('post-action-confirm-content').text('借用');
                 $('.modal#post-action').modal('show');
+                <!--$('.modal#post-action')-->
+                  <!--.modal('setting', {-->
+                    <!--onHidden    : function(){-->
+                        <!--location.reload(true);-->
+                    <!--}-->
+                  <!--})-->
             });
             $('.do-available').popup({
                 on: 'hover'
@@ -517,7 +523,8 @@
                 $('#type').val($(this).parent().parent().children('.goods-typename').text());
                 $('post-action-confirm-content').text('找回物品');
                 $('.modal#post-action').modal('show');
-            });
+            }
+            );
             $('.do-unavailable').popup({
                 on: 'hover'
             });
@@ -549,8 +556,10 @@
             });
             $('#mail-action-confirm').click(function () {
                 $('#mail-action-form').trigger('submit');
-            });
-            $('#confirm-sift').click(function () {
+            }
+            );
+            function goods_filter()
+            {
                 var tdset = $('.goods-typename').parent();
                 for(var i=0;i<tdset.length;++i){
                     if( ($('#filter-type').attr('value')=="" || $('#filter-type').attr('value')== $(tdset[i]).children('.goods-typename').get(0).innerHTML)
@@ -563,6 +572,14 @@
                         $(tdset[i]).hide();
                     }
                 }
+            };
+            $('#filter-name').keydown(function(){
+                if(event.keyCode==13){
+                    goods_filter();
+                }
+            });
+            $('#confirm-sift').click(function () {
+                goods_filter();
             });
         });
 
