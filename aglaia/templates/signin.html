@@ -183,32 +183,9 @@
   <script src="{% static "javascript/signin.js" %}"></script>
   <script>
   $(function(){
-    // Instant-search for department tags.
-    $('#dept-search').keyup(function(){
-      // Search for the candidates by ajax.
-      $.ajax({
-        url: '{% url "account.views.do_lookup_depts" %}',
-        type: 'POST',
-        dataType: 'json',
-        data: { keyword: $('#dept-search').val() },
-      })
-      .done(function(data) {
-        // Fill the candidates div with these depts.
-        var cdd = "";
-        for (index in data.depts) {
-          var dept = data.depts[index];
-          cdd = cdd + '<span class="simple button">' + dept.encodeHtml() + '</span>&nbsp;';
-        }
-        $('#candidates').html(cdd);
-        $('#candidates .button').mousedown(addDept);
-      })
-      .fail(function() {
-        $('#candidates').html('<div class="ui red label">无法连接服务器<div>');
-      });
-    });
 
     // Signin Ajax.
-    $('#signin-btn').click(function(){
+    function Signin(){
       // Ignore the click in the signing in process..
       if ($('#signin-dimmer').hasClass('active'))
         return;
@@ -243,10 +220,10 @@
         $('#signin-error-msg').html('服务器异常，请稍后重试');
         $('#signin-error-div').removeClass('hidden');
       });
-    });
+    };
 
     // Signup Ajax.
-    $('#signup-btn').click(function(){
+    function Signup(){
       // Ignore the action if we are doing signing up.
       if ($('#signup-btn').hasClass('disabled') || $('#signup-dimmer').hasClass('active'))
         return;
@@ -297,7 +274,44 @@
       .always(function() {
         $('#signup-dimmer').removeClass('active');
       });
-        
+    };
+
+    document.onkeydown = function(event){
+    var ev = document.all ? window.event : event;
+    if(ev.keyCode==13) {
+        Signin();
+     }
+    }
+    // Instant-search for department tags.
+    $('#dept-search').keyup(function(){
+      // Search for the candidates by ajax.
+      $.ajax({
+        url: '{% url "account.views.do_lookup_depts" %}',
+        type: 'POST',
+        dataType: 'json',
+        data: { keyword: $('#dept-search').val() },
+      })
+      .done(function(data) {
+        // Fill the candidates div with these depts.
+        var cdd = "";
+        for (index in data.depts) {
+          var dept = data.depts[index];
+          cdd = cdd + '<span class="simple button">' + dept.encodeHtml() + '</span>&nbsp;';
+        }
+        $('#candidates').html(cdd);
+        $('#candidates .button').mousedown(addDept);
+      })
+      .fail(function() {
+        $('#candidates').html('<div class="ui red label">无法连接服务器<div>');
+      });
+    });
+
+    $('#signin-btn').click(function(){
+      Signin();
+    });
+
+    $('#signup-btn').click(function(){
+      Signup();
     });
 
     // Verification for Sign Up form.
