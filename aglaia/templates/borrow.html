@@ -25,6 +25,10 @@
                     归还审核中
                     <div class="teal ui label">{{ num_goods_return }}</div>
                 </a>
+                <a href="#" class="item">
+                    挂失审核中
+                    <div class="teal ui label">{{ num_goods_lost }}</div>
+                </a>
             </div>
         </div>
         <div class="header item">
@@ -92,6 +96,9 @@
         {% endfor %}
         {% for item in goods_return_pending_list %}
             {% include "goods_item.html" with status="return_pending" %}
+        {% endfor %}
+        {% for item in goods_lost_apply_list %}
+            {% include "goods_item.html" with status="lost_apply" %}
         {% endfor %}
         {% for item in goods_borrowing_list %}
             {% include "goods_item.html" with status="borrowing" %}

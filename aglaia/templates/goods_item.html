@@ -11,6 +11,8 @@
             <i class="lock icon"></i>使用中
         {% elif status == "returning" %}
             <i class="orange question icon"></i>归还/审核中
+        {% elif status == "lost_apply" %}
+            <i class="orange question icon"></i>挂失/审核中
         {% elif status == "return_pending" %}
             <i class="green checkmark icon"></i>归还/已批准
         {% elif status == "returned" %}
@@ -111,7 +113,7 @@
                 <button class="ui circular tiny inverted icon red button agree-button" data-content="维修完成"
                         data-variation="inverted"
                         data-position="top center"
-                        data-html='{% include 'confirm_with_reason.html' with title="维修完成" explanation="状况" placeholder="状况说明" url="goods.views.do_user_finish_repair" %}'
+                        data-html='{% include "messagebox_update_repair_process.html" with title="维修完成" explanation="状况" placeholder="状况说明" completeUrl="goods.views.do_user_finish_repair" updateUrl="goods.views.do_user_update_repair" %}'
                         style="visibility:visible;margin:0px;padding:0px">
                     <div type="submit" class="ui circular tiny inverted icon red tip miss button" data-content="维修完成"
                          style="visibility:visible">

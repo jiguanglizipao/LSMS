@@ -10,11 +10,24 @@
         <div class="ui vertical menu">
             <div class="header item">
                 <i class="cloud icon"></i>
-                新增
+                添加/申请
             </div>
         </div>
         <a class="ui green button  fluid" href='{% url "goods.views.show_add_goods" %}'>新增实物</a>
         <br/>
+        <a class="ui orange button fluid" href='{% url "goods.views.show_apply_goods" %}'>申请采购</a>
+        <br />
+
+    {% else %}
+        <div class="ui vertical menu">
+            <div class="header item">
+                <i class="cloud icon"></i>
+                申请采购
+            </div>
+        </div>
+        <a class="ui orange button fluid" href='{% url "goods.views.show_apply_goods" %}'>申请采购</a>
+        <br />
+
     {% endif %}
 
     <div class="ui vertical menu">
@@ -24,10 +37,10 @@
         </div>
     </div>
 
-    <form action="" method="get">
+    <!--<form action="" method="get">-->
         <div class="ui form fluid">
             <div class="field">
-                <input type="text" placeholder="实物名称" id="filter-name" name="name">
+                <input type="text" placeholder="实物名称" id="filter-name" name="name" value="">
             </div>
         </div>
         <div class="ui selection dropdown fluid">
@@ -63,17 +76,7 @@
         </div>
         <br/>
         <div type="text" id="confirm-sift" class="ui blue button fluid">提交筛选</div>
-
-        <div class="ui vertical menu">
-        <div class="header item">
-            <i class="cloud icon"></i>
-            采购
-        </div>
-    </div>
-    <a class="ui orange button fluid" href='{% url "goods.views.show_apply_goods" %}'>申请采购</a>
-
-
-    </form>
+    <!--</form>-->
 {% endblock %}
 
 {% block content %}
@@ -90,10 +93,12 @@
             <th>配置</th>
             <th>备注</th>
             <th>操作</th>
+            {% if "account.goods_auth" in perm_list %}
             <th><div class="ui icon blue button mini send-mail" data-variation="inverted" data-content="发送邮件">
                 <i class="icon mail circle"></i>
             </div>
             </th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
@@ -134,10 +139,12 @@
                             </button>
                         </form>
                     </td>
+                    {% if "account.goods_auth" in perm_list %}
                     <td>
                         <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
                              data-content="选择"><i class="icon star sign"></i></div>
                     </td>
+                    {% endif %}
                 </tr>
             {% elif goods.status == "unavailable" %}
                 <tr>
@@ -288,6 +295,8 @@
                                  data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
                             <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted"
                                  data-content="销毁"><i class="icon trash"></i></div>
+                            <div class="circular ui icon orange button tiny find-goods" data-variation="inverted"
+                                 data-content="找回物品"><i class="leaf icon"></i></div>
                         {% endif %}
                         <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
                             <input type="hidden" name="id" value="{{ goods.id }}">
@@ -414,7 +423,7 @@
             </div>
         </form>
         <div class="actions">
-            <div class="ui black button" id="post-action-cancel">
+            <div class="ui black button" id="post-action-cancel" action="cancel">
                 取消
             </div>
             <div class="ui positive right labeled icon button" id="post-action-confirm">
@@ -433,6 +442,7 @@
         var do_borrow = '{% url "goods.views.do_borrow" %}';
         var do_set_unavailable = '{% url "goods.views.do_set_unavailable" %}';
         var do_set_available = '{% url "goods.views.do_set_available" %}';
+        var do_find_back = '{% url "goods.views.do_find_back" %}';
         var do_destroy = '{% url "goods.views.do_destroy" %}';
 
         $(function () {
@@ -481,6 +491,12 @@
                 $('#type').val($(this).parent().parent().children('.goods-typename').text());
                 $('post-action-confirm-content').text('借用');
                 $('.modal#post-action').modal('show');
+                <!--$('.modal#post-action')-->
+                  <!--.modal('setting', {-->
+                    <!--onHidden    : function(){-->
+                        <!--location.reload(true);-->
+                    <!--}-->
+                  <!--})-->
             });
             $('.do-available').popup({
                 on: 'hover'
@@ -495,6 +511,20 @@
                 $('post-action-confirm-content').text('设置为在库');
                 $('.modal#post-action').modal('show');
             });
+            $('.find-goods').popup({
+                on: 'hover'
+            });
+            $('.find-goods').click(function () {
+                $('#post-action-form').attr('action', do_find_back);
+                $('#post-action-header').text('找回物品');
+                $('#id').val($(this).parent().children('.goods-id').text());
+                $('#sn').val($(this).parent().parent().children('.goods-sn').text());
+                $('#name').val($(this).parent().parent().children('.goods-name').text());
+                $('#type').val($(this).parent().parent().children('.goods-typename').text());
+                $('post-action-confirm-content').text('找回物品');
+                $('.modal#post-action').modal('show');
+            }
+            );
             $('.do-unavailable').popup({
                 on: 'hover'
             });
@@ -526,12 +556,15 @@
             });
             $('#mail-action-confirm').click(function () {
                 $('#mail-action-form').trigger('submit');
-            });
-            $('#confirm-sift').click(function () {
+            }
+            );
+            function goods_filter()
+            {
                 var tdset = $('.goods-typename').parent();
                 for(var i=0;i<tdset.length;++i){
                     if( ($('#filter-type').attr('value')=="" || $('#filter-type').attr('value')== $(tdset[i]).children('.goods-typename').get(0).innerHTML)
-                    && ($('#filter-status').attr('value')=="" || $('#filter-status').attr('value')== $(tdset[i]).children('.good-status').attr('data-value')))
+                    && ($('#filter-status').attr('value')=="all" || $('#filter-status').attr('value')=="" || $('#filter-status').attr('value')== $(tdset[i]).children('.good-status').attr('data-value'))
+                    && ($('#filter-name').val()=="" || $(tdset[i]).children('.goods-name').get(0).innerHTML.indexOf($('#filter-name').val()) != -1))
                     {
                         $(tdset[i]).show();
                     }
@@ -539,6 +572,14 @@
                         $(tdset[i]).hide();
                     }
                 }
+            };
+            $('#filter-name').keydown(function(){
+                if(event.keyCode==13){
+                    goods_filter();
+                }
+            });
+            $('#confirm-sift').click(function () {
+                goods_filter();
             });
         });
 

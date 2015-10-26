@@ -20,6 +20,10 @@
                 归还请求列表
                 <div class="ui label">{{ return_requests|length }}</div>
             </a>
+            <a href="#r-r" class="item">
+                挂失请求列表
+                <div class="ui label">{{ lost_apply_requests|length }}</div>
+            </a>
             <a href="#bp-r" class="item">
                 已同意借用的请求列表
                 <div class="ui label">{{ borrow_pending_requests|length }}</div>
@@ -209,21 +213,50 @@
 						    });
 		                  </script>
 	              	 </span>
-	                  '>归还</a>
+	                  '>同意归还</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="ui divider"></div>
+{% endif %}
+<!--挂失请求列表-->
+{% if lost_apply_requests %}
+<h3 id="l-r" class="ui header top attached" style="margin-top:10px"><font color="#F05940">挂失</font>请求列表</h3>
+<table class="ui table segment small attached">
+    <thead>
+    <tr>
+        <th>SN</th>
+        <th>实物</th>
+        <th>借用者</th>
+        <th>说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for lost_item in lost_apply_requests %}
+    <tr>
+        <td>{{ lost_item.sn }}</td>
+        <td>{{ lost_item.goods_name }}</td>
+        <td>{{ lost_item.borrower_name }}</td>
+        <td>{{ lost_item.note }}</td>
+        <td>
             <a class="negative ui tiny circular button  agree-button" data-variation="inverted"
                data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">物品挂失</h5>
-		                  <form  method="post" action="{% url "goods.views.do_accept_return" %}">
+		                  <form  method="post" action="{% url "goods.views.do_finish_lost" %}">
 		                  	<input type="hidden" name="lost" value="true">
 			                  <div class="ui form">
 			                    <div class="inline field" hidden>
 			                        <label><font color="#FFFFFF">请求编号</font></label>
-			                        <input type="text" placeholder="id" id="id" name="id" value="{{ return.id }}">
+			                        <input type="text" placeholder="id" id="id" name="id" value="{{ lost_item.id }}">
 			                    </div>
 			                    <div class="inline field">
 			                        <label><font color="#FFFFFF">实物名称</font></label>
-			                        <input type="text" placeholder="实物名称" id="name" name="name" value="{{ return.goods_name }}" disabled>
+			                        <input type="text" placeholder="实物名称" id="name" name="name" value="{{ lost_item.goods_name }}" disabled>
 			                    </div>
 			                    <div class="inline field">
 			                        <label><font color="#FFFFFF">附加说明</font></label>
@@ -231,14 +264,14 @@
 			                    </div>
 			                  </div>
 		                  </form>
-		                  <div class="positive ui tiny circular button floated right  return-agree-confirm-button">确认挂失</div>
+		                  <div class="positive ui tiny circular button floated right  lost-agree-confirm-button">确认挂失</div>
 		                  <script type="text/javascript">
-							$(".return-agree-confirm-button").click(function(){
+							$(".lost-agree-confirm-button").click(function(){
 						    	$(this).parent().children("form").trigger("submit");
 						    });
 		                  </script>
 	              	 </span>
-	                  '>挂失</a>
+	                  '>确认挂失</a>
         </td>
     </tr>
     {% endfor %}
@@ -538,7 +571,32 @@
         <td>{{ item.borrower_name }}</td>
         <td>{{ item.note }}</td>
         <td>
-            <a class="positive ui tiny circular button  agree-button" data-variation="inverted"
+            <a class="ui tiny circular button agree-button blue" data-variation="inverted"
+               data-position="top center" data-html='
+	                  <span>
+		                  <h5 class="ui header">更新实物维修进度</h5>
+		                  <form  method="post" action="{% url "goods.views.do_update_repair" %}">
+			                  <div class="ui form">
+			              			<input type="hidden" name="id" value="{{ item.id }}">
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物SN</font></label>
+			                        <input type="text" placeholder="id" name="id" value="{{ item.sn }}" disabled>
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">实物名称</font></label>
+			                        <input type="text" placeholder="实物名称" name="name" value="{{ item.goods_name }}" disabled>
+			                    </div>
+			                    <div class="field">
+			                        <label><font color="#FFFFFF">状况说明</font></label>
+			                        <input type="text" name="note">
+			                    </div>
+			                  </div>
+			                  <button type="submit" class="ui tiny circular button floated right fluid positive">确认</button>
+		                  </form>
+	              	 </span>
+	                  '>更新维修进度
+            </a>
+			<a class="positive ui tiny circular button  agree-button" data-variation="inverted"
                data-position="top center" data-html='
 	                  <span>
 		                  <h5 class="ui header">请确认实物维修完成</h5>

@@ -53,6 +53,9 @@ def get_brw_requst_log(*args, **kwargs):
 def get_good_avail_log(*args, **kwargs):
     return '置为可用'
 
+def get_good_findback_log(*args, **kwargs):
+    return '找回物品'
+
 
 def get_good_destroy_log(*args, **kwargs):
     return '销毁'
@@ -104,6 +107,12 @@ def get_finish_repair_log(*args, **kwargs):
 
 def get_ret_repaired_log(*args, **kwargs):
     return '维修完的物品被取回'
+
+
+def get_good_update_repair_log(*args, **kwargs):
+    if 'note' in kwargs:
+        return '更新维修进度：'+str(kwargs['note'])
+    return '更新维修进度'
 
 
 def get_good_repaired_log(*args, **kwargs):

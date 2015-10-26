@@ -1,0 +1,32 @@
+<div class="ui header" style="background:rgba(255,255,255,0);">{{ title }}</div>
+<form method="post" action="">
+    <input type="text" name="id" value="{{ item.id }}" hidden>
+    <input type="hidden" class="update-repair-url" data-value="{% url updateUrl %}"/>
+    <input type="hidden" class="complete-repair-url" data-value="{% url completeUrl %}"/>
+    <div class="ui form">
+        <div class="inline field">
+            <label><font color="#FFFFFF">{{ explanation }}</font></label>
+            <input type="text" name="note" placeholder={{ placeholder }}>
+        </div>
+    </div>
+    <table>
+        <tr>
+            <td>
+                <div class="ui tiny circular button floated right fluid blue update-button">更新</div>
+            </td>
+            <td>
+                <div class="ui tiny circular button floated right fluid green complete-button">完成</div>
+            </td>
+        </tr>
+    </table>
+</form>
+<script type="text/javascript">
+    $(".update-button").click(function () {
+        $(this).parents("form").attr("action",$(this).parents("form").children(".update-repair-url").attr("data-value"));
+        $(this).parents("form").trigger("submit");
+    });
+    $(".complete-button").click(function () {
+        $(this).parents("form").attr("action",$(this).parents("form").children(".complete-repair-url").attr("data-value"));
+        $(this).parents("form").trigger("submit");
+    });
+</script>
