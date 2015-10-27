@@ -1,0 +1,35 @@
+<h2 class="ui header" style="margin-top:10px; margin-left:10px">实物修改列表</h2>
+    <table class="ui table segment small" style="margin-left:10px">
+        <thead>
+        <tr>
+            <th>修改类型</th>
+            <th>物品名称</th>
+            <th>SN号</th>
+            <th>物品种类</th>
+            <th>物品属性</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for goods in goods_list %}
+            <tr class="positive">
+                {% if goods.type == "create" %}
+                    <td class="change-type">创建</td>
+                {% else %}
+                    <td class="change-type">修改</td>
+                {% endif %}
+                <td class="goods-name">{{ goods.name }}</td>
+                <td class="goods-sn">{{ goods.sn }}</td>
+                <td class="goods-typename">{{ goods.type_name }}</td>
+                <td>
+                    <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
+            {% for pro in goods.prop %}
+              {% if pro.pro_name != "" %}
+              <div class="ui label" style="margin-top:5px">{{ pro.pro_name }}: {{ pro.pro_value }}</div>
+              {% endif %}
+            {% endfor %}'>详细
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>

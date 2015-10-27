@@ -4,20 +4,60 @@
 
 {% block title %}数据导入/导出{% endblock %}
 
-{% block content %}
+{% block leftside %}
 
     <a href='{% url "excel.views.export_database" %}' class="ui blue button fluid">导出数据库</a>
 
-    <form enctype="multipart/form-data" action="" method="POST">
+    <form enctype="multipart/form-data" action="" method="POST" id="xml-form">
         <div class="ui form fluid">
             <div class="field">
                 <label>选择文件</label>
-                <input type="file" name="file" />
+                <input type="file" name="xml" />
             </div>
         </div>
-        <button type="submit" class="ui red button fluid">导入数据库</button>
+        <input id="xml-btn" type="button" class="ui red button fluid" value="导入数据库">
     </form>
 
     <a href='{% url "excel.views.export_excel" %}' class="ui button green fluid">生成Excel</a>
+    <form enctype="multipart/form-data" action="" method="POST" id="excel-form">
+        <div class="ui form fluid">
+            <div class="field">
+                <label>导入Excel</label>
+                <input type="file" name="xlsx" />
+            </div>
+        </div>
+        <input id="excel-btn" type="button" class="ui red button fluid" value="导入Excel">
+    </form>
 
+{% endblock %}
+
+{% block content %}
+<div id="mainContent">
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static "javascript/jquery.form.js" %}"></script>
+<script>
+$(function(){
+    $("#excel-btn").on("click",function(){
+        $("#excel-form").ajaxSubmit({
+            type:'post',
+            url:'',
+            success:function(data){
+                $("#mainContent").html(data);
+            },
+        });
+    });
+    $("#xml-btn").on("click",function(){
+        $("#xml-form").ajaxSubmit({
+            type:'post',
+            url:'',
+            success:function(data){
+                $("#mainContent").html(data);
+            },
+        });
+    });
+});
+</script>
 {% endblock %}
