@@ -7,7 +7,7 @@ from django.contrib.auth.models import *
 from django.contrib.auth.decorators import login_required
 
 from aglaia.settings import LOGIN_URL, ACCOUNT_HOME_URL, EMAIL_AUTH_PREFIX, USER_RETURN_MESSAGE, USER_MISS_MESSAGE
-from aglaia.views import show_message, get_context_list, no_excp_post, no_excp_get
+from aglaia.views import get_context_list, no_excp_post, no_excp_get
 from aglaia.decorators import permission_required, method_required, http_denied, show_denied_message
 from aglaia.messages import *
 from account.views import get_context_user
@@ -29,13 +29,15 @@ import time
 from django import forms
 import hashlib
 import xlrd
-import xlwt
-import io
+import xlsxwriter
 from random import Random
 
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
+
+def show_message(request, msg):
+    return render(request, "excel_message.html", {'message': msg})
 
 
 def random_str(randomlength=8):
@@ -48,9 +50,9 @@ def random_str(randomlength=8):
     return ran
 
 
-def handle_uploaded_file(request, f):
+def handle_uploaded_file(suffix, f):
     ran = random_str()
-    destination = open('excel/'+ran+'.xml', 'wb')
+    destination = open('excel/'+ran+suffix, 'wb')
     for chunk in f.chunks():
         destination.write(chunk)
     destination.close()
@@ -105,27 +107,31 @@ def index(request):
             'user': get_context_user(request.user),
             'perm_list': request.user.get_all_permissions()})
 
-    if 'file' in request.FILES:
-        ran = handle_uploaded_file(request, request.FILES['file'])
+    if 'xml' in request.FILES:
+        ran = handle_uploaded_file('.xml', request.FILES['xml'])
         return HttpResponseRedirect('import_database?ran='+ran)
+    elif 'xlsx' in request.FILES:
+        ran = handle_uploaded_file('.xlsx', request.FILES['xlsx'])
+        return HttpResponseRedirect('import_excel?ran='+ran)
     else:
-        return HttpResponseRedirect('')
+        return show_message(request, 'Upload Error')
 
 
 def export_excel(request):
-    workbook = xlwt.Workbook('utf-8')
-    workbook.set_owner('LSMS')
-    workbook.set_country_code(86)
+    ran = 'excel/'+random_str()+'.xlsx'
+    workbook = xlsxwriter.Workbook(ran)
 
-    sheet = workbook.add_sheet('在库物品')
-    sheet.write(0, 0, 'SN号')
-    sheet.write(0, 1, '物品种类')
-    sheet.write_merge(0, 0, 2, 128, '物品属性')
+    sheet = workbook.add_worksheet('在库物品')
+    sheet.write(0, 0, '物品名')
+    sheet.write(0, 1, 'SN号')
+    sheet.write(0, 2, '物品种类')
+    sheet.merge_range(0, 3, 0, 128, '物品属性')
     singles = Single.objects.all().filter(status=AVALIABLE_KEY)
     i = 1
     for item in singles:
-        sheet.write(i, 0, item.sn)
-        sheet.write(i, 1, item.goods.gtype.name)
+        sheet.write(i, 0, item.goods.name)
+        sheet.write(i, 1, item.sn)
+        sheet.write(i, 2, item.goods.gtype.name)
         pro_names = item.goods.gtype.pro_names
         pro_names = pro_names.split(',')
         pro_values = item.goods.pro_values
@@ -134,16 +140,16 @@ def export_excel(request):
         for pro in pro_names:
             if not pro:
                 continue
-            sheet.write(i, 2+j, pro+" : "+pro_values[j])
+            sheet.write(i, 3+j, pro+" : "+pro_values[j])
             j += 1
         i += 1
 
-    sheet = workbook.add_sheet('借出物品')
+    sheet = workbook.add_worksheet('借出物品')
     sheet.write(0, 0, 'SN号')
     sheet.write(0, 1, '借用者')
     sheet.write(0, 2, '借用状态')
     sheet.write(0, 3, '物品种类')
-    sheet.write_merge(0, 0, 4, 128, '物品属性')
+    sheet.merge_range(0, 4, 0, 128, '物品属性')
     singles = Single.objects.all()
     singles = singles.exclude(status=AVALIABLE_KEY)
     singles = singles.exclude(status=DESTROYED_KEY)
@@ -167,13 +173,13 @@ def export_excel(request):
             j += 1
         i += 1
 
-    sheet = workbook.add_sheet('申请物资')
+    sheet = workbook.add_worksheet('申请物资')
     sheet.write(0, 0, '物品名')
     sheet.write(0, 1, 'SN号')
     sheet.write(0, 2, '申请者')
     sheet.write(0, 3, '申请状态')
     sheet.write(0, 4, '物品种类')
-    sheet.write_merge(0, 0, 5, 128, '物品属性')
+    sheet.merge_range(0, 5, 0, 128, '物品属性')
     singles = Apply_Goods.objects.all()
     singles = singles.exclude(status=FINISH_GOODS_APPLY_KEY)
     singles = singles.exclude(status=INPUT_GOODS_APPLY_KEY)
@@ -197,7 +203,7 @@ def export_excel(request):
             j += 1
         i += 1
 
-    sheet = workbook.add_sheet('计算资源')
+    sheet = workbook.add_worksheet('计算资源')
     sheet.write(0, 0, '资源名')
     sheet.write(0, 1, 'SN号')
     sheet.write(0, 2, '借用者')
@@ -242,8 +248,66 @@ def export_excel(request):
         sheet.write(i, 16, item.data_content)
         i += 1
 
-    response = HttpResponse(content_type='application/vnd.ms-excel')
-    filename = time.strftime('%Y-%m-%d_%H:%M:%S', time.localtime(time.time()))+'.xls'
+    workbook.close()
+    response = HttpResponse(open(ran, 'rb').read(), content_type='application/vnd.ms-excel')
+    filename = time.strftime('%Y-%m-%d_%H:%M:%S', time.localtime(time.time()))+'.xlsx'
     response['Content-Disposition'] = 'attachment; filename='+filename
-    workbook.save(response)
+    os.remove(ran)
     return response
+
+
+@method_required('GET')
+@permission_required(PERM_GOODS_AUTH)
+def import_excel(request):
+    ran = 'excel/'+request.GET['ran']+'.xlsx'
+
+    try:
+        workbook = xlrd.open_workbook(ran)
+        os.remove(ran)
+
+        assert workbook.sheet_by_index(0).name == '在库物品'
+        single_change = list()
+        sheet = workbook.sheet_by_index(0)
+        assert sheet.cell(0, 0).value == '物品名'
+        assert sheet.cell(0, 1).value == 'SN号'
+        assert sheet.cell(0, 2).value == '物品种类'
+        assert sheet.cell(0, 3).value == '物品属性'
+        nrows = sheet.nrows
+        ncols = sheet.ncols
+        singles = Single.objects.all()
+        for i in range(1, nrows):
+            #assert len(GType.objects.all().filter(name=sheet.cell(i, 2).value))>=1
+            gtype = GType.objects.all().filter(name=sheet.cell(i, 2).value)[0]
+            pro_names = gtype.pro_names.split(',')
+            pro_values = str()
+            dic=dict()
+            for j in range(3, len(sheet.row(i))):
+                if sheet.cell(i, j).value.find(':') != -1:
+                    temp = sheet.cell(i, j).value.split(':')
+                    dic[temp[0].strip()] = temp[1].strip()
+                else:
+                    continue
+
+            prop=list()
+            for pro in pro_names:
+                if not pro:
+                    continue
+                #assert pro in dic
+                pro_values+=dic[pro]+sep
+                prop.append({'pro_name': pro, 'pro_value': dic[pro]})
+
+            if len(singles.filter(sn=sheet.cell(i, 1).value)) == 0:
+                single_change.append({'type':'create', 'name':sheet.cell(i, 0).value, 'sn':sheet.cell(i, 1).value, 'type_name':gtype.name, 'values': pro_values, 'prop': prop})
+            else:
+                item = singles.filter(sn=sheet.cell(i, 1).value)[0]
+                assert item.status == AVALIABLE_KEY
+                if item.goods.name == sheet.cell(i, 0).value and item.goods.gtype.name == gtype.name and item.goods.pro_values == pro_values:
+                    continue
+                single_change.append({'type':'change', 'name':sheet.cell(i, 0).value, 'sn':sheet.cell(i, 1).value, 'type_name':gtype.name, 'values': pro_values, 'prop': prop})
+
+        return render(request, 'excel_list.html', {'goods_list': single_change})
+
+    except Exception as e:
+        return show_message(request, 'Import Error '+e.__str__())
+
+    return show_message(request, 'Import Success')
