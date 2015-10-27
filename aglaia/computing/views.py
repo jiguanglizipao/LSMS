@@ -113,6 +113,7 @@ def do_borrow_request(request):
 			comp['name'] = post['name']
 		else:
 			comp['name'] = ''
+		print(comp)
 		c = packed_create_computing(
 			request, [comp], log=get_comp_request_log())
 		send_notify_mail(request, CompRequestMail, comp=c[0])
