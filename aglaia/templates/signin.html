@@ -40,7 +40,7 @@
         </div>
       </h1>
     </div>
-    <div class="six wide column">
+    <div class="six wide column" id="signin">
       <form class="ui form segment">
         <h1 class="ui header">
           <i class="circular inverted tasks icon"></i>
@@ -183,7 +183,7 @@
   <script src="{% static "javascript/signin.js" %}"></script>
   <script>
   $(function(){
-
+    $('#signin-username').focus();
     // Signin Ajax.
     function Signin(){
       // Ignore the click in the signing in process..
@@ -276,12 +276,6 @@
       });
     };
 
-    document.onkeydown = function(event){
-    var ev = document.all ? window.event : event;
-    if(ev.keyCode==13) {
-        Signin();
-     }
-    }
     // Instant-search for department tags.
     $('#dept-search').keyup(function(){
       // Search for the candidates by ajax.
@@ -314,6 +308,17 @@
       Signup();
     });
 
+    $('#signin').keydown(function(event){
+    if(event.keyCode==13){
+       Signin();
+    }
+    });
+
+    $('#signup-modal').keydown(function(event){
+    if(event.keyCode==13){
+       Signup();
+    }
+    });
     // Verification for Sign Up form.
     var usernameOk = false;
     var passwordOk = false;

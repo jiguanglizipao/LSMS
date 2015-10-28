@@ -867,7 +867,11 @@ def do_input_apply_goods(request):
         if packed_find_single(request, {'sn': sn}, {}):
             raise Exception("sn already exists")
         tp = packed_find_gtypes(request, type_name)
-        if tp and tp[0].get_all_pros() != apgd.pro_names.split(sep):
+
+        pnsr = apgd.pro_names.split(sep)
+        pnsr.remove('')
+
+        if tp and tp[0].get_all_pros() != pnsr:
             raise Exception("type cannot use this name")
         if not apgd.status == FINISH_GOODS_APPLY_KEY:
             return show_message(
