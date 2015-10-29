@@ -100,15 +100,33 @@
             </button>
 
         {% else %}
-            <button class="ui circular tiny inverted icon green tip disabled button" data-content="归还">
-                <i class="unlock icon"></i>
+            <button class="ui circular tiny inverted icon green tip disabled button"
+                    style="visibility:visible;margin:0px;padding:0px">
+                <div type="submit" class="ui circular tiny inverted icon green tip disabled button" data-content="归还"
+                     style="visibility:visible">
+                    <i class="unlock icon"></i>
             </button>
-            <button class="ui circular tiny inverted icon red tip disabled button" data-content="挂失">
-                <i class="ban circle icon"></i>
+{#            <button class="ui circular tiny inverted icon green tip disabled button" data-content="归还">#}
+{#                <i class="unlock icon"></i>#}
+{#            </button>#}
+            <button class="ui circular tiny inverted icon red tip disabled button"
+                    style="visibility:visible;margin:0px;padding:0px">
+                <div type="submit" class="ui circular tiny inverted icon red tip disabled button" data-content="挂失"
+                     style="visibility:visible">
+                    <i class="ban circle icon"></i>
             </button>
-            <button type="submit" class="ui circular tiny inverted icon black tip disabled button" data-content="销毁">
-                <i class="trash circle icon"></i>
+{#            <button class="ui circular tiny inverted icon red tip disabled button" data-content="挂失">#}
+{#                <i class="ban circle icon"></i>#}
+{#            </button>#}
+            <button class="ui circular tiny inverted icon black tip disabled button"
+                    style="visibility:visible;margin:0px;padding:0px">
+                <div type="submit" class="ui circular tiny inverted icon black tip disabled button" data-content="销毁"
+                     style="visibility:visible">
+                    <i class="trash circle icon"></i>
             </button>
+{#            <button type="submit" class="ui circular tiny inverted icon black tip disabled button" data-content="销毁">#}
+{#                <i class="trash circle icon"></i>#}
+{#            </button>#}
             {% if status == "repairuser" %}
                 <button class="ui circular tiny inverted icon red button agree-button" data-content="维修完成"
                         data-variation="inverted"
@@ -120,10 +138,16 @@
                         <i class="wrench circle icon"></i>
                 </button>
             {% else %}
-                <button type="submit" class="ui circular tiny inverted icon orange tip disabled button"
-                        data-content="维修">
-                    <i class="wrench circle icon"></i>
+                <button class="ui circular tiny inverted icon orange tip disabled button"
+                        style="visibility:visible;margin:1px;padding:1px">
+                    <div type="submit" class="ui circular tiny inverted icon orange tip disabled button" data-content="维修"
+                         style="visibility:visible">
+                        <i class="wrench circle icon"></i>
                 </button>
+{#                <button type="submit" class="ui circular tiny inverted icon orange tip disabled button"#}
+{#                        data-content="维修">#}
+{#                    <i class="wrench circle icon"></i>#}
+{#                </button>#}
             {% endif %}
         {% endif %}
 

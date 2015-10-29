@@ -82,8 +82,8 @@ def do_borrow_request(request):
     post = request.POST
     comp = {}
     try:
-        p_nm = no_excp_post(request, 'package_name')
-        if p_nm:
+        p_nm = no_excp_post(request, 'package')
+        if p_nm != 'none':
             get_pack_prop(comp, p_nm)
         else:
             if post['type'] == 'real':

@@ -120,7 +120,7 @@
                data-position="top center" data-html='
                 <h5 class="ui header">拒绝借出{% if borrow.type == 'real' %}实体{% elif borrow.type == 'virtual' %}虚拟{% endif %}资源</h5>
                 <form method="post" action="{% url "computing.views.do_disapprove_borrow" %}" class="do-disapprove-borrow">
-                    <input type="text" name="id" value="{{ borrowing.id }}" hidden>
+                    <input type="text" name="id" value="{{ borrow.id }}" hidden>
                     <div class="ui form">
                         <div class="inline field">
                             <label><font color="#FFFFFF">说明</font></label>
@@ -400,12 +400,12 @@
             {% if inuse.flag == True %}
             <form action="{% url "computing.views.do_destroying_comp" %}" method="post">
                 <input type="hidden" name="id" value="{{ inuse.id }}">
-                <button type="submit" class="ui tiny circular button black horizontal">提醒用户备份数据后收回</button>
+                <button type="submit" class="ui tiny circular button black horizontal">提醒用户备份数据</button>
             </form>
             {% else %}
             <form action="{% url "computing.views.do_destroyed_comp" %}" method="post">
                 <input type="hidden" name="id" value="{{ inuse.id }}">
-                <button type="submit" class="ui tiny circular button black horizontal">强制收回</button>
+                <button type="submit" class="ui tiny circular button black horizontal">强制收回计算资源</button>
             </form>
             {% endif %}
             {% endif %}
@@ -429,7 +429,7 @@
         <th>套餐类型</th>
         <th>配置要求</th>
         <th>申请者</th>
-        <th>管理员答复</th>
+        <th>答复</th>
         <th>操作</th>
     </tr>
     </thead>
@@ -462,7 +462,7 @@
             {% if backup.type == 'virtual' %}
             <form action="{% url "computing.views.do_destroyed_comp" %}" method="post">
                 <input type="hidden" name="id" value="{{ backup.id }}">
-                <button type="submit" class="ui tiny circular button black">强制收回</button>
+                <button type="submit" class="ui tiny circular button black">强制收回计算资源</button>
             </form>
             {% endif %}
         </td>

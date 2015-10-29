@@ -94,14 +94,13 @@ def export_database(request):
 def import_database(request):
     try:
         ran = 'excel/' + request.GET['ran'] + '.xml'
-        file = codecs.open(ran, 'r', 'utf-8')
+        file = open(ran)
         hash = file.readline().replace('\n', '')
         data = file.read()
         file.close()
         os.remove(ran)
-        hash2 = make_hash(data.encode('utf-8'))
-        if hash != hash2:
-            return show_message(request, 'Import Error (File destroyed)'+hash+' and '+hash2)
+        if hash != make_hash(data):
+            return show_message(request, 'Import Error File Destroyed')
         file = open(ran, 'w')
         file.write(data)
         file.close()
