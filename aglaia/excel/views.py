@@ -32,6 +32,7 @@ from django import forms
 import hashlib
 import xlrd
 import xlsxwriter
+import codecs
 from random import Random
 
 
@@ -63,7 +64,7 @@ def handle_uploaded_file(suffix, f):
 
 
 def make_hash(data):
-    md5 = hashlib.md5(data.encode('utf-8')).hexdigest()
+    md5 = hashlib.md5(data).hexdigest()
     return md5
 
 
@@ -76,7 +77,7 @@ def export_database(request):
     file = open(ran)
     data = file.read()
     file.close()
-    data = make_hash(data) + '\n' + data
+    data = make_hash(data.encode()) + '\n' + data
     filename = time.strftime(
         '%Y-%m-%d_%H:%M:%S',
         time.localtime(
@@ -91,35 +92,39 @@ def export_database(request):
 @method_required('GET')
 @permission_required(PERM_GOODS_AUTH)
 def import_database(request):
-    ran = 'excel/' + request.GET['ran'] + '.xml'
-    file = open(ran)
-    hash = file.readline().replace('\n', '')
-    data = file.read()
-    file.close()
-    os.remove(ran)
-    if hash != make_hash(data):
-        return show_message(request, 'Import Error')
-    file = open(ran, 'w')
-    file.write(data)
-    file.close()
+    try:
+        ran = 'excel/' + request.GET['ran'] + '.xml'
+        file = codecs.open(ran, 'r', 'utf-8')
+        hash = file.readline().replace('\n', '')
+        data = file.read()
+        file.close()
+        os.remove(ran)
+        hash2 = make_hash(data.encode('utf-8'))
+        if hash != hash2:
+            return show_message(request, 'Import Error (File destroyed)'+hash+' and '+hash2)
+        file = open(ran, 'w')
+        file.write(data)
+        file.close()
 
-    Single.objects.all().delete()
-    Goods.objects.all().delete()
-    GType.objects.all().delete()
-    Apply_Goods.objects.all().delete()
+        Single.objects.all().delete()
+        Goods.objects.all().delete()
+        GType.objects.all().delete()
+        Apply_Goods.objects.all().delete()
 
-    Computing.objects.all().delete()
-    Server.objects.all().delete()
-    Package.objects.all().delete()
+        Computing.objects.all().delete()
+        Server.objects.all().delete()
+        Package.objects.all().delete()
 
-    LogAccount.objects.all().delete()
-    LogComputing.objects.all().delete()
-    LogBorrow.objects.all().delete()
-    LogSingle.objects.all().delete()
+        LogAccount.objects.all().delete()
+        LogComputing.objects.all().delete()
+        LogBorrow.objects.all().delete()
+        LogSingle.objects.all().delete()
 
-    execute_from_command_line(['manage.py', 'loaddata', ran])
-    os.remove(ran)
-    return show_message(request, 'Import Success')
+        execute_from_command_line(['manage.py', 'loaddata', ran])
+        os.remove(ran)
+        return show_message(request, 'Import Success')
+    except Exception as e:
+        return show_message(request, 'Import Error' + e.__str__())
 
 
 @permission_required(PERM_GOODS_AUTH)

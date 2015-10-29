@@ -103,6 +103,11 @@
         });*/
       $('#add-goods-form').trigger('submit');
       })
+      $('#add-goods-form').keydown(function(event){
+      if(event.keyCode==13){
+         $('#submit-button').trigger("click");
+      }
+      });
       $('input').click(function(){
         $('#form-segment').removeClass('error');
       });

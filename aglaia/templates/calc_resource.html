@@ -650,6 +650,11 @@ id="create-package">
                 }
                 $('#create-package').trigger('submit');
             });
+            $('#create-package').keydown(function(event){
+            if(event.keyCode==13){
+               $('#create-button').trigger("click");
+            }
+            });
             $('#name').click(function () {
                 if (error_info == "name")
                     $('#create-package').removeClass('error');
