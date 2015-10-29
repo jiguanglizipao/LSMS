@@ -169,8 +169,13 @@
         </thead>
         <tbody>
         {% for item in inuse_list %}
-            {% if filtdata and not item.flag %}
-            {% else %}
+            {% if item.flag %}
+                {% include "comp_item.html" with status="inuse" %}
+            {% endif %}
+        {% endfor %}
+
+        {% for item in inuse_list %}
+            {% if not item.flag %}
                 {% include "comp_item.html" with status="inuse" %}
             {% endif %}
         {% endfor %}
