@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import *
 from django.contrib.auth.decorators import login_required
+from django.db import models
 
 from aglaia.settings import LOGIN_URL, ACCOUNT_HOME_URL, EMAIL_AUTH_PREFIX, USER_RETURN_MESSAGE, USER_MISS_MESSAGE
 from aglaia.views import get_context_list, no_excp_post, no_excp_get
@@ -13,6 +14,7 @@ from aglaia.messages import *
 from account.views import get_context_user
 from account.models import *
 from goods.models import *
+from computing.models import *
 from account.interface import *
 from computing.interface import *
 from goods.interface import *
@@ -24,7 +26,7 @@ import json
 from aglaia.message_center import Message
 from django.core.management import execute_from_command_line
 import os
-import sys
+import datetime
 import time
 from django import forms
 import hashlib
@@ -35,6 +37,7 @@ from random import Random
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
+
 
 def show_message(request, msg):
     return render(request, "excel_message.html", {'message': msg})
@@ -95,6 +98,21 @@ def import_database(request):
     file = open(ran, 'w')
     file.write(data)
     file.close()
+
+    Single.objects.all().delete()
+    Goods.objects.all().delete()
+    GType.objects.all().delete()
+    Apply_Goods.objects.all().delete()
+
+    Computing.objects.all().delete()
+    Server.objects.all().delete()
+    Package.objects.all().delete()
+
+    LogAccount.objects.all().delete()
+    LogComputing.objects.all().delete()
+    LogBorrow.objects.all().delete()
+    LogSingle.objects.all().delete()
+
     execute_from_command_line(['manage.py', 'loaddata', ran])
     os.remove(ran)
     return show_message(request, 'Import Success')
@@ -227,6 +245,7 @@ def export_excel(request):
     singles = Computing.objects.all()
     singles = singles.exclude(status=DESTROYED_KEY)
     singles = singles.exclude(status=DAMAGED_KEY)
+    singles = singles.exclude(status='')
 
     i = 1
     for item in singles:
@@ -300,13 +319,27 @@ def import_excel(request):
                 prop.append({'pro_name': pro, 'pro_value': dic[pro]})
 
             if len(singles.filter(sn=sheet.cell(i, 1).value)) == 0:
-                single_change.append({'type':'create', 'name':sheet.cell(i, 0).value, 'sn':sheet.cell(i, 1).value, 'type_name':gtype.name, 'values': pro_values, 'prop': prop})
+                single_change.append({'type':'create',
+                                      'name':sheet.cell(i, 0).value,
+                                      'sn':sheet.cell(i, 1).value,
+                                      'type_name':gtype.name,
+                                      'values': pro_values,
+                                      'prop': prop,
+                                      'id': str(len(single_change)),
+                                      })
             else:
                 item = singles.filter(sn=sheet.cell(i, 1).value)[0]
                 assert item.status == AVALIABLE_KEY
                 if item.goods.name == sheet.cell(i, 0).value and item.goods.gtype.name == gtype.name and item.goods.pro_values == pro_values:
                     continue
-                single_change.append({'type':'change', 'name':sheet.cell(i, 0).value, 'sn':sheet.cell(i, 1).value, 'type_name':gtype.name, 'values': pro_values, 'prop': prop})
+                single_change.append({'type':'change',
+                                      'name':sheet.cell(i, 0).value,
+                                      'sn':sheet.cell(i, 1).value,
+                                      'type_name':gtype.name,
+                                      'values': pro_values,
+                                      'prop': prop,
+                                      'id': str(len(single_change)),
+                                      })
 
         #计算资源
         assert workbook.sheet_by_index(3).name == '计算资源'
@@ -343,7 +376,6 @@ def import_excel(request):
                 MODIFY_APPLY: MODIFY_APPLY_KEY,
                 RETURNING: RETURNING_KEY,
                 RETURNED: RETURNED_KEY,
-                'ret': ''
             }
             TYPE_CHOICES = {'实体机': PHYSICAL_MACHINE_KEY, '虚拟机': VIRTUAL_MACHINE_KEY}
             DISK_CHOICES = {MACHINE: MACHINE_KEY, SSD: SSD_KEY}
@@ -372,6 +404,7 @@ def import_excel(request):
                                          'ip': sheet.cell(i, 14).value,
                                          'flag': sheet.cell(i, 15).value,
                                          'data_content': sheet.cell(i, 16).value,
+                                         'id': str(len(computing_change))
                                         })
             else:
                 dic={PHYSICAL_MACHINE_KEY: '实体机', VIRTUAL_MACHINE_KEY:'虚拟机'}
@@ -391,7 +424,7 @@ def import_excel(request):
                     item.login == sheet.cell(i, 12).value and
                     item.password == sheet.cell(i, 13).value and
                     item.address == sheet.cell(i, 14).value and
-                    str(item.flag) == sheet.cell(i, 15).value and
+                    item.flag == bool(sheet.cell(i, 15).value) and
                     item.data_content == sheet.cell(i, 16).value):
                     continue
                 computing_change.append({'type': 'change',
@@ -412,9 +445,105 @@ def import_excel(request):
                                          'ip': sheet.cell(i, 14).value,
                                          'flag': sheet.cell(i, 15).value,
                                          'data_content': sheet.cell(i, 16).value,
+                                         'id': str(len(computing_change))
                                         })
 
         return render(request, 'excel_list.html', {'goods_list': single_change, 'computing_list': computing_change})
 
     except Exception as e:
         return show_message(request, 'Import Error '+e.__str__())
+
+
+@method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def import_goods(request):
+    try:
+        if request.POST['type'] == 'create':
+            gtype = GType.objects.all().filter(name=request.POST['type_name'])[0]
+            goods = Goods(name=request.POST['name'], gtype=gtype, pro_values=request.POST['pro_values'])
+            goods.save()
+            single = Single(sn=request.POST['sn'], goods=goods, status=AVALIABLE_KEY, note='', user_name='')
+            single.save()
+
+        if request.POST['type'] == 'change':
+            single = Single.objects.all().filter(sn=request.POST['sn'])[0]
+            gtype = GType.objects.all().filter(name=request.POST['type_name'])[0]
+            goods = Goods(name=request.POST['name'], gtype=gtype, pro_values=request.POST['pro_values'])
+            goods.save()
+            single.goods = goods
+            single.save()
+
+        return HttpResponse('Success')
+    except Exception as e:
+        return HttpResponse('Error '+e.__str__())
+
+
+@method_required('POST')
+@permission_required(PERM_GOODS_AUTH)
+def import_computing(request):
+    try:
+        if request.POST['type'] == 'create':
+            expire_time = datetime.datetime.strptime(request.POST['expire_time'], '%Y-%m-%d')
+            account = Account.objects.all().filter(user__username=request.POST['user'])[0]
+            STATUS_CHOICES = {
+                VERIFYING:VERIFYING_KEY,
+                VERIFY_FAIL: VERIFY_FAIL_KEY,
+                VERIFY_SUCCESS: VERIFY_SUCCESS_KEY,
+                BORROWED: BORROWED_KEY,
+                MODIFY_APPLY: MODIFY_APPLY_KEY,
+                RETURNING: RETURNING_KEY,
+                RETURNED: RETURNED_KEY,
+            }
+            TYPE_CHOICES = {'实体机': PHYSICAL_MACHINE_KEY, '虚拟机': VIRTUAL_MACHINE_KEY}
+            DISK_CHOICES = {MACHINE: MACHINE_KEY, SSD: SSD_KEY}
+            status=STATUS_CHOICES[request.POST['status']]
+            pc_type=TYPE_CHOICES[request.POST['pc_type']]
+            disk_type=DISK_CHOICES[request.POST['disk_type']]
+            computing = Computing(pc_type=pc_type, cpu=request.POST['cpu'],
+                                  memory=int(float(request.POST['memory'])), disk=int(float(request.POST['disk'])),
+                                  disk_type=disk_type, os=request.POST['os'],
+                                  sn=request.POST['sn'],
+                                  expire_time=expire_time,
+                                  login=request.POST['login'], password=request.POST['password'],
+                                  status=status, account=account, note='',
+                                  address=request.POST['ip'], flag=request.POST['flag'],
+                                  name=request.POST['name'], pack_name=request.POST['pack_name'],
+                                  data_content=request.POST['data_content'])
+            computing.save()
+
+        if request.POST['type'] == 'change':
+            computing = Computing.objects.all().filter(sn=request.POST['sn'])[0]
+            note=computing.note
+            computing.delete()
+            expire_time = datetime.datetime.strptime(request.POST['expire_time'], '%Y-%m-%d')
+            account = Account.objects.all().filter(user__username=request.POST['user'])[0]
+            STATUS_CHOICES = {
+                VERIFYING:VERIFYING_KEY,
+                VERIFY_FAIL: VERIFY_FAIL_KEY,
+                VERIFY_SUCCESS: VERIFY_SUCCESS_KEY,
+                BORROWED: BORROWED_KEY,
+                MODIFY_APPLY: MODIFY_APPLY_KEY,
+                RETURNING: RETURNING_KEY,
+                RETURNED: RETURNED_KEY,
+            }
+            TYPE_CHOICES = {'实体机': PHYSICAL_MACHINE_KEY, '虚拟机': VIRTUAL_MACHINE_KEY}
+            DISK_CHOICES = {MACHINE: MACHINE_KEY, SSD: SSD_KEY}
+            status=STATUS_CHOICES[request.POST['status']]
+            pc_type=TYPE_CHOICES[request.POST['pc_type']]
+            disk_type=DISK_CHOICES[request.POST['disk_type']]
+            computing = Computing(pc_type=pc_type, cpu=request.POST['cpu'],
+                                  memory=int(float(request.POST['memory'])), disk=int(float(request.POST['disk'])),
+                                  disk_type=disk_type, os=request.POST['os'],
+                                  sn=request.POST['sn'],
+                                  expire_time=expire_time,
+                                  login=request.POST['login'], password=request.POST['password'],
+                                  status=status, account=account, note=note,
+                                  address=request.POST['ip'], flag=request.POST['flag'],
+                                  name=request.POST['name'], pack_name=request.POST['pack_name'],
+                                  data_content=request.POST['data_content'])
+            computing.save()
+
+        return HttpResponse('Success')
+
+    except Exception as e:
+        return HttpResponse('Error '+e.__str__())

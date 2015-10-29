@@ -8,4 +8,6 @@ urlpatterns = patterns('excel.views',
                        url(r'^export_excel/$', 'export_excel'),
                        url(r'^import_database/$', 'import_database'),
                        url(r'^import_excel/$', 'import_excel'),
+                       url(r'^import_goods/$', 'import_goods'),
+                       url(r'^import_computing/$', 'import_computing'),
                        )

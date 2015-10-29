@@ -28,7 +28,7 @@ MODIFY_APPLY_KEY = 'ma'
 RETURNING = 'returning'
 RETURNING_KEY = 'ri'
 RETURNED = 'returned'
-RETURNED_KEY = 'rd'
+RETURNED_KEY = 'ret'
 DAMAGED = 'damaged'
 DAMAGED_KEY = 'dd'
 
@@ -41,7 +41,7 @@ DISABLE = 'disable'
 
 DESTROYING_KEY = 'di'
 DESTROYING = 'destroying'
-DESTROYED_KEY = 'dt'
+DESTROYED_KEY = 'de'
 DESTROYED = 'destroyed'
 
 
@@ -84,7 +84,7 @@ class Computing(models.Model):
     disk = models.IntegerField(default=0)
     disk_type = models.CharField(max_length=3, choices=DISK_CHOICES)
     os = models.CharField(max_length=50, default='linux')
-    sn = models.CharField(max_length=60, default='')
+    sn = models.CharField(max_length=60, default='', unique=True)
     expire_time = models.DateField()
     login = models.CharField(max_length=30)
     password = models.CharField(max_length=30)

@@ -102,6 +102,7 @@ $(function(){
             url:'',
             success:function(data){
                 $("#mainContent").html(data);
+                Loaded()
             },
         });
     });
@@ -122,4 +123,6 @@ $(function(){
     });
 });
 </script>
+
+
 {% endblock %}

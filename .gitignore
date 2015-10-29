@@ -10,4 +10,6 @@ aglaia/covhtml
 aglaia/cov.report
 aglaia/htmlcov
 aglaia/.coverage
+aglaia/excel/*.xlsx
+aglaia/excel/*.xml
 *.bak
