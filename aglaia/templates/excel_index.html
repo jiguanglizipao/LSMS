@@ -5,6 +5,50 @@
 {% block title %}数据导入/导出{% endblock %}
 
 {% block leftside %}
+
+{% block css %}
+
+<style type="text/css">
+    .UploadPath{
+        float:left;
+		padding:5px;
+		color:#999;
+		height:24px;
+		line-height:24px;
+		border:1px #ccc solid;
+		width:160px;
+		margin-right:4px;
+        font: 14px "Microsoft YaHei", Verdana, Geneva, sans-serif;
+    }
+    .box{
+        position:relative;
+		float:left;
+    }
+    .FileInput{
+		position:relative;
+		right:0px;
+		top:0px;
+		opacity:0;
+		filter:alpha(opacity=0);
+		cursor:pointer;
+		height:36px;
+		overflow: hidden;
+	}
+    .ChooseFile{
+		float:left;
+		display:inline-block;
+		padding:4px 16px;
+		color:white;
+		font:14px "Microsoft YaHei", Verdana, Geneva, sans-serif;
+		cursor:pointer;
+		background-color:purple;
+		line-height:28px;
+		text-decoration:none;
+	}
+</style>
+
+{% endblock %}
+
 <div class="ui vertical menu">
     <div class="header item">
         <i class="cloud icon"></i>
@@ -13,11 +57,10 @@
     <a href='{% url "excel.views.export_database" %}' class="ui blue button fluid">导出数据库</a>
     <br/>
     <form enctype="multipart/form-data" action="" method="POST" id="xml-form">
-        <div class="ui form fluid">
-            <div class="field">
-                <label>选择文件</label>
-                <input type="file" name="xml" />
-            </div>
+        <div class="box">
+            <input type="text" id="DBUploadPath" class="UploadPath" value="Upload Path" disabled />
+            <a href="javascript:void(0);" class="ChooseFile" onclick="UploadClick(this)">浏览</a>
+            <input type="file" name="xml" class="FileInput" onchange="UpdatePath(this)" hidden />
         </div>
         <input id="xml-btn" type="button" class="ui red button fluid" value="导入数据库">
     </form>
@@ -32,11 +75,17 @@
     <a href='{% url "excel.views.export_excel" %}' class="ui button green fluid">生成Excel</a>
     <br/>
     <form enctype="multipart/form-data" action="" method="POST" id="excel-form">
-        <div class="ui form fluid">
+
+        <!--<div class="ui form fluid">
             <div class="field">
                 <label>导入Excel</label>
                 <input type="file" name="xlsx" />
             </div>
+        </div>-->
+        <div class="box">
+            <input type="text" id="ExcelUploadPath" class="UploadPath" value="Upload Path" disabled />
+            <a href="javascript:void(0);" class="ChooseFile" onclick="UploadClick(this)">浏览</a>
+            <input type="file" name="xml" class="FileInput" onchange="UpdatePath(this)" hidden />
         </div>
         <input id="excel-btn" type="button" class="ui red button fluid" value="导入Excel">
     </form>
@@ -92,8 +141,20 @@
 </div>
 {% endblock %}
 
+
+
 {% block js %}
 <script src="{% static "javascript/jquery.form.js" %}"></script>
+<script type="text/javascript">
+    function UpdatePath(obj){
+        if($(obj).val()=='')
+            $(obj).val('Upload Path');
+        $(obj).parent().children(".UploadPath").val($(obj).val());
+    }
+    function UploadClick(obj){
+        $(obj).parent().children(".FileInput").trigger("click");
+    }
+</script>
 <script>
 $(function(){
     $('#excel-confirm .positive.button').click(function() {
