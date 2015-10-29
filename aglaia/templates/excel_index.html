@@ -85,7 +85,7 @@
         <div class="box">
             <input type="text" id="ExcelUploadPath" class="UploadPath" value="Upload Path" disabled />
             <a href="javascript:void(0);" class="ChooseFile" onclick="UploadClick(this)">浏览</a>
-            <input type="file" name="xml" class="FileInput" onchange="UpdatePath(this)" hidden />
+            <input type="file" name="xlsx" class="FileInput" onchange="UpdatePath(this)" hidden />
         </div>
         <input id="excel-btn" type="button" class="ui red button fluid" value="导入Excel">
     </form>
@@ -149,7 +149,8 @@
     function UpdatePath(obj){
         if($(obj).val()=='')
             $(obj).val('Upload Path');
-        $(obj).parent().children(".UploadPath").val($(obj).val());
+        var cc = $(obj).val().split("\\");
+        $(obj).parent().children(".UploadPath").val(cc[cc.length-1]);
     }
     function UploadClick(obj){
         $(obj).parent().children(".FileInput").trigger("click");
