@@ -455,6 +455,7 @@
                     type: 'POST',
                     dataType: 'text',
                     data: {
+                        package: $('.res-borrow .package .active.item').attr('data-value'),
                         flag: $('.res-borrow .flag .active.item').attr('data-value'),
                         type: $('.res-borrow .server-type input').attr('value'),
                         cpu: $('.res-borrow .cpu input').val(),
