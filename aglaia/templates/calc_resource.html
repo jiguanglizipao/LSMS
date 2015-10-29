@@ -398,15 +398,21 @@
         <td>
             {% if inuse.type == 'virtual' %}
             {% if inuse.flag == True %}
-            <form action="{% url "computing.views.do_destroying_comp" %}" method="post">
-                <input type="hidden" name="id" value="{{ inuse.id }}">
-                <button type="submit" class="ui tiny circular button black horizontal">提醒用户备份数据</button>
-            </form>
+            <a class="ui tiny circular button black reject-button" data-variation="inverted"
+               data-position="top center" data-html='{% include 'confirm_with_yesno.html' with id=inuse.id title="确定要提醒用户备份数据吗？" url="computing.views.do_destroying_comp" %}'>
+                提醒用户备份数据</a>
+{#            <form action="{% url "computing.views.do_destroying_comp" %}" method="post">#}
+{#                <input type="hidden" name="id" value="{{ inuse.id }}">#}
+{#                <button type="submit" class="ui tiny circular button black horizontal">提醒用户备份数据</button>#}
+{#            </form>#}
             {% else %}
-            <form action="{% url "computing.views.do_destroyed_comp" %}" method="post">
-                <input type="hidden" name="id" value="{{ inuse.id }}">
-                <button type="submit" class="ui tiny circular button black horizontal">强制收回计算资源</button>
-            </form>
+            <a class="ui tiny circular button black reject-button" data-variation="inverted"
+               data-position="top center" data-html='{% include 'confirm_with_yesno.html' with id=inuse.id title="确定要强制收回计算资源吗？" url="computing.views.do_destroyed_comp" %}'>
+                强制收回计算资源</a>
+{#            <form action="{% url "computing.views.do_destroyed_comp" %}" method="post">#}
+{#                <input type="hidden" name="id" value="{{ inuse.id }}">#}
+{#                <button type="submit" class="ui tiny circular button black horizontal">强制收回计算资源</button>#}
+{#            </form>#}
             {% endif %}
             {% endif %}
         </td>
@@ -460,10 +466,13 @@
         <td>{{ backup.note }}</td>
         <td>
             {% if backup.type == 'virtual' %}
-            <form action="{% url "computing.views.do_destroyed_comp" %}" method="post">
-                <input type="hidden" name="id" value="{{ backup.id }}">
-                <button type="submit" class="ui tiny circular button black">强制收回计算资源</button>
-            </form>
+               <a class="ui tiny circular button black reject-button" data-variation="inverted"
+               data-position="top center" data-html='{% include 'confirm_with_yesno.html' with id=backup.id title="确定要强制收回计算资源吗？" url="computing.views.do_destroyed_comp" %}'>
+                强制收回计算资源</a>
+{#            <form action="{% url "computing.views.do_destroyed_comp" %}" method="post">#}
+{#                <input type="hidden" name="id" value="{{ backup.id }}">#}
+{#                <button type="submit" class="ui tiny circular button black">强制收回计算资源</button>#}
+{#            </form>#}
             {% endif %}
         </td>
     </tr>

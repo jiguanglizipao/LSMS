@@ -62,7 +62,7 @@
             <button class="ui compact circular mini inverted green icon button agree-button" data-content="归还"
                     data-variation="inverted"
                     data-position="top center"
-                    data-html='{% include 'confirm_with_yesno.html' with title="确定要归还吗？" url="goods.views.do_return_goods" %}'
+                    data-html='{% include 'confirm_with_yesno.html' with id=item.id title="确定要归还吗？" url="goods.views.do_return_goods" %}'
                     style="visibility:visible;margin:0px;padding:0px">
                 <div type="submit" class="ui circular tiny inverted icon green tip miss button" data-content="归还"
                      style="visibility:visible">
@@ -72,7 +72,7 @@
             <button class="ui compact circular mini inverted red icon button agree-button" data-content="挂失"
                     data-variation="inverted"
                     data-position="top center"
-                    data-html='{% include 'confirm_with_yesno.html' with title="确定要挂失吗？" url="goods.views.do_miss_goods" %}'
+                    data-html='{% include 'confirm_with_yesno.html' with id=item.id title="确定要挂失吗？" url="goods.views.do_miss_goods" %}'
                     style="visibility:visible;margin:0px;padding:0px">
                 <div type="submit" class="ui circular tiny inverted icon red tip miss button" data-content="挂失"
                      style="visibility:visible">

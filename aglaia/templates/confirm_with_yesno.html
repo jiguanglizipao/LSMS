@@ -1,7 +1,7 @@
 <h5 class="ui header" style="background:rgba(255,255,255,0);">{{ title }}</h5>
 <form method="post" action="{% url url %}">
-    <input type="text" name="id" value="{{ item.id }}" hidden>
-    <table>
+    <input type="text" name="id" value="{{ id }}" hidden>
+    <center><table>
         <tr>
             <td>
                 <div class="positive ui tiny circular button floated right fluid ok-button">确认</div>
@@ -10,7 +10,7 @@
                 <div class="negative ui tiny circular button floated right fluid cancel-button">取消</div>
             </td>
         </tr>
-    </table>
+    </table></center>
 </form>
 <script type="text/javascript">
     $(".ok-button").click(function () {

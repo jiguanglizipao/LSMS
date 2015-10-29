@@ -54,7 +54,7 @@
             <button class="ui compact circular mini inverted blue icon button agree-button" data-content="释放"
                     data-variation="inverted"
                     data-position="top center"
-                    data-html='{% include 'confirm_with_yesno.html' with title="确定要释放吗？" url="computing.views.do_return_request" %}'
+                    data-html='{% include 'confirm_with_yesno.html' with id=item.id  title="确定要释放吗？" url="computing.views.do_return_request" %}'
                     style="visibility:visible;margin:0px;padding:0px">
                 <div type="submit" class="ui circular tiny inverted icon teal tip miss button" data-content="释放"
                      style="visibility:visible">
