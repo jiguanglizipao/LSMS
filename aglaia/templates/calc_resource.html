@@ -120,7 +120,7 @@
                data-position="top center" data-html='
                 <h5 class="ui header">拒绝借出{% if borrow.type == 'real' %}实体{% elif borrow.type == 'virtual' %}虚拟{% endif %}资源</h5>
                 <form method="post" action="{% url "computing.views.do_disapprove_borrow" %}" class="do-disapprove-borrow">
-                    <input type="text" name="id" value="{{ borrowing.id }}" hidden>
+                    <input type="text" name="id" value="{{ borrow.id }}" hidden>
                     <div class="ui form">
                         <div class="inline field">
                             <label><font color="#FFFFFF">说明</font></label>
