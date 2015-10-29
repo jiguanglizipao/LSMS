@@ -501,7 +501,7 @@
         <td>{{ pkg.memory }}GB</td>
         <td>{{ pkg.disk }}GB {{ pkg.disktype }}</td>
         <td>
-            <form action="{% url " computing.views.do_delete_package" %}" method="post">
+            <form action="{% url "computing.views.do_delete_package" %}" method="post">
             <input type="hidden" name="name" value="{{ pkg.name }}">
             <button type="submit" class="ui red tiny button">删除</button>
             </form>
