@@ -30,6 +30,7 @@ def get_context_computing(comp):
     # dc['expire_time'] = comp.expire_time.strftime('%Y-%m-%d')
     dc['name'] = comp.account.real_name
     dc['flag'] = comp.flag
+    dc['sn'] = comp.sn
     dc['data_content'] = comp.data_content
     return dc
 
@@ -169,12 +170,14 @@ def do_approve_borrow(request):
         login = post['login']
         pw = post['initial_password']
         note = post['note']
+        sn = post['sn']
         addr = post['ip']
         if not comp.status == VERIFYING_KEY:
             return show_denied_message(request)
         packed_update_computing(request, id,
                                 {'status': BORROWED_KEY,
                                  'note': note,
+                                 'sn': sn,
                                  'login': login,
                                  'password': pw,
                                  'address': addr}, log=get_comp_approve_log())

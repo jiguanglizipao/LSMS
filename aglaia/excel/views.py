@@ -64,7 +64,7 @@ def handle_uploaded_file(suffix, f):
 
 
 def make_hash(data):
-    md5 = hashlib.md5(data).hexdigest()
+    md5 = hashlib.md5(data.encode('utf-8')).hexdigest()
     return md5
 
 
@@ -77,7 +77,7 @@ def export_database(request):
     file = open(ran)
     data = file.read()
     file.close()
-    data = make_hash(data.encode()) + '\n' + data
+    data = make_hash(data) + '\n' + data
     filename = time.strftime(
         '%Y-%m-%d_%H:%M:%S',
         time.localtime(
@@ -92,38 +92,35 @@ def export_database(request):
 @method_required('GET')
 @permission_required(PERM_GOODS_AUTH)
 def import_database(request):
-    try:
-        ran = 'excel/' + request.GET['ran'] + '.xml'
-        file = open(ran)
-        hash = file.readline().replace('\n', '')
-        data = file.read()
-        file.close()
-        os.remove(ran)
-        if hash != make_hash(data):
-            return show_message(request, 'Import Error File Destroyed')
-        file = open(ran, 'w')
-        file.write(data)
-        file.close()
+    ran = 'excel/' + request.GET['ran'] + '.xml'
+    file = open(ran)
+    hash = file.readline().replace('\n', '')
+    data = file.read()
+    file.close()
+    os.remove(ran)
+    if hash != make_hash(data):
+        return show_message(request, 'Import Error')
+    file = open(ran, 'w')
+    file.write(data)
+    file.close()
 
-        Single.objects.all().delete()
-        Goods.objects.all().delete()
-        GType.objects.all().delete()
-        Apply_Goods.objects.all().delete()
+    Single.objects.all().delete()
+    Goods.objects.all().delete()
+    GType.objects.all().delete()
+    Apply_Goods.objects.all().delete()
 
-        Computing.objects.all().delete()
-        Server.objects.all().delete()
-        Package.objects.all().delete()
+    Computing.objects.all().delete()
+    Server.objects.all().delete()
+    Package.objects.all().delete()
 
-        LogAccount.objects.all().delete()
-        LogComputing.objects.all().delete()
-        LogBorrow.objects.all().delete()
-        LogSingle.objects.all().delete()
+    LogAccount.objects.all().delete()
+    LogComputing.objects.all().delete()
+    LogBorrow.objects.all().delete()
+    LogSingle.objects.all().delete()
 
-        execute_from_command_line(['manage.py', 'loaddata', ran])
-        os.remove(ran)
-        return show_message(request, 'Import Success')
-    except Exception as e:
-        return show_message(request, 'Import Error' + e.__str__())
+    execute_from_command_line(['manage.py', 'loaddata', ran])
+    os.remove(ran)
+    return show_message(request, 'Import Success')
 
 
 @permission_required(PERM_GOODS_AUTH)
