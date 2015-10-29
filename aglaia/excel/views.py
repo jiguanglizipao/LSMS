@@ -32,6 +32,7 @@ from django import forms
 import hashlib
 import xlrd
 import xlsxwriter
+import codecs
 from random import Random
 
 
@@ -63,7 +64,7 @@ def handle_uploaded_file(suffix, f):
 
 
 def make_hash(data):
-    md5 = hashlib.md5(data.encode('utf-8')).hexdigest()
+    md5 = hashlib.md5(data).hexdigest()
     return md5
 
 
@@ -76,7 +77,7 @@ def export_database(request):
     file = open(ran)
     data = file.read()
     file.close()
-    data = make_hash(data) + '\n' + data
+    data = make_hash(data.encode()) + '\n' + data
     filename = time.strftime(
         '%Y-%m-%d_%H:%M:%S',
         time.localtime(
@@ -121,7 +122,6 @@ def import_database(request):
         execute_from_command_line(['manage.py', 'loaddata', ran])
         os.remove(ran)
         return show_message(request, 'Import Success')
-
     except Exception as e:
         return show_message(request, 'Import Error' + e.__str__())
 
