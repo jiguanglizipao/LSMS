@@ -53,6 +53,7 @@ def get_brw_requst_log(*args, **kwargs):
 def get_good_avail_log(*args, **kwargs):
     return '置为可用'
 
+
 def get_good_findback_log(*args, **kwargs):
     return '找回物品'
 
@@ -111,7 +112,7 @@ def get_ret_repaired_log(*args, **kwargs):
 
 def get_good_update_repair_log(*args, **kwargs):
     if 'note' in kwargs:
-        return '更新维修进度：'+str(kwargs['note'])
+        return '更新维修进度：' + str(kwargs['note'])
     return '更新维修进度'
 
 
@@ -199,8 +200,10 @@ def get_comp_rej_modf_log(*args, **kwargs):
 def get_comp_destroying_log(*args, **kwargs):
     return '即将收回包含重要数据的计算资源，等待用户确认'
 
-def get_comp_destroying_mail(*args,**kwargs):
+
+def get_comp_destroying_mail(*args, **kwargs):
     return '您的计算资源即将被收回，请尽快备份重要数据。'
+
 
 def get_comp_destroyed_log(*args, **kwargs):
     return '管理员强制收回计算资源'

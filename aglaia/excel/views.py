@@ -55,7 +55,7 @@ def random_str(randomlength=8):
 
 def handle_uploaded_file(suffix, f):
     ran = random_str()
-    destination = open('excel/'+ran+suffix, 'wb')
+    destination = open('excel/' + ran + suffix, 'wb')
     for chunk in f.chunks():
         destination.write(chunk)
     destination.close()
@@ -70,16 +70,20 @@ def make_hash(data):
 @method_required('GET')
 @permission_required(PERM_GOODS_AUTH)
 def export_database(request):
-    ran = 'excel/'+random_str()+'.xml'
-    execute_from_command_line(['manage.py', 'dumpdata', '--output', ran, '--format', 'xml', '--indent', '4'])
+    ran = 'excel/' + random_str() + '.xml'
+    execute_from_command_line(
+        ['manage.py', 'dumpdata', '--output', ran, '--format', 'xml', '--indent', '4'])
     file = open(ran)
     data = file.read()
     file.close()
-    data = make_hash(data)+'\n'+data
-    filename = time.strftime('%Y-%m-%d_%H:%M:%S', time.localtime(time.time()))+'.xml'
+    data = make_hash(data) + '\n' + data
+    filename = time.strftime(
+        '%Y-%m-%d_%H:%M:%S',
+        time.localtime(
+            time.time())) + '.xml'
     response = StreamingHttpResponse(data)
     response['Content-Type'] = 'application/octet-stream'
-    response['Content-Disposition'] = 'attachment; filename='+filename
+    response['Content-Disposition'] = 'attachment; filename=' + filename
     os.remove(ran)
     return response
 
@@ -87,7 +91,7 @@ def export_database(request):
 @method_required('GET')
 @permission_required(PERM_GOODS_AUTH)
 def import_database(request):
-    ran = 'excel/'+request.GET['ran']+'.xml'
+    ran = 'excel/' + request.GET['ran'] + '.xml'
     file = open(ran)
     hash = file.readline().replace('\n', '')
     data = file.read()
@@ -127,16 +131,16 @@ def index(request):
 
     if 'xml' in request.FILES:
         ran = handle_uploaded_file('.xml', request.FILES['xml'])
-        return HttpResponseRedirect('import_database?ran='+ran)
+        return HttpResponseRedirect('import_database?ran=' + ran)
     elif 'xlsx' in request.FILES:
         ran = handle_uploaded_file('.xlsx', request.FILES['xlsx'])
-        return HttpResponseRedirect('import_excel?ran='+ran)
+        return HttpResponseRedirect('import_excel?ran=' + ran)
     else:
         return show_message(request, 'Upload Error')
 
 
 def export_excel(request):
-    ran = 'excel/'+random_str()+'.xlsx'
+    ran = 'excel/' + random_str() + '.xlsx'
     workbook = xlsxwriter.Workbook(ran)
 
     sheet = workbook.add_worksheet('在库物品')
@@ -158,7 +162,7 @@ def export_excel(request):
         for pro in pro_names:
             if not pro:
                 continue
-            sheet.write(i, 3+j, pro+" : "+pro_values[j])
+            sheet.write(i, 3 + j, pro + " : " + pro_values[j])
             j += 1
         i += 1
 
@@ -189,7 +193,7 @@ def export_excel(request):
         for pro in pro_names:
             if not pro:
                 continue
-            sheet.write(i, 5+j, pro+" : "+pro_values[j])
+            sheet.write(i, 5 + j, pro + " : " + pro_values[j])
             j += 1
         i += 1
 
@@ -219,7 +223,7 @@ def export_excel(request):
         for pro in pro_names:
             if not pro:
                 continue
-            sheet.write(i, 5+j, pro+" : "+pro_values[j])
+            sheet.write(i, 5 + j, pro + " : " + pro_values[j])
             j += 1
         i += 1
 
@@ -253,7 +257,7 @@ def export_excel(request):
         sheet.write(i, 1, item.sn)
         sheet.write(i, 2, item.account.user.username)
         sheet.write(i, 3, item.get_status_display())
-        dic={PHYSICAL_MACHINE_KEY: '实体机', VIRTUAL_MACHINE_KEY:'虚拟机'}
+        dic = {PHYSICAL_MACHINE_KEY: '实体机', VIRTUAL_MACHINE_KEY: '虚拟机'}
         sheet.write(i, 4, item.pack_name)
         sheet.write(i, 5, dic[item.pc_type])
         sheet.write(i, 6, item.cpu)
@@ -270,9 +274,16 @@ def export_excel(request):
         i += 1
 
     workbook.close()
-    response = HttpResponse(open(ran, 'rb').read(), content_type='application/vnd.ms-excel')
-    filename = time.strftime('%Y-%m-%d_%H:%M:%S', time.localtime(time.time()))+'.xlsx'
-    response['Content-Disposition'] = 'attachment; filename='+filename
+    response = HttpResponse(
+        open(
+            ran,
+            'rb').read(),
+        content_type='application/vnd.ms-excel')
+    filename = time.strftime(
+        '%Y-%m-%d_%H:%M:%S',
+        time.localtime(
+            time.time())) + '.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=' + filename
     os.remove(ran)
     return response
 
@@ -280,13 +291,13 @@ def export_excel(request):
 @method_required('GET')
 @permission_required(PERM_GOODS_AUTH)
 def import_excel(request):
-    ran = 'excel/'+request.GET['ran']+'.xlsx'
+    ran = 'excel/' + request.GET['ran'] + '.xlsx'
 
     try:
         workbook = xlrd.open_workbook(ran)
         os.remove(ran)
 
-        #在库物品
+        # 在库物品
         assert workbook.sheet_by_index(0).name == '在库物品'
         single_change = list()
         sheet = workbook.sheet_by_index(0)
@@ -298,11 +309,14 @@ def import_excel(request):
         ncols = sheet.ncols
         singles = Single.objects.all()
         for i in range(1, nrows):
-            assert len(GType.objects.all().filter(name=sheet.cell(i, 2).value))>=1
+            assert len(
+                GType.objects.all().filter(
+                    name=sheet.cell(
+                        i, 2).value)) >= 1
             gtype = GType.objects.all().filter(name=sheet.cell(i, 2).value)[0]
             pro_names = gtype.pro_names.split(',')
             pro_values = str()
-            dic=dict()
+            dic = dict()
             for j in range(3, len(sheet.row(i))):
                 if sheet.cell(i, j).value.find(':') != -1:
                     temp = sheet.cell(i, j).value.split(':')
@@ -310,19 +324,19 @@ def import_excel(request):
                 else:
                     continue
 
-            prop=list()
+            prop = list()
             for pro in pro_names:
                 if not pro:
                     continue
                 assert pro in dic
-                pro_values+=dic[pro]+sep
+                pro_values += dic[pro] + sep
                 prop.append({'pro_name': pro, 'pro_value': dic[pro]})
 
             if len(singles.filter(sn=sheet.cell(i, 1).value)) == 0:
-                single_change.append({'type':'create',
-                                      'name':sheet.cell(i, 0).value,
-                                      'sn':sheet.cell(i, 1).value,
-                                      'type_name':gtype.name,
+                single_change.append({'type': 'create',
+                                      'name': sheet.cell(i, 0).value,
+                                      'sn': sheet.cell(i, 1).value,
+                                      'type_name': gtype.name,
                                       'values': pro_values,
                                       'prop': prop,
                                       'id': str(len(single_change)),
@@ -330,18 +344,19 @@ def import_excel(request):
             else:
                 item = singles.filter(sn=sheet.cell(i, 1).value)[0]
                 assert item.status == AVALIABLE_KEY
-                if item.goods.name == sheet.cell(i, 0).value and item.goods.gtype.name == gtype.name and item.goods.pro_values == pro_values:
+                if item.goods.name == sheet.cell(
+                        i, 0).value and item.goods.gtype.name == gtype.name and item.goods.pro_values == pro_values:
                     continue
-                single_change.append({'type':'change',
-                                      'name':sheet.cell(i, 0).value,
-                                      'sn':sheet.cell(i, 1).value,
-                                      'type_name':gtype.name,
+                single_change.append({'type': 'change',
+                                      'name': sheet.cell(i, 0).value,
+                                      'sn': sheet.cell(i, 1).value,
+                                      'type_name': gtype.name,
                                       'values': pro_values,
                                       'prop': prop,
                                       'id': str(len(single_change)),
                                       })
 
-        #计算资源
+        # 计算资源
         assert workbook.sheet_by_index(3).name == '计算资源'
         computing_change = list()
         sheet = workbook.sheet_by_index(3)
@@ -367,9 +382,12 @@ def import_excel(request):
         ncols = sheet.ncols
         computings = Computing.objects.all()
         for i in range(1, nrows):
-            assert len(Account.objects.all().filter(user__username=sheet.cell(i, 2).value))>=1
+            assert len(
+                Account.objects.all().filter(
+                    user__username=sheet.cell(
+                        i, 2).value)) >= 1
             STATUS_CHOICES = {
-                VERIFYING:VERIFYING_KEY,
+                VERIFYING: VERIFYING_KEY,
                 VERIFY_FAIL: VERIFY_FAIL_KEY,
                 VERIFY_SUCCESS: VERIFY_SUCCESS_KEY,
                 BORROWED: BORROWED_KEY,
@@ -377,13 +395,15 @@ def import_excel(request):
                 RETURNING: RETURNING_KEY,
                 RETURNED: RETURNED_KEY,
             }
-            TYPE_CHOICES = {'实体机': PHYSICAL_MACHINE_KEY, '虚拟机': VIRTUAL_MACHINE_KEY}
+            TYPE_CHOICES = {
+                '实体机': PHYSICAL_MACHINE_KEY,
+                '虚拟机': VIRTUAL_MACHINE_KEY}
             DISK_CHOICES = {MACHINE: MACHINE_KEY, SSD: SSD_KEY}
             assert sheet.cell(i, 3).value in STATUS_CHOICES
             assert sheet.cell(i, 5).value in TYPE_CHOICES
             assert sheet.cell(i, 8).value in DISK_CHOICES
             date = time.strptime(sheet.cell(i, 11).value, '%Y-%m-%d')
-            assert sheet.cell(i, 15).value in ['True', 'False',]
+            assert sheet.cell(i, 15).value in ['True', 'False', ]
 
             if len(computings.filter(sn=sheet.cell(i, 1).value)) == 0:
                 computing_change.append({'type': 'create',
@@ -405,27 +425,27 @@ def import_excel(request):
                                          'flag': sheet.cell(i, 15).value,
                                          'data_content': sheet.cell(i, 16).value,
                                          'id': str(len(computing_change))
-                                        })
+                                         })
             else:
-                dic={PHYSICAL_MACHINE_KEY: '实体机', VIRTUAL_MACHINE_KEY:'虚拟机'}
+                dic = {PHYSICAL_MACHINE_KEY: '实体机', VIRTUAL_MACHINE_KEY: '虚拟机'}
                 item = computings.filter(sn=sheet.cell(i, 1).value)[0]
                 if (item.name == sheet.cell(i, 0).value and
-                    item.sn == sheet.cell(i, 1).value and
-                    item.account.user.username == sheet.cell(i, 2).value and
-                    item.get_status_display() == sheet.cell(i, 3).value and
-                    item.pack_name == sheet.cell(i, 4).value and
-                    dic[item.pc_type] == sheet.cell(i, 5).value and
-                    item.cpu == sheet.cell(i, 6).value and
-                    item.memory == sheet.cell(i, 7).value and
-                    item.get_disk_type_display() == sheet.cell(i, 8).value and
-                    item.disk == sheet.cell(i, 9).value and
-                    item.os == sheet.cell(i, 10).value and
-                    str(item.expire_time) == sheet.cell(i, 11).value and
-                    item.login == sheet.cell(i, 12).value and
-                    item.password == sheet.cell(i, 13).value and
-                    item.address == sheet.cell(i, 14).value and
-                    item.flag == bool(sheet.cell(i, 15).value) and
-                    item.data_content == sheet.cell(i, 16).value):
+                        item.sn == sheet.cell(i, 1).value and
+                        item.account.user.username == sheet.cell(i, 2).value and
+                        item.get_status_display() == sheet.cell(i, 3).value and
+                        item.pack_name == sheet.cell(i, 4).value and
+                        dic[item.pc_type] == sheet.cell(i, 5).value and
+                        item.cpu == sheet.cell(i, 6).value and
+                        item.memory == sheet.cell(i, 7).value and
+                        item.get_disk_type_display() == sheet.cell(i, 8).value and
+                        item.disk == sheet.cell(i, 9).value and
+                        item.os == sheet.cell(i, 10).value and
+                        str(item.expire_time) == sheet.cell(i, 11).value and
+                        item.login == sheet.cell(i, 12).value and
+                        item.password == sheet.cell(i, 13).value and
+                        item.address == sheet.cell(i, 14).value and
+                        item.flag == bool(sheet.cell(i, 15).value) and
+                        item.data_content == sheet.cell(i, 16).value):
                     continue
                 computing_change.append({'type': 'change',
                                          'name': sheet.cell(i, 0).value,
@@ -446,12 +466,14 @@ def import_excel(request):
                                          'flag': sheet.cell(i, 15).value,
                                          'data_content': sheet.cell(i, 16).value,
                                          'id': str(len(computing_change))
-                                        })
+                                         })
 
-        return render(request, 'excel_list.html', {'goods_list': single_change, 'computing_list': computing_change})
+        return render(
+            request, 'excel_list.html', {
+                'goods_list': single_change, 'computing_list': computing_change})
 
     except Exception as e:
-        return show_message(request, 'Import Error '+e.__str__())
+        return show_message(request, 'Import Error ' + e.__str__())
 
 
 @method_required('POST')
@@ -459,23 +481,36 @@ def import_excel(request):
 def import_goods(request):
     try:
         if request.POST['type'] == 'create':
-            gtype = GType.objects.all().filter(name=request.POST['type_name'])[0]
-            goods = Goods(name=request.POST['name'], gtype=gtype, pro_values=request.POST['pro_values'])
+            gtype = GType.objects.all().filter(
+                name=request.POST['type_name'])[0]
+            goods = Goods(
+                name=request.POST['name'],
+                gtype=gtype,
+                pro_values=request.POST['pro_values'])
             goods.save()
-            single = Single(sn=request.POST['sn'], goods=goods, status=AVALIABLE_KEY, note='', user_name='')
+            single = Single(
+                sn=request.POST['sn'],
+                goods=goods,
+                status=AVALIABLE_KEY,
+                note='',
+                user_name='')
             single.save()
 
         if request.POST['type'] == 'change':
             single = Single.objects.all().filter(sn=request.POST['sn'])[0]
-            gtype = GType.objects.all().filter(name=request.POST['type_name'])[0]
-            goods = Goods(name=request.POST['name'], gtype=gtype, pro_values=request.POST['pro_values'])
+            gtype = GType.objects.all().filter(
+                name=request.POST['type_name'])[0]
+            goods = Goods(
+                name=request.POST['name'],
+                gtype=gtype,
+                pro_values=request.POST['pro_values'])
             goods.save()
             single.goods = goods
             single.save()
 
         return HttpResponse('Success')
     except Exception as e:
-        return HttpResponse('Error '+e.__str__())
+        return HttpResponse('Error ' + e.__str__())
 
 
 @method_required('POST')
@@ -483,10 +518,12 @@ def import_goods(request):
 def import_computing(request):
     try:
         if request.POST['type'] == 'create':
-            expire_time = datetime.datetime.strptime(request.POST['expire_time'], '%Y-%m-%d')
-            account = Account.objects.all().filter(user__username=request.POST['user'])[0]
+            expire_time = datetime.datetime.strptime(
+                request.POST['expire_time'], '%Y-%m-%d')
+            account = Account.objects.all().filter(
+                user__username=request.POST['user'])[0]
             STATUS_CHOICES = {
-                VERIFYING:VERIFYING_KEY,
+                VERIFYING: VERIFYING_KEY,
                 VERIFY_FAIL: VERIFY_FAIL_KEY,
                 VERIFY_SUCCESS: VERIFY_SUCCESS_KEY,
                 BORROWED: BORROWED_KEY,
@@ -494,31 +531,49 @@ def import_computing(request):
                 RETURNING: RETURNING_KEY,
                 RETURNED: RETURNED_KEY,
             }
-            TYPE_CHOICES = {'实体机': PHYSICAL_MACHINE_KEY, '虚拟机': VIRTUAL_MACHINE_KEY}
+            TYPE_CHOICES = {
+                '实体机': PHYSICAL_MACHINE_KEY,
+                '虚拟机': VIRTUAL_MACHINE_KEY}
             DISK_CHOICES = {MACHINE: MACHINE_KEY, SSD: SSD_KEY}
-            status=STATUS_CHOICES[request.POST['status']]
-            pc_type=TYPE_CHOICES[request.POST['pc_type']]
-            disk_type=DISK_CHOICES[request.POST['disk_type']]
-            computing = Computing(pc_type=pc_type, cpu=request.POST['cpu'],
-                                  memory=int(float(request.POST['memory'])), disk=int(float(request.POST['disk'])),
-                                  disk_type=disk_type, os=request.POST['os'],
-                                  sn=request.POST['sn'],
-                                  expire_time=expire_time,
-                                  login=request.POST['login'], password=request.POST['password'],
-                                  status=status, account=account, note='',
-                                  address=request.POST['ip'], flag=request.POST['flag'],
-                                  name=request.POST['name'], pack_name=request.POST['pack_name'],
-                                  data_content=request.POST['data_content'])
+            status = STATUS_CHOICES[request.POST['status']]
+            pc_type = TYPE_CHOICES[request.POST['pc_type']]
+            disk_type = DISK_CHOICES[request.POST['disk_type']]
+            computing = Computing(
+                pc_type=pc_type,
+                cpu=request.POST['cpu'],
+                memory=int(
+                    float(
+                        request.POST['memory'])),
+                disk=int(
+                    float(
+                        request.POST['disk'])),
+                disk_type=disk_type,
+                os=request.POST['os'],
+                sn=request.POST['sn'],
+                expire_time=expire_time,
+                login=request.POST['login'],
+                password=request.POST['password'],
+                status=status,
+                account=account,
+                note='',
+                address=request.POST['ip'],
+                flag=request.POST['flag'],
+                name=request.POST['name'],
+                pack_name=request.POST['pack_name'],
+                data_content=request.POST['data_content'])
             computing.save()
 
         if request.POST['type'] == 'change':
-            computing = Computing.objects.all().filter(sn=request.POST['sn'])[0]
-            note=computing.note
+            computing = Computing.objects.all().filter(
+                sn=request.POST['sn'])[0]
+            note = computing.note
             computing.delete()
-            expire_time = datetime.datetime.strptime(request.POST['expire_time'], '%Y-%m-%d')
-            account = Account.objects.all().filter(user__username=request.POST['user'])[0]
+            expire_time = datetime.datetime.strptime(
+                request.POST['expire_time'], '%Y-%m-%d')
+            account = Account.objects.all().filter(
+                user__username=request.POST['user'])[0]
             STATUS_CHOICES = {
-                VERIFYING:VERIFYING_KEY,
+                VERIFYING: VERIFYING_KEY,
                 VERIFY_FAIL: VERIFY_FAIL_KEY,
                 VERIFY_SUCCESS: VERIFY_SUCCESS_KEY,
                 BORROWED: BORROWED_KEY,
@@ -526,24 +581,39 @@ def import_computing(request):
                 RETURNING: RETURNING_KEY,
                 RETURNED: RETURNED_KEY,
             }
-            TYPE_CHOICES = {'实体机': PHYSICAL_MACHINE_KEY, '虚拟机': VIRTUAL_MACHINE_KEY}
+            TYPE_CHOICES = {
+                '实体机': PHYSICAL_MACHINE_KEY,
+                '虚拟机': VIRTUAL_MACHINE_KEY}
             DISK_CHOICES = {MACHINE: MACHINE_KEY, SSD: SSD_KEY}
-            status=STATUS_CHOICES[request.POST['status']]
-            pc_type=TYPE_CHOICES[request.POST['pc_type']]
-            disk_type=DISK_CHOICES[request.POST['disk_type']]
-            computing = Computing(pc_type=pc_type, cpu=request.POST['cpu'],
-                                  memory=int(float(request.POST['memory'])), disk=int(float(request.POST['disk'])),
-                                  disk_type=disk_type, os=request.POST['os'],
-                                  sn=request.POST['sn'],
-                                  expire_time=expire_time,
-                                  login=request.POST['login'], password=request.POST['password'],
-                                  status=status, account=account, note=note,
-                                  address=request.POST['ip'], flag=request.POST['flag'],
-                                  name=request.POST['name'], pack_name=request.POST['pack_name'],
-                                  data_content=request.POST['data_content'])
+            status = STATUS_CHOICES[request.POST['status']]
+            pc_type = TYPE_CHOICES[request.POST['pc_type']]
+            disk_type = DISK_CHOICES[request.POST['disk_type']]
+            computing = Computing(
+                pc_type=pc_type,
+                cpu=request.POST['cpu'],
+                memory=int(
+                    float(
+                        request.POST['memory'])),
+                disk=int(
+                    float(
+                        request.POST['disk'])),
+                disk_type=disk_type,
+                os=request.POST['os'],
+                sn=request.POST['sn'],
+                expire_time=expire_time,
+                login=request.POST['login'],
+                password=request.POST['password'],
+                status=status,
+                account=account,
+                note=note,
+                address=request.POST['ip'],
+                flag=request.POST['flag'],
+                name=request.POST['name'],
+                pack_name=request.POST['pack_name'],
+                data_content=request.POST['data_content'])
             computing.save()
 
         return HttpResponse('Success')
 
     except Exception as e:
-        return HttpResponse('Error '+e.__str__())
+        return HttpResponse('Error ' + e.__str__())

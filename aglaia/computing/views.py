@@ -130,7 +130,7 @@ def do_return_request(request):
         id = request.POST['id']
         comp = Computing.objects.get(id=id)
         if not (comp.status == DESTROYING_KEY or comp.status ==
-            BORROWED_KEY or comp.status == MODIFY_APPLY_KEY):
+                BORROWED_KEY or comp.status == MODIFY_APPLY_KEY):
             return HttpResponse('denied')
         packed_update_computing(
             request, id, {

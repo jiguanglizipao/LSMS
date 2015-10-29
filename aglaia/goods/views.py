@@ -365,6 +365,7 @@ def do_accept_return(request):
     except Exception as e:
         return show_message(request, 'Accept return failed: ' + e.__str__())
 
+
 @method_required('POST')
 @permission_required(PERM_GOODS_AUTH)
 def do_finish_return(request):
@@ -699,7 +700,8 @@ def do_user_update_repair(request):
                              log=get_good_update_repair_log(note=note))
         packed_update_single(
             request, brw.single.id, {
-                'status': BORROWED_KEY}, log=get_good_update_repair_log(note=note))
+                'status': BORROWED_KEY}, log=get_good_update_repair_log(
+                note=note))
 
         return HttpResponseRedirect(reverse('goods.views.show_borrow'))
 
@@ -734,7 +736,8 @@ def do_update_repair(request):
                              log=get_good_update_repair_log(note=note))
         packed_update_single(
             request, brw.single.id, {
-                'status': REPAIRING_KEY}, log=get_good_update_repair_log(note=note))
+                'status': REPAIRING_KEY}, log=get_good_update_repair_log(
+                note=note))
 
         return HttpResponseRedirect(reverse('goods.views.show_manage'))
 
@@ -907,6 +910,7 @@ def do_input_apply_goods(request):
             'Input Apply_Goods failed: ' +
             e.__str__())
 
+
 @method_required('POST')
 @permission_required(PERM_GOODS_AUTH)
 def do_finish_lost(request):
@@ -994,6 +998,7 @@ def do_set_available(request):
             request,
             'Set single good available failed: ' +
             e.__str__())
+
 
 @method_required('POST')
 @permission_required(PERM_GOODS_AUTH)
@@ -1351,7 +1356,8 @@ def show_borrow(request):
     cont['goods_torepair_list'] = get_context_list(
         rp_apply, get_context_userbrw)
     cont['goods_repair_list'] = get_context_list(rp_pend, get_context_userbrw)
-    cont['goods_user_repair_list'] = get_context_list(rpu_pend, get_context_userbrw)
+    cont['goods_user_repair_list'] = get_context_list(
+        rpu_pend, get_context_userbrw)
     cont['goods_repairing_list'] = get_context_list(rping, get_context_userbrw)
     cont['goods_repaired_list'] = get_context_list(rped, get_context_userbrw)
 
@@ -1406,7 +1412,8 @@ def show_manage(request):
     rp_pend = packed_find_borrow(request, {'status': REPAIR_PEND_KEY}, {})
     rping = packed_find_borrow(request, {'status': REPAIRING_KEY}, {})
     rped = packed_find_borrow(request, {'status': FINISH_REPAIR_KEY}, {})
-    rpu_pend = packed_find_borrow(request, {'status': REPAIR_USER_PEND_KEY}, {})
+    rpu_pend = packed_find_borrow(
+        request, {'status': REPAIR_USER_PEND_KEY}, {})
 
     de_apply = packed_find_borrow(request, {'status': DESTROY_APPLY_KEY}, {})
 
