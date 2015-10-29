@@ -91,35 +91,39 @@ def export_database(request):
 @method_required('GET')
 @permission_required(PERM_GOODS_AUTH)
 def import_database(request):
-    ran = 'excel/' + request.GET['ran'] + '.xml'
-    file = open(ran)
-    hash = file.readline().replace('\n', '')
-    data = file.read()
-    file.close()
-    os.remove(ran)
-    if hash != make_hash(data):
-        return show_message(request, 'Import Error')
-    file = open(ran, 'w')
-    file.write(data)
-    file.close()
+    try:
+        ran = 'excel/' + request.GET['ran'] + '.xml'
+        file = open(ran)
+        hash = file.readline().replace('\n', '')
+        data = file.read()
+        file.close()
+        os.remove(ran)
+        if hash != make_hash(data):
+            return show_message(request, 'Import Error File Destroyed')
+        file = open(ran, 'w')
+        file.write(data)
+        file.close()
 
-    Single.objects.all().delete()
-    Goods.objects.all().delete()
-    GType.objects.all().delete()
-    Apply_Goods.objects.all().delete()
+        Single.objects.all().delete()
+        Goods.objects.all().delete()
+        GType.objects.all().delete()
+        Apply_Goods.objects.all().delete()
 
-    Computing.objects.all().delete()
-    Server.objects.all().delete()
-    Package.objects.all().delete()
+        Computing.objects.all().delete()
+        Server.objects.all().delete()
+        Package.objects.all().delete()
 
-    LogAccount.objects.all().delete()
-    LogComputing.objects.all().delete()
-    LogBorrow.objects.all().delete()
-    LogSingle.objects.all().delete()
+        LogAccount.objects.all().delete()
+        LogComputing.objects.all().delete()
+        LogBorrow.objects.all().delete()
+        LogSingle.objects.all().delete()
 
-    execute_from_command_line(['manage.py', 'loaddata', ran])
-    os.remove(ran)
-    return show_message(request, 'Import Success')
+        execute_from_command_line(['manage.py', 'loaddata', ran])
+        os.remove(ran)
+        return show_message(request, 'Import Success')
+
+    except Exception as e:
+        return show_message(request, 'Import Error' + e.__str__())
 
 
 @permission_required(PERM_GOODS_AUTH)
