@@ -5,9 +5,13 @@
 {% block title %}数据导入/导出{% endblock %}
 
 {% block leftside %}
-
+<div class="ui vertical menu">
+    <div class="header item">
+        <i class="cloud icon"></i>
+        数据库
+    </div>
     <a href='{% url "excel.views.export_database" %}' class="ui blue button fluid">导出数据库</a>
-
+    <br/>
     <form enctype="multipart/form-data" action="" method="POST" id="xml-form">
         <div class="ui form fluid">
             <div class="field">
@@ -17,8 +21,16 @@
         </div>
         <input id="xml-btn" type="button" class="ui red button fluid" value="导入数据库">
     </form>
+</div>
 
+<br/>
+<div class="ui vertical menu">
+    <div class="header item">
+        <i class="cloud icon"></i>
+        Excel
+    </div>
     <a href='{% url "excel.views.export_excel" %}' class="ui button green fluid">生成Excel</a>
+    <br/>
     <form enctype="multipart/form-data" action="" method="POST" id="excel-form">
         <div class="ui form fluid">
             <div class="field">
@@ -28,10 +40,54 @@
         </div>
         <input id="excel-btn" type="button" class="ui red button fluid" value="导入Excel">
     </form>
+</div>
+
 
 {% endblock %}
 
 {% block content %}
+<div class="ui small modal" id="xml-confirm">
+  <div class="header">操作确认</div>
+  <div class="content">
+    <div class="left"><i id="xml-confirm-icon"></i></div>
+    <div class="right">
+      <p>您确定要导入数据库吗？</p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="two fluid ui buttons">
+      <div class="ui positive labeled icon button">
+        <i class="checkmark icon"></i>
+        确认
+      </div>
+      <div class="ui negative right labeled icon button">
+        <i class="remove icon"></i>
+        取消
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ui small modal" id="excel-confirm">
+  <div class="header">操作确认</div>
+  <div class="content">
+    <div class="left"><i id="confirm-icon"></i></div>
+    <div class="right">
+      <p>您确定要导入Excel吗？</p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="two fluid ui buttons">
+      <div class="ui positive labeled icon button">
+        <i class="checkmark icon"></i>
+        确认
+      </div>
+      <div class="ui negative right labeled icon button">
+        <i class="remove icon"></i>
+        取消
+      </div>
+    </div>
+  </div>
+</div>
 <div id="mainContent">
 </div>
 {% endblock %}
@@ -40,7 +96,7 @@
 <script src="{% static "javascript/jquery.form.js" %}"></script>
 <script>
 $(function(){
-    $("#excel-btn").on("click",function(){
+    $('#excel-confirm .positive.button').click(function() {
         $("#excel-form").ajaxSubmit({
             type:'post',
             url:'',
@@ -49,7 +105,7 @@ $(function(){
             },
         });
     });
-    $("#xml-btn").on("click",function(){
+    $('#xml-confirm .positive.button').click(function() {
         $("#xml-form").ajaxSubmit({
             type:'post',
             url:'',
@@ -57,6 +113,12 @@ $(function(){
                 $("#mainContent").html(data);
             },
         });
+    });
+    $("#excel-btn").on("click",function(){
+        $('#excel-confirm').modal('show');
+    });
+    $("#xml-btn").on("click",function(){
+        $('#xml-confirm').modal('show');
     });
 });
 </script>

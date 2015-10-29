@@ -145,11 +145,12 @@ def export_excel(request):
         i += 1
 
     sheet = workbook.add_worksheet('借出物品')
-    sheet.write(0, 0, 'SN号')
-    sheet.write(0, 1, '借用者')
-    sheet.write(0, 2, '借用状态')
-    sheet.write(0, 3, '物品种类')
-    sheet.merge_range(0, 4, 0, 128, '物品属性')
+    sheet.write(0, 0, '物品名')
+    sheet.write(0, 1, 'SN号')
+    sheet.write(0, 2, '借用者')
+    sheet.write(0, 3, '借用状态')
+    sheet.write(0, 4, '物品种类')
+    sheet.merge_range(0, 5, 0, 128, '物品属性')
     singles = Single.objects.all()
     singles = singles.exclude(status=AVALIABLE_KEY)
     singles = singles.exclude(status=DESTROYED_KEY)
@@ -157,10 +158,11 @@ def export_excel(request):
 
     i = 1
     for item in singles:
-        sheet.write(i, 0, item.sn)
-        sheet.write(i, 1, item.user_name)
-        sheet.write(i, 2, item.get_status_display())
-        sheet.write(i, 3, item.goods.gtype.name)
+        sheet.write(i, 0, item.goods.name)
+        sheet.write(i, 1, item.sn)
+        sheet.write(i, 2, item.user_name)
+        sheet.write(i, 3, item.get_status_display())
+        sheet.write(i, 4, item.goods.gtype.name)
         pro_names = item.goods.gtype.pro_names
         pro_names = pro_names.split(',')
         pro_values = item.goods.pro_values
@@ -169,7 +171,7 @@ def export_excel(request):
         for pro in pro_names:
             if not pro:
                 continue
-            sheet.write(i, 4+j, pro+" : "+pro_values[j])
+            sheet.write(i, 5+j, pro+" : "+pro_values[j])
             j += 1
         i += 1
 
@@ -265,6 +267,7 @@ def import_excel(request):
         workbook = xlrd.open_workbook(ran)
         os.remove(ran)
 
+        #在库物品
         assert workbook.sheet_by_index(0).name == '在库物品'
         single_change = list()
         sheet = workbook.sheet_by_index(0)
@@ -276,7 +279,7 @@ def import_excel(request):
         ncols = sheet.ncols
         singles = Single.objects.all()
         for i in range(1, nrows):
-            #assert len(GType.objects.all().filter(name=sheet.cell(i, 2).value))>=1
+            assert len(GType.objects.all().filter(name=sheet.cell(i, 2).value))>=1
             gtype = GType.objects.all().filter(name=sheet.cell(i, 2).value)[0]
             pro_names = gtype.pro_names.split(',')
             pro_values = str()
@@ -292,7 +295,7 @@ def import_excel(request):
             for pro in pro_names:
                 if not pro:
                     continue
-                #assert pro in dic
+                assert pro in dic
                 pro_values+=dic[pro]+sep
                 prop.append({'pro_name': pro, 'pro_value': dic[pro]})
 
@@ -305,9 +308,113 @@ def import_excel(request):
                     continue
                 single_change.append({'type':'change', 'name':sheet.cell(i, 0).value, 'sn':sheet.cell(i, 1).value, 'type_name':gtype.name, 'values': pro_values, 'prop': prop})
 
-        return render(request, 'excel_list.html', {'goods_list': single_change})
+        #计算资源
+        assert workbook.sheet_by_index(3).name == '计算资源'
+        computing_change = list()
+        sheet = workbook.sheet_by_index(3)
+        assert sheet.cell(0, 0).value == '资源名'
+        assert sheet.cell(0, 1).value == 'SN号'
+        assert sheet.cell(0, 2).value == '借用者'
+        assert sheet.cell(0, 3).value == '借用状态'
+        assert sheet.cell(0, 4).value == '套餐名'
+        assert sheet.cell(0, 5).value == '资源种类'
+        assert sheet.cell(0, 6).value == 'CPU种类'
+        assert sheet.cell(0, 7).value == '内存大小'
+        assert sheet.cell(0, 8).value == '硬盘种类'
+        assert sheet.cell(0, 9).value == '硬盘大小'
+        assert sheet.cell(0, 10).value == '操作系统'
+        assert sheet.cell(0, 11).value == '期满时间'
+        assert sheet.cell(0, 12).value == '用户名'
+        assert sheet.cell(0, 13).value == '密码'
+        assert sheet.cell(0, 14).value == 'IP'
+        assert sheet.cell(0, 15).value == '是否有重要数据'
+        assert sheet.cell(0, 16).value == '重要数据内容'
+
+        nrows = sheet.nrows
+        ncols = sheet.ncols
+        computings = Computing.objects.all()
+        for i in range(1, nrows):
+            assert len(Account.objects.all().filter(user__username=sheet.cell(i, 2).value))>=1
+            STATUS_CHOICES = {
+                VERIFYING:VERIFYING_KEY,
+                VERIFY_FAIL: VERIFY_FAIL_KEY,
+                VERIFY_SUCCESS: VERIFY_SUCCESS_KEY,
+                BORROWED: BORROWED_KEY,
+                MODIFY_APPLY: MODIFY_APPLY_KEY,
+                RETURNING: RETURNING_KEY,
+                RETURNED: RETURNED_KEY,
+                'ret': ''
+            }
+            TYPE_CHOICES = {'实体机': PHYSICAL_MACHINE_KEY, '虚拟机': VIRTUAL_MACHINE_KEY}
+            DISK_CHOICES = {MACHINE: MACHINE_KEY, SSD: SSD_KEY}
+            assert sheet.cell(i, 3).value in STATUS_CHOICES
+            assert sheet.cell(i, 5).value in TYPE_CHOICES
+            assert sheet.cell(i, 8).value in DISK_CHOICES
+            date = time.strptime(sheet.cell(i, 11).value, '%Y-%m-%d')
+            assert sheet.cell(i, 15).value in ['True', 'False',]
+
+            if len(computings.filter(sn=sheet.cell(i, 1).value)) == 0:
+                computing_change.append({'type': 'create',
+                                         'name': sheet.cell(i, 0).value,
+                                         'sn': sheet.cell(i, 1).value,
+                                         'user': sheet.cell(i, 2).value,
+                                         'status': sheet.cell(i, 3).value,
+                                         'pack_name': sheet.cell(i, 4).value,
+                                         'pc_type': sheet.cell(i, 5).value,
+                                         'cpu': sheet.cell(i, 6).value,
+                                         'memory': sheet.cell(i, 7).value,
+                                         'disk_type': sheet.cell(i, 8).value,
+                                         'disk': sheet.cell(i, 9).value,
+                                         'os': sheet.cell(i, 10).value,
+                                         'expire_time': sheet.cell(i, 11).value,
+                                         'login': sheet.cell(i, 12).value,
+                                         'password': sheet.cell(i, 13).value,
+                                         'ip': sheet.cell(i, 14).value,
+                                         'flag': sheet.cell(i, 15).value,
+                                         'data_content': sheet.cell(i, 16).value,
+                                        })
+            else:
+                dic={PHYSICAL_MACHINE_KEY: '实体机', VIRTUAL_MACHINE_KEY:'虚拟机'}
+                item = computings.filter(sn=sheet.cell(i, 1).value)[0]
+                if (item.name == sheet.cell(i, 0).value and
+                    item.sn == sheet.cell(i, 1).value and
+                    item.account.user.username == sheet.cell(i, 2).value and
+                    item.get_status_display() == sheet.cell(i, 3).value and
+                    item.pack_name == sheet.cell(i, 4).value and
+                    dic[item.pc_type] == sheet.cell(i, 5).value and
+                    item.cpu == sheet.cell(i, 6).value and
+                    item.memory == sheet.cell(i, 7).value and
+                    item.get_disk_type_display() == sheet.cell(i, 8).value and
+                    item.disk == sheet.cell(i, 9).value and
+                    item.os == sheet.cell(i, 10).value and
+                    str(item.expire_time) == sheet.cell(i, 11).value and
+                    item.login == sheet.cell(i, 12).value and
+                    item.password == sheet.cell(i, 13).value and
+                    item.address == sheet.cell(i, 14).value and
+                    str(item.flag) == sheet.cell(i, 15).value and
+                    item.data_content == sheet.cell(i, 16).value):
+                    continue
+                computing_change.append({'type': 'change',
+                                         'name': sheet.cell(i, 0).value,
+                                         'sn': sheet.cell(i, 1).value,
+                                         'user': sheet.cell(i, 2).value,
+                                         'status': sheet.cell(i, 3).value,
+                                         'pack_name': sheet.cell(i, 4).value,
+                                         'pc_type': sheet.cell(i, 5).value,
+                                         'cpu': sheet.cell(i, 6).value,
+                                         'memory': sheet.cell(i, 7).value,
+                                         'disk_type': sheet.cell(i, 8).value,
+                                         'disk': sheet.cell(i, 9).value,
+                                         'os': sheet.cell(i, 10).value,
+                                         'expire_time': sheet.cell(i, 11).value,
+                                         'login': sheet.cell(i, 12).value,
+                                         'password': sheet.cell(i, 13).value,
+                                         'ip': sheet.cell(i, 14).value,
+                                         'flag': sheet.cell(i, 15).value,
+                                         'data_content': sheet.cell(i, 16).value,
+                                        })
+
+        return render(request, 'excel_list.html', {'goods_list': single_change, 'computing_list': computing_change})
 
     except Exception as e:
         return show_message(request, 'Import Error '+e.__str__())
-
-    return show_message(request, 'Import Success')
