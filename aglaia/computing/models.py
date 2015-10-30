@@ -30,7 +30,7 @@ RETURNING_KEY = 'ri'
 RETURNED = 'returned'
 RETURNED_KEY = 'ret'
 DAMAGED = 'damaged'
-DAMAGED_KEY = 'dd'
+DAMAGED_KEY = 'da'
 
 BUSY_KEY = 'b'
 BUSY = 'busy'

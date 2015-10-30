@@ -123,7 +123,6 @@ def import_database(request):
         return show_message(request, 'Import Success')
 
     except Exception as e:
-        os.remove(ran)
         return show_message(request, 'Import Error' + e.__str__())
 
 
