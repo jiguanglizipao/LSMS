@@ -151,7 +151,8 @@
     function UpdatePath(obj){
         if($(obj).val()=='')
             $(obj).val('Upload Path');
-        $(obj).parent().children(".UploadPath").val($(obj).val());
+        var cc = $(obj).val().split("\\");
+        $(obj).parent().children(".UploadPath").val(cc[cc.length-1]);
     }
     function UploadClick(obj){
         $(obj).parent().children(".FileInput").trigger("click");
