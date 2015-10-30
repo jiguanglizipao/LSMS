@@ -5,12 +5,40 @@
 {% block title %}消息中心{% endblock %}
 
 {% block allcontent %}
+<!--<div class="sixteen wide column">-->
+  <!--<table class="ui small table">-->
+    <!--消息中心-->
+  <!--</table>-->
+<!--</div>-->
 <div class="ui page grid">
   <div class="sixteen wide column">
-    <table class="ui small table">
-      消息中心
+    <h2 class="ui header" style="margin-top:10px; margin-left:10px">消息列表</h2>
+    <table class="ui table segment small" style="margin-left:10px">
+      <thead>
+        <tr>
+          <th>物品SN号</th>
+          <th>发信人</th>
+          <th>收信人</th>
+          <th>信息内容</th>
+          <th>时间</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for brw in goods %}
+          {% for msg in brw.msgs %}
+            <tr>
+              <td class="goods-sn" width="5%">{{ brw.id }}</td>
+              <td class="sender" width="10%">{{ msg.sender }}</td>
+              <td class="recipient" width="10%">{{ msg.recipient }}</td>
+              <td class="infomation" style="">{{ msg.text }}</td>
+              <td class="infotime" width="15%">{{ msg.time }}</td>
+            </tr>
+          {% endfor %}
+        {% endfor %}
+      </tbody>
     </table>
   </div>
 </div>
+
 
 {% endblock %}

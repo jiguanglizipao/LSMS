@@ -19,6 +19,7 @@ from goods.interface import *
 from goods.models import *
 from log.models import *
 from log.interface import *
+from lxml import etree
 
 
 def get_context_log(lg):
@@ -110,6 +111,27 @@ def show_log(request):
 
 
 def show_message_center(request):
-    return render(request, 'message_center.html', {
-        'user': get_context_user(request.user),
-        'perm_list': request.user.get_all_permissions()})
+    account = Account.objects.get(user=request.user)
+    brws = packed_find_borrow(request, {'account': account}, {})
+    goods = []
+    for brw in brws:
+        message = Message(brw.note)
+        msgs = []
+        for msgpiece in message.root:
+            msg = {}
+            msg['direction'] = msgpiece.get("direction")
+            msg['info_type'] = msgpiece.get("info_type")
+            msg['recipient'] = msgpiece[0].text
+            msg['sender'] = brw.single.user_name
+            if msg['direction']=='Send':
+                msg['sender'] = msgpiece[0].text
+                msg['recipient'] = brw.single.user_name
+            msg['time'] = msgpiece[1].text
+            msg['text'] = msgpiece[2].text
+            if msg['text']:
+                msgs.append(msg)
+        goods.append({"id": brw.single.sn, "msgs": msgs, })
+    cont = {'user': get_context_user(request.user),
+            'perm_list': request.user.get_all_permissions(),
+            'goods': goods, }
+    return render(request, 'message_center.html', cont)
