@@ -113,25 +113,28 @@ def show_log(request):
 def show_message_center(request):
     account = Account.objects.get(user=request.user)
     brws = packed_find_borrow(request, {'account': account}, {})
-    goods = []
+    goods = {}
     for brw in brws:
+        sn = str(brw.single.sn).replace(" ", "")
+        if sn not in goods:
+            goods[sn] = {'id': sn, 'msgs': [], }
         message = Message(brw.note)
-        msgs = []
         for msgpiece in message.root:
             msg = {}
             msg['direction'] = msgpiece.get("direction")
             msg['info_type'] = msgpiece.get("info_type")
-            msg['recipient'] = msgpiece[0].text
-            msg['sender'] = brw.single.user_name
-            if msg['direction']=='Send':
-                msg['sender'] = msgpiece[0].text
-                msg['recipient'] = brw.single.user_name
+            msg['associate'] = msgpiece[0].text
             msg['time'] = msgpiece[1].text
             msg['text'] = msgpiece[2].text
             if msg['text']:
-                msgs.append(msg)
-        goods.append({"id": brw.single.sn, "msgs": msgs, })
+                goods[sn]['msgs'].append(msg)
+        goods[sn]['msgs'].sort(key=lambda tmsg: tmsg['time'])
+        goods[sn]['msgs'].reverse()
+    goodslist = []
+    for key in goods:
+        goodslist.append(goods[key])
+    goodslist.sort(key=lambda tgood: tgood['id'])
     cont = {'user': get_context_user(request.user),
             'perm_list': request.user.get_all_permissions(),
-            'goods': goods, }
+            'goods': goodslist, }
     return render(request, 'message_center.html', cont)
