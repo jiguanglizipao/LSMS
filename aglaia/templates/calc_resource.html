@@ -510,10 +510,13 @@
         <td>{{ pkg.memory }}GB</td>
         <td>{{ pkg.disk }}GB {{ pkg.disktype }}</td>
         <td>
-            <form action="{% url "computing.views.do_delete_package" %}" method="post">
-            <input type="hidden" name="name" value="{{ pkg.name }}">
-            <button type="submit" class="ui red tiny button">删除</button>
-            </form>
+               <a class="ui tiny circular button red reject-button" data-variation="inverted"
+               data-position="top center" data-html='{% include 'confirm_with_yesno.html' with name=pkg.name title="确定要删除套餐吗？" url="computing.views.do_delete_package" %}'>
+                删除</a>
+{#            <form action="{% url "computing.views.do_delete_package" %}" method="post">#}
+{#            <input type="hidden" name="name" value="{{ pkg.name }}">#}
+{#            <button type="submit" class="ui red tiny button">删除</button>#}
+{#            </form>#}
         </td>
     </tr>
     {% endfor %}
