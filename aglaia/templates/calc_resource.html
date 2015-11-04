@@ -622,6 +622,7 @@ id="create-package">
             var error_info = "";
             $('#create-button').click(function () {
                 if ($("#name").val() == "") {
+                    $('#name').parent().addClass('error');
                     $('#create-package').addClass('error');
                     $('.error.message').children('p').text('套餐名称不可为空！');
                     error_info = "name";
@@ -629,32 +630,37 @@ id="create-package">
                 }
                 {% for pkg in package_list %}
                     if ($("#name").val() == "{{pkg.name}}") {
+                        $('#name').parent().addClass('error');
                         $('#create-package').addClass('error');
                         $('.error.message').children('p').text('创建套餐名称与已有套餐名相同！');
                         error_info = "name";
                         return;
                     }
                 {% endfor%}
-                if ($("#cpu").val() == "") {
-                    $('#create-package').addClass('error');
-                    $('.error.message').children('p').text('CPU不可为空！');
-                    error_info = "name";
-                    return;
-                }
                 if ($("#os").val() == "") {
+                    $('#os').parent().addClass('error');
                     $('#create-package').addClass('error');
                     $('.error.message').children('p').text('操作系统不可为空！');
-                    error_info = "name";
+                    error_info = "os";
+                    return;
+                }
+                if ($("#cpu").val() == "") {
+                    $('#cpu').parent().addClass('error');
+                    $('#create-package').addClass('error');
+                    $('.error.message').children('p').text('CPU不可为空！');
+                    error_info = "cpu";
                     return;
                 }
                 var regexp = /^[1-9][0-9]*$/;
                 if (!regexp.test($("#memory").val())) {
+                    $('#memory').parent().addClass('error');
                     $('#create-package').addClass('error');
                     $('.error.message').children('p').text('内存大小必须为合法数字！');
                     error_info = "memory";
                     return;
                 }
                 if (!regexp.test($("#disk").val())) {
+                    $('#disk').parent().addClass('error');
                     $('#create-package').addClass('error');
                     $('.error.message').children('p').text('硬盘大小必须为合法数字！');
                     error_info = "disk";
@@ -663,29 +669,39 @@ id="create-package">
                 $('#create-package').trigger('submit');
             });
             $('#create-package').keydown(function(event){
-            if(event.keyCode==13){
-               $('#create-button').trigger("click");
-            }
+                if(event.keyCode==13){
+                    $('#create-button').trigger("click");
+                }
             });
             $('#name').click(function () {
-                if (error_info == "name")
+                if (error_info == "name") {
+                    $('#name').parent().removeClass('error');
                     $('#create-package').removeClass('error');
+                }
             });
-            $('#name').click(function () {
-                if (error_info == "cpu")
+            $('#os').click(function () {
+                if (error_info == "os") {
+                    $('#os').parent().removeClass('error');
                     $('#create-package').removeClass('error');
+                }
             });
-            $('#name').click(function () {
-                if (error_info == "os")
+            $('#cpu').click(function () {
+                if (error_info == "cpu") {
+                    $('#cpu').parent().removeClass('error');
                     $('#create-package').removeClass('error');
+                }
             });
             $('#memory').click(function () {
-                if (error_info == "memory")
+                if (error_info == "memory") {
+                    $('#memory').parent().removeClass('error');
                     $('#create-package').removeClass('error');
+                }
             });
             $('#disk').click(function () {
-                if (error_info == "disk")
+                if (error_info == "disk") {
+                    $('#disk').parent().removeClass('error');
                     $('#create-package').removeClass('error');
+                }
             });
 
             $('.final-ultimate-approve-unique-button').click(function () {
