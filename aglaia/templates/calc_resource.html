@@ -597,141 +597,141 @@
 {% block js %}
 
 <script type="text/javascript">
-        $(function () {
-            $('.tip').popup({
-                on: 'hover'
-            });
-            $('.agree-button').popup({
-                on: 'click'
-            });
-            $('.reject-button').popup({
-                on: 'click'
-            });
-            var error_info = "";
-            $('#create-button').click(function () {
-                if ($("#name").val() == "") {
-                    $('#name').parent().addClass('error');
-                    $('#create-package').addClass('error');
-                    $('.error.message').children('p').text('套餐名称不可为空！');
-                    error_info = "name";
-                    return;
-                }
-                {% for pkg in package_list %}
-                    if ($("#name").val() == "{{pkg.name}}") {
-                        $('#name').parent().addClass('error');
-                        $('#create-package').addClass('error');
-                        $('.error.message').children('p').text('创建套餐名称与已有套餐名相同！');
-                        error_info = "name";
-                        return;
-                    }
-                {% endfor%}
-                if ($("#os").val() == "") {
-                    $('#os').parent().addClass('error');
-                    $('#create-package').addClass('error');
-                    $('.error.message').children('p').text('操作系统不可为空！');
-                    error_info = "os";
-                    return;
-                }
-                if ($("#cpu").val() == "") {
-                    $('#cpu').parent().addClass('error');
-                    $('#create-package').addClass('error');
-                    $('.error.message').children('p').text('CPU不可为空！');
-                    error_info = "cpu";
-                    return;
-                }
-                var regexp = /^[1-9][0-9]*$/;
-                if (!regexp.test($("#memory").val())) {
-                    $('#memory').parent().addClass('error');
-                    $('#create-package').addClass('error');
-                    $('.error.message').children('p').text('内存大小必须为合法数字！');
-                    error_info = "memory";
-                    return;
-                }
-                if (!regexp.test($("#disk").val())) {
-                    $('#disk').parent().addClass('error');
-                    $('#create-package').addClass('error');
-                    $('.error.message').children('p').text('硬盘大小必须为合法数字！');
-                    error_info = "disk";
-                    return;
-                }
-                $('#create-package').trigger('submit');
-            });
-            $('#create-package').keydown(function(event){
-                if(event.keyCode==13){
-                    $('#create-button').trigger("click");
-                }
-            });
-            $('#name').click(function () {
-                if (error_info == "name") {
-                    $('#name').parent().removeClass('error');
-                    $('#create-package').removeClass('error');
-                }
-            });
-            $('#os').click(function () {
-                if (error_info == "os") {
-                    $('#os').parent().removeClass('error');
-                    $('#create-package').removeClass('error');
-                }
-            });
-            $('#cpu').click(function () {
-                if (error_info == "cpu") {
-                    $('#cpu').parent().removeClass('error');
-                    $('#create-package').removeClass('error');
-                }
-            });
-            $('#memory').click(function () {
-                if (error_info == "memory") {
-                    $('#memory').parent().removeClass('error');
-                    $('#create-package').removeClass('error');
-                }
-            });
-            $('#disk').click(function () {
-                if (error_info == "disk") {
-                    $('#disk').parent().removeClass('error');
-                    $('#create-package').removeClass('error');
-                }
-            });
 
-            $('.final-ultimate-approve-unique-button').click(function () {
-                $.ajax({
-                    url: '{% url "computing.views.do_get_comp_prop" %}',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        id: $(this).attr('data-id'),
-                    },
-                })
-                        .done(function (prop) {
-                            if (prop.retcode == 'denied') {
-                                alert('Denied!');
-                                return;
-                            }
-                            if (prop.server_type == 'real') {
-                                $('.res-modif .type .text').html('实体机');
-                                $('.res-modif .type input').val('real');
-                            } else {
-                                $('.res-modif .type .text').html('虚拟机');
-                                $('.res-modif .type input').val('virtual');
-                            }
-                            $('.res-modif #id').val(prop.id);
-                            $('.res-modif .sn input').val(prop.sn);
-                            $('.res-modif .ip input').val(prop.ip);
-                            $('.res-modif .cpu input').val(prop.cpu);
-                            $('.res-modif .memory input').val(prop.memory);
-                            $('.res-modif .disk input').val(prop.disk);
-                            $('.res-modif .os input').val(prop.os);
-                            $('.res-modif .disktype input').val(prop.disktype);
-                            $('.res-modif .disktype .text').html(prop.disktype);
-                            $('.res-modif .data_content input').val(prop.data_content);
-                            if (!prop.flag) {
-                                $('.res-modif .data_content').hide();
-                            }
-                            $('.res-modif').modal('show');
-                        }).failed(function () {
-                            alert(':-(');
-                        });
+$(function () {
+    $('.tip').popup({
+        on: 'hover'
+    });
+    $('.agree-button').popup({
+        on: 'click'
+    });
+    $('.reject-button').popup({
+        on: 'click'
+    });
+    var error_info = "";
+    $('#create-button').click(function () {
+        if ($("#name").val() == "") {
+            $('#name').parent().addClass('error');
+            $('#create-package').addClass('error');
+            $('.error.message').children('p').text('套餐名称不可为空！');
+            error_info = "name";
+            return;
+        }
+        {% for pkg in package_list %}
+        if ($("#name").val() == "{{pkg.name}}") {
+            $('#name').parent().addClass('error');
+            $('#create-package').addClass('error');
+            $('.error.message').children('p').text('创建套餐名称与已有套餐名相同！');
+            error_info = "name";
+            return;
+        }
+        {% endfor %}
+        if ($("#os").val() == "") {
+            $('#os').parent().addClass('error');
+            $('#create-package').addClass('error');
+            $('.error.message').children('p').text('操作系统不可为空！');
+            error_info = "os";
+            return;
+        }
+        if ($("#cpu").val() == "") {
+            $('#cpu').parent().addClass('error');
+            $('#create-package').addClass('error');
+            $('.error.message').children('p').text('CPU不可为空！');
+            error_info = "cpu";
+            return;
+        }
+        var regexp = /^[1-9][0-9]*$/;
+        if (!regexp.test($("#memory").val())) {
+            $('#memory').parent().addClass('error');
+            $('#create-package').addClass('error');
+            $('.error.message').children('p').text('内存大小必须为合法数字！');
+            error_info = "memory";
+            return;
+        }
+        if (!regexp.test($("#disk").val())) {
+            $('#disk').parent().addClass('error');
+            $('#create-package').addClass('error');
+            $('.error.message').children('p').text('硬盘大小必须为合法数字！');
+            error_info = "disk";
+            return;
+        }
+        $('#create-package').trigger('submit');
+    });
+    $('#create-package').keydown(function (event) {
+        if (event.keyCode == 13) {
+            $('#create-button').trigger("click");
+        }
+    });
+    $('#name').bind('focus keydown', function (event) {
+        if (error_info == "name" && event.keyCode != 9) {
+            $('#name').parent().removeClass('error');
+            $('#create-package').removeClass('error');
+        }
+    });
+    $('#os').bind('focus keydown', function (event) {
+        if (error_info == "os" && event.keyCode != 9) {
+            $('#os').parent().removeClass('error');
+            $('#create-package').removeClass('error');
+        }
+    });
+    $('#cpu').bind('focus keydown', function (event) {
+        if (error_info == "cpu" && event.keyCode != 9) {
+            $('#cpu').parent().removeClass('error');
+            $('#create-package').removeClass('error');
+        }
+    });
+    $('#memory').bind('focus keydown', function (event) {
+        if (error_info == "memory" && event.keyCode != 9) {
+            $('#memory').parent().removeClass('error');
+            $('#create-package').removeClass('error');
+        }
+    });
+    $('#disk').bind('focus keydown', function (event) {
+        if (error_info == "disk" && event.keyCode != 9) {
+            $('#disk').parent().removeClass('error');
+            $('#create-package').removeClass('error');
+        }
+    });
+    $('.final-ultimate-approve-unique-button').click(function () {
+        $.ajax({
+            url: '{% url "computing.views.do_get_comp_prop" %}',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                id: $(this).attr('data-id'),
+            },
+        })
+            .done(function (prop) {
+                if (prop.retcode == 'denied') {
+                    alert('Denied!');
+                    return;
+                }
+                if (prop.server_type == 'real') {
+                    $('.res-modif .type .text').html('实体机');
+                    $('.res-modif .type input').val('real');
+                } else {
+                    $('.res-modif .type .text').html('虚拟机');
+                    $('.res-modif .type input').val('virtual');
+                }
+                $('.res-modif #id').val(prop.id);
+                $('.res-modif .sn input').val(prop.sn);
+                $('.res-modif .ip input').val(prop.ip);
+                $('.res-modif .cpu input').val(prop.cpu);
+                $('.res-modif .memory input').val(prop.memory);
+                $('.res-modif .disk input').val(prop.disk);
+                $('.res-modif .os input').val(prop.os);
+                $('.res-modif .disktype input').val(prop.disktype);
+                $('.res-modif .disktype .text').html(prop.disktype);
+                $('.res-modif .data_content input').val(prop.data_content);
+                if (!prop.flag) {
+                    $('.res-modif .data_content').hide();
+                }
+                $('.res-modif').modal('show');
+            }).failed(function () {
+                alert(':-(');
             });
-        });
+    });
+});
 
 </script>
 

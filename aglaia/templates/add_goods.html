@@ -64,107 +64,106 @@
 
 {% block js %}
 <script>
-    $(function(){
-      // 更新数量
-      $('#sn').keydown(function(){
+
+var error_info = '';
+
+$(function () {
+    // 更新数量
+    $('#sn').keyup(function () {
         var snArray = $('#sn').val().split(',');
         var snQuantity = 0;
         var snLength = snArray.length;
-        for (var i = 0; i < snLength; i++) {
-          if (snArray[i] != '')
-            snQuantity++;
+        for (var i = 0; i < snLength; ++i) {
+            if (snArray[i] != '') {
+                ++snQuantity;
+            }
         }
         $('#quantity').val(snQuantity);
-      });
-
-      $('.ui.dropdown').dropdown();
-      //更新属性信息
-      $('.type-element').click(function(){
-        //alert($('#type_name').val());
-        update_type_pros();
-      });
-      update_type_pros();
-      //提交
-      $('#submit-button').click(function(){
-        var name = $("#name").val();
-        var quan = $("#quantity").val();
-        var regexp=/^[1-9][0-9]*$/; 
-        if(name.length <= 0){
-          $('#form-segment').addClass('error');
-          $('#name').parent().addClass('error');
-          $('.error.message').children('p').text('实物名称不能为空');
-          return;
-        }
-        if(!regexp.test(quan)){
-          $('#form-segment').addClass('error');
-          $('#quantity').parent().addClass('error');
-          $('.error.message').children('p').text('实物数量需要是大于0的合法数值');
-          return;
-        }
-        //提交表单
-        /*$('#add-goods-form').submit(function(e){
-          alert('submitted');
-        });*/
-      $('#add-goods-form').trigger('submit');
-      })
-      $('#add-goods-form').keydown(function(event){
-      if(event.keyCode==13){
-         $('#submit-button').trigger("click");
-      }
-      });
-      $('input').click(function(){
-        $('#form-segment').removeClass('error');
-      });
-      $('#name').click(function(){
-        $('#form-segment').removeClass('error');
-        $('#name').parent().removeClass('error');
-      });
-      $('#quantity').click(function(){
-        $('#form-segment').removeClass('error');
-        $('#quantity').parent().removeClass('error');
-      });
-      /*var pro_names = ['都比一号', "都比二号", "都比三号", "", "都比五号"];
-      $('#properties').children().remove();
-        for(var i = 0 ; i < pro_names.length ; i++){
-          if(pro_names[i].length > 0){
-            $('#properties').append('<div class="field" id="pro'+i+'">'
-              +'<label id="pro'+i+'_name">'+pro_names[i]+'</label>'
-              +'<input placeholder="属性值" type="text" id="pro'+i+'_value">'
-            +'</div>');
-          }
-        }*/
     });
+    $('.ui.dropdown').dropdown();
+    //更新属性信息
+    $('.type-element').click(function () {
+        update_type_pros();
+    });
+    update_type_pros();
+    //提交
+    $('#submit-button').click(function () {
+        if ($('#name').val().length <= 0) {
+            $('#form-segment').addClass('error');
+            $('#name').parent().addClass('error');
+            $('.error.message').children('p').text('实物名称不能为空');
+            error_info = 'name';
+            return;
+        }
+        if ($('#sn').val().length <= 0) {
+            $('#form-segment').addClass('error');
+            $('#sn').parent().addClass('error');
+            $('.error.message').children('p').text('SN号不能为空');
+            error_info = 'sn';
+            return;
+        }
+        var regexp = /^[1-9][0-9]*$/;
+        if (!regexp.test($('#quantity').val())) {
+            $('#form-segment').addClass('error');
+            $('#quantity').parent().addClass('error');
+            $('.error.message').children('p').text('实物数量需要是大于0的合法值');
+            error_info = 'quantity';
+            return;
+        }
+        $('#add-goods-form').trigger('submit');
+    })
+    $('#name').bind('focus keydown', function (event) {
+        if (error_info == 'name' && event.keyCode != 9) {
+            $('#form-segment').removeClass('error');
+            $('#name').parent().removeClass('error');
+        }
+    })
+    $('#sn').bind('focus keydown', function (event) {
+        if (error_info == 'sn' && event.keyCode != 9) {
+            $('#form-segment').removeClass('error');
+            $('#sn').parent().removeClass('error');
+        }
+    });
+    $('#quantity').bind('focus keydown', function (event) {
+        if (error_info == 'quantity' && event.keyCode != 9) {
+            $('#form-segment').removeClass('error');
+            $('#quantity').parent().removeClass('error');
+        }
+    });
+    $('#add-goods-form').keydown(function (event) {
+        if (event.keyCode == 13) {
+            $('#submit-button').trigger("click");
+        }
+    });
+});
 
-    function update_type_pros(){
-      $.ajax({
+function update_type_pros() {
+    $.ajax({
         url: '{% url "goods.views.do_type_props" %}',
         type: 'POST',
         dataType: 'JSON',
-        data: 
-        { 
-          type_name: $('#type_name').val() 
+        data: {
+            type_name: $('#type_name').val()
         },
-      })
-      .done(function(data) {
-      //从后端获得新数据
-        $('#properties').children().remove();
-        for(var i = 0 ; i < data.pro_names.length ; i++){
-          if(data.pro_names[i].length > 0){
-            $('#properties').append('<div class="field" id="pro'+(i+1)+'">'
-              +'<label id="pro'+(i+1)+'_name">'+data.pro_names[i]+'</label>'
-              +'<input placeholder="属性值" type="text" name="pro'+(i+1)+'_value" id="pro'+(i+1)+'_value">'
-            +'</div>');
-          }
-          $('input').click(function(){
-            $('#form-segment').removeClass('error');
-          });
-        }
-      })
-      .fail(function() {
-        alert('服务器异常，无法修改实物类型');
-      });
-    }
-    
+    })
+        .done(function (data) {
+            //从后端获得新数据
+            $('#properties').children().remove();
+            for (var i = 0; i < data.pro_names.length; i++) {
+                if (data.pro_names[i].length > 0) {
+                    $('#properties').append(''
+                        + '<div class="field" id="pro' + (i + 1) + '">'
+                            + '<label id="pro' + (i + 1) + '_name">' + data.pro_names[i] + '</label>'
+                            + '<input placeholder="属性值" type="text" name="pro' + (i + 1) + '_value" id="pro' + (i + 1) + '_value">'
+                        + '</div>'
+                    );
+                }
+            }
+        })
+        .fail(function () {
+            alert('服务器异常，无法修改实物类型');
+        });
+}
 
 </script>
 {% endblock %}
