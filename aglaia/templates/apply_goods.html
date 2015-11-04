@@ -82,17 +82,16 @@
 {% block js %}
 <script>
 
-
-
 var pro_origin = 1;
 var pro_num = 1;
-var pro_max = 32;
+var pro_max = 3;
 
 var origin_type_name;
+var error_info='';
 
 $(function () {
     // 更新数量
-    $('#sn').keydown(function () {
+    $('#sn').keyup(function () {
         var snArray = $('#sn').val().split(',');
         var snQuantity = 0;
         var snLength = snArray.length;
@@ -102,7 +101,6 @@ $(function () {
         }
         $('#quantity').val(snQuantity);
     });
-
     $('.ui.dropdown').dropdown();
     //更新属性信息
     $('.type-element').click(function () {
@@ -112,79 +110,73 @@ $(function () {
     update_type_pros();
     //提交
     $('#submit-button').click(function () {
-        var name = $("#name").val();
-        var quan = $("#quantity").val();
-        var regexp = /^[1-9][0-9]*$/;
-        if (name.length <= 0) {
+        if ($('#name').val().length <= 0) {
             $('#form-segment').addClass('error');
             $('#name').parent().addClass('error');
             $('.error.message').children('p').text('实物名称不能为空');
+            error_info = 'name';
             return;
         }
-        if (!regexp.test(quan)) {
+        if ($('#sn').val().length <= 0) {
+            $('#form-segment').addClass('error');
+            $('#sn').parent().addClass('error');
+            $('.error.message').children('p').text('SN号不能为空');
+            error_info = 'sn';
+            return;
+        }
+        var regexp = /^[1-9][0-9]*$/;
+        if (!regexp.test($('#quantity').val())) {
             $('#form-segment').addClass('error');
             $('#quantity').parent().addClass('error');
-            $('.error.message').children('p').text('实物数量需要是大于0的合法数值');
+            $('.error.message').children('p').text('实物数量需要是大于0的合法值');
+            error_info = 'quantity';
             return;
         }
-
-        // FengGuanyu & OnionYST
-        for (var i = pro_origin + 1; i <= pro_num; i++) {
-            $('#form-segment').removeClass('error');
-            $('#pro' + i + '_name').parent().removeClass('error');
+        $('.pro_name_required').parent().removeClass('error');
+        for (var i = pro_origin + 1; i <= pro_num; ++i) {
             if ($('#pro' + i + '_name').val().length <= 0) {
                 $('#form-segment').addClass('error');
                 $('#pro' + i + '_name').parent().addClass('error');
-                $('.error.message').children('p').text('实物属性不能为空');
+                $('.error.message').children('p').text('实物属性名称不能为空');
+                error_info = 'pro' + i + '_name';
                 return;
             }
         }
-
-        //提交表单
-        //$('#add-goods-form').submit(function (e) {
-        //    alert('submitted');
-        //});
-
-        // FengGuanyu & OnionYST
         $('#ext_num').attr('value', pro_num - pro_origin);
 
         $('#add-goods-form').trigger('submit');
     });
-    $('input').click(function () {
-        $('#form-segment').removeClass('error');
-    });
     $('#name').click(function () {
-        $('#form-segment').removeClass('error');
-        $('#name').parent().removeClass('error');
+        if (error_info == 'name') {
+            $('#form-segment').removeClass('error');
+            $('#name').parent().removeClass('error');
+        }
+    });
+    $('#sn').click(function () {
+        if (error_info == 'sn') {
+            $('#form-segment').removeClass('error');
+            $('#sn').parent().removeClass('error');
+        }
     });
     $('#quantity').click(function () {
-        $('#form-segment').removeClass('error');
-        $('#quantity').parent().removeClass('error');
+        if (error_info == 'quantity') {
+            $('#form-segment').removeClass('error');
+            $('#quantity').parent().removeClass('error');
+        }
     });
 
-    //var pro_names = ['都比一号', "都比二号", "都比三号", "", "都比五号"];
-    //$('#properties').children().remove();
-    //for (var i = 0; i < pro_names.length; i++) {
-    //    if (pro_names[i].length > 0) {
-    //        $('#properties').append('<div class="field" id="pro' + i + '">'
-    //            + '<label id="pro' + i + '_name">' + pro_names[i] + '</label>'
-    //            + '<input placeholder="属性值" type="text" id="pro' + i + '_value">'
-    //            + '</div>');
-    //    }
-    //}
-
     $('#new-pro-button').click(function () {
+        $('#form-segment').removeClass('error');
         if (pro_num >= pro_max) {
             $('#form-segment').addClass('error');
             $('.error.message').children('p').text('属性数量已达上限');
-            alert('属性数量已达上限');
         } else {
             pro_num += 1;
             $('#properties').append(''
                 + '<div class="two fields" id="pro' + pro_num + '">'
                     + '<div class="field fluid">'
                         + '<label>属性' + pro_num + '的名称</label>'
-                        + '<input placeholder="属性' + pro_num + '的名称" type="text" id="pro' + pro_num + '_name" name="pro' + pro_num + '_name">'
+                        + '<input class="pro_name_required" placeholder="属性' + pro_num + '的名称" type="text" id="pro' + pro_num + '_name" name="pro' + pro_num + '_name">'
                     + '</div>'
                     + '<div class="field fluid">'
                         + '<label>属性值</label>'
@@ -192,29 +184,23 @@ $(function () {
                     + '</div>'
                 + '</div>'
             );
-            $('input').click(function () {
-                $('#form-segment').removeClass('error');
-            });
-            $('#new-pro-button').click(function () {
-                $('#form-segment').removeClass('error');
+            $('.pro_name_required').click(function () {
+                if (error_info == this.name) {
+                    $('#form-segment').removeClass('error');
+                    $('#' + this.name).parent().removeClass('error');
+                }
             });
         }
     });
 
     $('#del-pro-button').click(function () {
+        $('#form-segment').removeClass('error');
         if (pro_num <= pro_origin) {
             $('#form-segment').addClass('error');
-            $('.error.message').children('p').text('不能删除非新建属性');
-            alert('不能删除非新建属性');
+            $('.error.message').children('p').text('不能删除该属性');
         } else {
             $('#properties').children('div:last-child').remove();
             pro_num--;
-            $('input').click(function () {
-                $('#form-segment').removeClass('error');
-            });
-            $('#del-pro-button').click(function () {
-                $('#form-segment').removeClass('error');
-            });
         }
     });
 });
@@ -243,10 +229,6 @@ function update_type_pros() {
                 + '</div>'
             + '</div>'
         );
-        $('#properties').append(''
-            + '<div id="properties_adding">'
-            + '</div>'
-        );
         return;
     }
 
@@ -271,18 +253,14 @@ function update_type_pros() {
                     + '</div>'
                 );
             }
-            $('input').click(function () {
-                $('#form-segment').removeClass('error');
-            });
+            <!--$('input').click(function () {-->
+                <!--$('#form-segment').removeClass('error');-->
+            <!--});-->
         }
     }).fail(function () {
         alert('服务器异常，无法修改实物类型');
     });
 }
-
-
-
-
 
 </script>
 {% endblock %}
