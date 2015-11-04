@@ -37,20 +37,34 @@
                                   data-value="true">显示消息</span>
                         </td>
                     </tr>
-                    {% for msg in brw.msgs %}
-                        <tr class={{ brw.id }} data-value="{{ brw.id }}" hidden>
-                            <td></td>
-                            <td>
-                                {% if msg.direction == 'Send' %}
-                                    <span style="color:Red; font-weight:bold;">{{ msg.associate }}</span>
-                                {% else %}
-                                    <span style="color:Green; font-weight:bold;">{{ msg.associate }}</span>
-                                {% endif %}
-                            </td>
-                            <td>[<span style="color:Blue">{{ msg.time }}</span>]</td>
-                            <td>&nbsp;{{ msg.text }}</td>
-                        </tr>
-                    {% endfor %}
+                    {% if brw.msgs %}
+                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
+                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作者</th>
+                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作时间</th>
+                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>消息内容</th>
+                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
+                        {% for msg in brw.msgs %}
+                            <tr class={{ brw.id }} data-value="{{ brw.id }}" hidden>
+
+                                <td width="100px"></td>
+                                <td>
+                                    {% if msg.direction == 'Send' %}
+                                        <div style="color:Red; font-weight:bold;">{{ msg.associate }}</div>
+                                    {% else %}
+                                        <div style="color:Green; font-weight:bold;">{{ msg.associate }}</div>
+                                    {% endif %}
+                                </td>
+                                <td><div style="color:Blue; display:inline">{{ msg.time }}</div></td>
+                                <td>{{ msg.text }}</td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
+                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作者</th>
+                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作时间</th>
+                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>消息内容</th>
+                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
+                    {% endif %}
                 {% endfor %}
 
             </table>
@@ -62,11 +76,13 @@
             if ($(obj).attr("data-value") == "true") {
                 $(obj).attr("data-value", "false");
                 $(obj).text("隐藏消息");
+                $(obj).attr("class","ui red mini button");
                 $("." + id).show();
             }
             else {
                 $(obj).attr("data-value", "true");
                 $(obj).text("显示消息");
+                $(obj).attr("class","ui green mini button");
                 $("." + id).hide();
 
 
