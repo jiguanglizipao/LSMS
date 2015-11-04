@@ -5,75 +5,73 @@
 {% block title %}消息中心{% endblock %}
 
 {% block allcontent %}
-<!--<div class="sixteen wide column">-->
-  <!--<table class="ui small table">-->
+    <!--<div class="sixteen wide column">-->
+    <!--<table class="ui small table">-->
     <!--消息中心-->
-  <!--</table>-->
-<!--</div>-->
-<div class="ui page grid">
-  <div class="sixteen wide column">
-    <h2 class="ui header" style="margin-top:10px; margin-left:10px">消息列表</h2>
-    <table class="ui table segment small" style="margin-left:10px">
-      <thead>
-        <tr>
-          <th width="10%">实物物品SN号</th>
-          <th width="15%"></th>
-          <th width="25%"></th>
-          <th>信息内容</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for brw in goods %}
-          <tr>
-            <td class="goods-sn" style="font-size:20px;">
-              <span class="ui green mini button" onclick="fold(this)" data-value="true">{{ brw.id }}</span>
-            </td>
-          </tr>
-          {% for msg in brw.msgs %}
-          <tr class="goods-id" data-value="{{ brw.id }}" hidden>
-            <td></td>
-            <td>
-              {% if msg.direction == 'Send' %}
-                <span style="color:Red; font-weight:bold;">{{ msg.associate }}</span>
-              {% else %}
-                <span style="color:Green; font-weight:bold;">{{ msg.associate }}</span>
-              {% endif %}
-            </td>
-            <td>[<span style="color:Blue">{{ msg.time }}</span>]</td>
-            <td>&nbsp;{{ msg.text }}</td>
-          </tr>
-          {% endfor %}
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
+    <!--</table>-->
+    <!--</div>-->
+    <div class="ui page grid">
 
-<script>
-  function fold(obj){
-    if($(obj).attr("data-value")=='true'){
-      $(obj).attr("data-value","false");
-      $(obj).attr("class","ui teal mini button");
-      var id = $(obj).get(0).innerHTML;
-      var collection = $("tr.goods-id");
-      for(var i=0;i<collection.length;++i){
-        if($(collection[i]).attr("data-value")==id){
-          $(collection[i]).show();
+        <h2 class="ui header" style="margin-top:10px; margin-left:10px">实物资源消息列表</h2>
+
+        <div class="sixteen wide column">
+            <table class="ui small table">
+                <thead>
+                <tr>
+                    <th>SN</th>
+                    <th>实物名称</th>
+                    <th>实物类型</th>
+                    <th>用户</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for brw in goods %}
+                    <tr>
+                        <td>{{ brw.id }}</td>
+                        <td>{{ brw.name }}</td>
+                        <td>{{ brw.type }}</td>
+                        <td>{{ brw.user }}</td>
+                        <td class="goods-sn" style="font-size:20px;">
+                            <span class="ui green mini button" onclick="setInfo(this,{{ brw.id }})"
+                                  data-value="true">显示消息</span>
+                        </td>
+                    </tr>
+                    {% for msg in brw.msgs %}
+                        <tr class={{ brw.id }} data-value="{{ brw.id }}" hidden>
+                            <td></td>
+                            <td>
+                                {% if msg.direction == 'Send' %}
+                                    <span style="color:Red; font-weight:bold;">{{ msg.associate }}</span>
+                                {% else %}
+                                    <span style="color:Green; font-weight:bold;">{{ msg.associate }}</span>
+                                {% endif %}
+                            </td>
+                            <td>[<span style="color:Blue">{{ msg.time }}</span>]</td>
+                            <td>&nbsp;{{ msg.text }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function setInfo(obj, id) {
+            if ($(obj).attr("data-value") == "true") {
+                $(obj).attr("data-value", "false");
+                $(obj).text("隐藏消息");
+                $("." + id).show();
+            }
+            else {
+                $(obj).attr("data-value", "true");
+                $(obj).text("显示消息");
+                $("." + id).hide();
+
+
+            }
         }
-      }
-    }
-    else{
-      $(obj).attr("data-value","true");
-      $(obj).attr("class","ui green mini button");
-      var id = $(obj).get(0).innerHTML;
-      var collection = $("tr.goods-id");
-      for(var i=0;i<collection.length;++i){
-        if($(collection[i]).attr("data-value")==id){
-          $(collection[i]).hide();
-        }
-      }
-    }
-  }
-</script>
+    </script>
 
 {% endblock %}
