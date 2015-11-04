@@ -5,89 +5,89 @@
 {% block title %}消息中心{% endblock %}
 
 {% block allcontent %}
-    <!--<div class="sixteen wide column">-->
-    <!--<table class="ui small table">-->
-    <!--消息中心-->
-    <!--</table>-->
-    <!--</div>-->
-    <div class="ui page grid">
 
-        <h2 class="ui header" style="margin-top:10px; margin-left:10px">实物资源消息列表</h2>
+<div class="ui page grid">
+    <h2 class="ui header" style="margin-top:10px; margin-left:10px">实物资源消息列表</h2>
 
-        <div class="sixteen wide column">
-            <table class="ui small table">
-                <thead>
-                <tr>
-                    <th>SN</th>
-                    <th>实物名称</th>
-                    <th>实物类型</th>
-                    <th>用户</th>
-                    <th>操作</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for brw in goods %}
-                    <tr>
-                        <td>{{ brw.id }}</td>
-                        <td>{{ brw.name }}</td>
-                        <td>{{ brw.type }}</td>
-                        <td>{{ brw.user }}</td>
-                        <td class="goods-sn" style="font-size:20px;">
-                            <span class="ui green mini button" onclick="setInfo(this,{{ brw.id }})"
-                                  data-value="true">显示消息</span>
-                        </td>
-                    </tr>
-                    {% if brw.msgs %}
-                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
-                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作者</th>
-                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作时间</th>
-                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>消息内容</th>
-                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
-                        {% for msg in brw.msgs %}
-                            <tr class={{ brw.id }} data-value="{{ brw.id }}" hidden>
-
-                                <td width="100px"></td>
-                                <td>
-                                    {% if msg.direction == 'Send' %}
-                                        <div style="color:Red; font-weight:bold;">{{ msg.associate }}</div>
-                                    {% else %}
-                                        <div style="color:Green; font-weight:bold;">{{ msg.associate }}</div>
-                                    {% endif %}
-                                </td>
-                                <td><div style="color:Blue; display:inline">{{ msg.time }}</div></td>
-                                <td>{{ msg.text }}</td>
-                                <td></td>
-                            </tr>
-                        {% endfor %}
-                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
-                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作者</th>
-                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作时间</th>
-                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>消息内容</th>
-                        <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
+    <div class="sixteen wide column">
+        <table class="ui small table">
+            <thead>
+            <tr>
+                <th>SN</th>
+                <th>实物名称</th>
+                <th>实物类型</th>
+                <th>用户</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for brw in goods %}
+            <tr>
+                <td>{{ brw.id }}</td>
+                <td>{{ brw.name }}</td>
+                <td>{{ brw.type }}</td>
+                <td>{{ brw.user }}</td>
+                <td class="goods-sn" style="font-size:20px;">
+                    <span class="ui green mini button msg-button" data-value="true" id="{{ brw.id }}">显示消息</span>
+                </td>
+            </tr>
+            {% if brw.msgs %}
+            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作者</th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作时间</th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>消息内容</th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
+            {% for msg in brw.msgs %}
+            <tr class={{ brw.id }} data-value="{{ brw.id }}" hidden>
+                <td width="100px"></td>
+                <td>
+                    {% if msg.direction == 'Send' %}
+                    <div style="color:Red; font-weight:bold;">{{ msg.associate }}</div>
+                    {% else %}
+                    <div style="color:Green; font-weight:bold;">{{ msg.associate }}</div>
                     {% endif %}
-                {% endfor %}
+                </td>
+                <td>
+                    <div style="color:Blue; display:inline">{{ msg.time }}</div>
+                </td>
+                <td>{{ msg.text }}</td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作者</th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作时间</th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>消息内容</th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
+            {% endif %}
+            {% endfor %}
 
-            </table>
-        </div>
+        </table>
     </div>
+</div>
 
-    <script>
-        function setInfo(obj, id) {
-            if ($(obj).attr("data-value") == "true") {
-                $(obj).attr("data-value", "false");
-                $(obj).text("隐藏消息");
-                $(obj).attr("class","ui red mini button");
-                $("." + id).show();
-            }
-            else {
-                $(obj).attr("data-value", "true");
-                $(obj).text("显示消息");
-                $(obj).attr("class","ui green mini button");
-                $("." + id).hide();
+{% endblock %}
 
+{% block js %}
 
-            }
+<script>
+
+$(function() {
+    $('.msg-button').click(function () {
+        if ($(this).attr('data-value') == 'true') {
+            $(this).attr('data-value', 'false');
+            $(this).text('隐藏消息');
+            $(this).removeClass('green').addClass('red');
+            $('.' + this.id).show();
+        } else {
+            $(this).attr('data-value', 'true');
+            $(this).text('显示消息');
+            $(this).removeClass('red').addClass('green');
+            $('.' + this.id).hide();
         }
-    </script>
+    });
+});
+
+</script>
 
 {% endblock %}
