@@ -66,11 +66,12 @@
 
                     <input type="hidden" name="ext_num" id="ext_num">
 
-                    <div class="ui blue button" id="new-pro-button">添加新属性</div>
-                    <div class="ui black button" id="del-pro-button">删除属性</div>
-
-                    <style type="text/css">#submit-button { float: right; }</style>
                     <button type="button" class="ui green button" id="submit-button">提交采购申请</button>
+
+                    <style type="text/css">#new-pro-button { float: right; margin-right: 5px; }</style>
+                    <style type="text/css">#del-pro-button { float: right; }</style>
+                    <div class="ui black button" id="del-pro-button">删除属性</div>
+                    <div class="ui blue button" id="new-pro-button">添加新属性</div>
                 </div>
             </form>
         </div>
@@ -84,7 +85,7 @@
 
 var pro_origin = 1;
 var pro_num = 1;
-var pro_max = 3;
+var pro_max = 32;
 
 var origin_type_name;
 var error_info='';
@@ -167,9 +168,16 @@ $(function () {
 
     $('#new-pro-button').click(function () {
         $('#form-segment').removeClass('error');
+        $('input').parent().removeClass('error');
         if (pro_num >= pro_max) {
             $('#form-segment').addClass('error');
             $('.error.message').children('p').text('属性数量已达上限');
+            error_info = 'new_pro';
+            $('input').click(function () {
+                if (error_info == 'new_pro') {
+                    $('$form-segment').removeClass('error');
+                }
+            });
         } else {
             pro_num += 1;
             $('#properties').append(''
@@ -195,9 +203,16 @@ $(function () {
 
     $('#del-pro-button').click(function () {
         $('#form-segment').removeClass('error');
+        $('input').parent().removeClass('error');
         if (pro_num <= pro_origin) {
             $('#form-segment').addClass('error');
             $('.error.message').children('p').text('不能删除该属性');
+            error_info = 'del_pro';
+            $('input').click(function () {
+                if (error_info == 'del_pro') {
+                    $('#form-segment').removeClass('error');
+                }
+            });
         } else {
             $('#properties').children('div:last-child').remove();
             pro_num--;

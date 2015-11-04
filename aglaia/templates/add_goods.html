@@ -7,59 +7,63 @@
 {% block allcontent %}
 
 <div class="ui grid" style="margin-top:10px">
-  <div class="one column row">
-    <div class="column">
-      <h2 class="ui header" style="margin-top:10px; margin-left:10px">新增实物</h2>
-    </div>
-    <div class="column">
-      <form id="add-goods-form" method="post" action='{% url "goods.views.add_goods" %}'>
-        <div class="ui form fluid segment" id="form-segment"> <!--error loading-->
-          <div class="ui error message">
-              <div class="header">错误</div>
-              <p></p>
-          </div>
-          <div class="four fields">
-              <div class="field fluid">
-                  <label>实物名称</label>
-                  <input placeholder="实物名称" type="text" name="name" id="name">
-              </div>
-              <div class="field fluid">
-                  <label>起始SN号</label>
-                  <input placeholder="实物SN号" type="text" name="sn" id="sn">
-              </div>
-              <div class="field" id="type">
-                  <label>实物类型</label>
-                  <div class="ui selection dropdown fluid">
-                    <input type="hidden" value="{{ type_list.0 }}" name="type_name"id="type_name">
-                    <div class="text" id="type_name_text">{{ type_list.0 }}</div>
-                    <i class="dropdown icon"></i>
-                    <div class="menu"> <!--type_list-->
-                      {% for type in type_list %}
-                        <div class="item type-element" data-value="{{ type }}">{{ type }}</div>
-                      {% endfor %}
-                      <a class="ui basic button fluid" href='{% url "goods.views.show_add_type" %}' ><font color="#A1CF64">新增实物类型</font></a>
-                    </div>
-                </div>
-              </div>
-              <div class="field fluid">
-                  <label>实物数量</label>
-                  <input placeholder="实物数量" type="text" id="quantity" disabled>
-              </div>
-          </div>
-          <span id="properties">
-
-          </span>
-          <button type="button" class="ui green button" id="submit-button">提交新实物</button>
+    <div class="one column row">
+        <div class="column">
+            <h2 class="ui header" style="margin-top:10px; margin-left:10px">新增实物</h2>
         </div>
-      </form>
+        <div class="column">
+            <form id="add-goods-form" method="post" action='{% url "goods.views.add_goods" %}'>
+                <div class="ui form fluid segment" id="form-segment"> <!--error loading-->
+                    <div class="ui error message">
+                        <div class="header">错误</div>
+                        <p></p>
+                    </div>
+                    <div class="four fields">
+                        <div class="field fluid">
+                            <label>实物名称</label>
+                            <input placeholder="实物名称" type="text" name="name" id="name">
+                        </div>
+                        <div class="field fluid">
+                            <label>起始SN号</label>
+                            <input placeholder="实物SN号" type="text" name="sn" id="sn">
+                        </div>
+                        <div class="field" id="type">
+                            <label>实物类型</label>
+
+                            <div class="ui selection dropdown fluid">
+                                <input type="hidden" value="{{ type_list.0 }}" name="type_name" id="type_name">
+
+                                <div class="text" id="type_name_text">{{ type_list.0 }}</div>
+                                <i class="dropdown icon"></i>
+
+                                <div class="menu"> <!--type_list-->
+                                    {% for type in type_list %}
+                                    <div class="item type-element" data-value="{{ type }}">{{ type }}</div>
+                                    {% endfor %}
+                                    <a class="ui basic button fluid" href='{% url "goods.views.show_add_type" %}'>
+                                        <font color="#A1CF64">新增实物类型</font>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field fluid">
+                            <label>实物数量</label>
+                            <input placeholder="实物数量" type="text" id="quantity" disabled>
+                        </div>
+                    </div>
+                    <span id="properties">
+                    </span>
+                    <button type="button" class="ui green button" id="submit-button">提交新实物</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
 
 {% endblock %}
 
 {% block js %}
-  <script>
+<script>
     $(function(){
       // 更新数量
       $('#sn').keydown(function(){
@@ -161,5 +165,6 @@
       });
     }
     
-  </script>
+
+</script>
 {% endblock %}
