@@ -525,67 +525,56 @@
 
 <div class="ui divider"></div>
 <h2 class="ui header">创建套餐</h2>
-<form action="{% url "computing.views.do_create_package" %}" method="post" class="ui form segment"
-id="create-package">
-<div class="ui error message">
+<form action="{% url "computing.views.do_create_package" %}" method="post" class="ui form segment" id="create-package">
+    <div class="ui error message">
     <div class="header">错误</div>
     <p></p>
 </div>
 <div class="field">
-    <label>套餐名字</label>
-
+    <label>套餐名称</label>
     <div class="ui input">
-        <input type="text" name="name" id="name">
+        <input type="text" name="name" id="name" placeholder="套餐名称">
     </div>
 </div>
 <div class="two fields">
     <div class="field">
         <label>服务器类型</label>
-
         <div class="ui selection dropdown fluid">
             <input type="hidden" name="type">
-
-            <div class="default text">虚拟机</div>
+            <div class="default text">虚拟机/实体机</div>
             <i class="dropdown icon"></i>
-
             <div class="menu">
-                <div class="item" data-value="real">实体机</div>
                 <div class="item" data-value="virtual">虚拟机</div>
+                <div class="item" data-value="real">实体机</div>
             </div>
         </div>
     </div>
     <div class="field">
         <label>操作系统</label>
-
         <div class="ui input">
-            <input type="text" name="os" id="os">
+            <input type="text" name="os" id="os" placeholder="操作系统">
         </div>
     </div>
 </div>
 <div class="four fields">
     <div class="field">
         <label>CPU</label>
-
         <div class="ui input">
-            <input type="text" name="cpu" id="cpu">
+            <input type="text" name="cpu" id="cpu" placeholder="CPU">
         </div>
     </div>
     <div class="field">
         <label>内存/GB</label>
-
         <div class="ui input">
-            <input type="text" name="memory" id="memory">
+            <input type="text" name="memory" id="memory" placeholder="内存/GB">
         </div>
     </div>
     <div class="field">
         <label>硬盘类型</label>
-
         <div class="ui selection dropdown fluid">
             <input type="hidden" name="disktype">
-
             <div class="default text">HDD/SSD</div>
             <i class="dropdown icon"></i>
-
             <div class="menu">
                 <div class="item" data-value="HDD">HDD</div>
                 <div class="item" data-value="SSD">SSD</div>
@@ -594,9 +583,8 @@ id="create-package">
     </div>
     <div class="field">
         <label>硬盘大小/GB</label>
-
         <div class="ui input">
-            <input type="text" name="disk" id="disk">
+            <input type="text" name="disk" id="disk" placeholder="硬盘大小/GB">
         </div>
     </div>
 </div>
