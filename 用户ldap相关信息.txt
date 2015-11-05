@@ -1,0 +1,23 @@
+ 下面是我们现有的LDAP服务器中用户属性信息，请转发给各个组，让他们参照这个信息，处理LDAP用户验证部分。
+
+# test, users, iiis.co
+dn: cn=test,ou=users,dc=iiis,dc=co
+objectClass: posixAccount
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+homeDirectory: /home/test
+loginShell: /bin/bash
+gidNumber: 505
+uid: test
+cn: test
+userPassword:: e1NTSEF9Q0N1ASDFSDSgrMDNySE5EUTdJazk5eTE1NmJwM05sVjU=
+uidNumber: 10119
+initials: 1
+mail: test@mails.tsinghua.edu.cn
+sn: test
+givenName: test
+
+其中，用户名的验证字段是uid，密码的验证字段是userPassword
+
+尹伟
