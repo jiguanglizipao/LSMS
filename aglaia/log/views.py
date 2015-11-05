@@ -114,6 +114,7 @@ def show_log(request):
 def show_message_center(request):
     account = Account.objects.get(user=request.user)
     brws = packed_find_borrow(request, {'account': account}, {})
+    comps = packed_find_computing(request, {'account': account}, {})
     goods = {}
     for brw in brws:
         sn = str(brw.single.sn).replace(" ", "")
@@ -147,7 +148,42 @@ def show_message_center(request):
     for key in goods:
         goodslist.append(goods[key])
     goodslist.sort(key=lambda tgood: tgood['id'])
+
+    compset = {}
+    for comp in comps:
+        sn = str(comp.sn).replace(" ", "")
+        if sn not in compset:
+            compset[sn] = {
+                'id': sn,
+                'os': comp.os,
+                'pc_type': comp.pc_type,
+                'flag': str(comp.flag),
+                'msgs': [],
+            }
+        message = Message(comp.note)
+        for i in range(0, message.__sizeof__()):
+            msg = {}
+            msg['direction'] = message.index(i)["direction"]
+            msg['info_type'] = message.index(i)["info_type"]
+            msg['associate'] = message.index(i)["user_name"]
+            msg['time'] = message.index(i)["time"]
+            msg['text'] = message.index(i)["text"]
+            msg['flag'] = (message.getTime() < msg['time']).__str__()
+            if msg['text']:
+                compset[sn]['msgs'].append(msg)
+        message.setTime()
+        comp.note = message.tostring()
+        comp.save()
+        compset[sn]['msgs'].sort(key=lambda tmsg: tmsg['time'])
+        compset[sn]['msgs'].reverse()
+
+    complist = []
+    for key in compset:
+        complist.append(compset[key])
+    complist.sort(key=lambda tcomp: tcomp['id'])
+
     cont = {'user': get_context_user(request.user),
             'perm_list': request.user.get_all_permissions(),
-            'goods': goodslist, }
+            'goods': goodslist,
+            'complist': complist, }
     return render(request, 'message_center.html', cont)
