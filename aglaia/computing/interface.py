@@ -46,7 +46,7 @@ def create_computing(computing_list):
             disk = computing['disk']
             disk_type = computing['disk_type']
             os = computing['os']
-            sn = random_str
+            sn = random_str()
             if 'sn' in computing:
                 sn = computing['sn']
             expire_time = computing['expire_time']
