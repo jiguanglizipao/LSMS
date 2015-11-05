@@ -13,11 +13,11 @@
         <table class="ui small table">
             <thead>
             <tr>
-                <th>SN</th>
-                <th>实物名称</th>
-                <th>实物类型</th>
-                <th>用户</th>
-                <th>操作</th>
+                <th width="10%">SN</th>
+                <th width="20%">实物名称</th>
+                <th width="30%">实物类型</th>
+                <th width="30%">用户</th>
+                <th width="10%">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -32,33 +32,33 @@
                 </td>
             </tr>
             {% if brw.msgs %}
-            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作者</th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作时间</th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>消息内容</th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" width="10%" hidden></th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" width="10%" hidden>▼</th>
             {% for msg in brw.msgs %}
             <tr class={{ brw.id }} data-value="{{ brw.id }}" hidden>
-                <td width="100px"></td>
-                <td>
+                <td width="10%"></td>
+                <td width="20%">
                     {% if msg.direction == 'Send' %}
                     <div style="color:Red; font-weight:bold;">{{ msg.associate }}</div>
                     {% else %}
                     <div style="color:Green; font-weight:bold;">{{ msg.associate }}</div>
                     {% endif %}
                 </td>
-                <td>
+                <td width="30%">
                     <div style="color:Blue; display:inline">{{ msg.time }}</div>
                 </td>
-                <td>{{ msg.text }}</td>
-                <td></td>
+                <td width="30%">{{ msg.text }}</td>
+                <td width="10%"> </td>
             </tr>
             {% endfor %}
-            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作者</th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>操作时间</th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden>消息内容</th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" hidden></th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" width="10%" hidden> </th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
+            <th class={{ brw.id }} data-value="{{ brw.id }}" width="10%" hidden>▲</th>
             {% endif %}
             {% endfor %}
 
