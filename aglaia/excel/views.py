@@ -33,7 +33,9 @@ import hashlib
 import xlrd
 import xlsxwriter
 from random import Random
+import threading
 
+mutex=threading.Lock();
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
@@ -484,6 +486,7 @@ def import_excel(request):
 @permission_required(PERM_GOODS_AUTH)
 def import_goods(request):
     try:
+        mutex.acquire()
         if request.POST['type'] == 'create':
             gtype = GType.objects.all().filter(
                 name=request.POST['type_name'])[0]
@@ -512,8 +515,10 @@ def import_goods(request):
             single.goods = goods
             single.save()
 
+        mutex.release()
         return HttpResponse('Success')
     except Exception as e:
+        mutex.release()
         return HttpResponse('Error ' + e.__str__())
 
 
@@ -521,6 +526,7 @@ def import_goods(request):
 @permission_required(PERM_GOODS_AUTH)
 def import_computing(request):
     try:
+        mutex.acquire()
         if request.POST['type'] == 'create':
             expire_time = datetime.datetime.strptime(
                 request.POST['expire_time'], '%Y-%m-%d')
@@ -617,7 +623,9 @@ def import_computing(request):
                 data_content=request.POST['data_content'])
             computing.save()
 
+        mutex.release()
         return HttpResponse('Success')
 
     except Exception as e:
+        mutex.release() 
         return HttpResponse('Error ' + e.__str__())
