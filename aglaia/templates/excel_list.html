@@ -42,9 +42,9 @@
     {% endfor %}
     </tbody>
 </table>
-<!--<div class="ui right aligned basic segment">-->
-    <!--<input id="goods-btn" type="button" class="ui positive button" value="提交修改">-->
-<!--</div>-->
+<div class="ui right aligned basic segment">
+    <input id="goods-btn" type="button" class="ui positive button" value="全部提交">
+</div>
 
 <h2 class="ui header" style="margin-top:10px; margin-left:10px">计算资源修改列表</h2>
 <table class="ui table segment small" style="margin-left:10px">
@@ -118,9 +118,9 @@
     {% endfor %}
     </tbody>
 </table>
-<!--<div class="ui right aligned basic segment">-->
-    <!--<input id="computing-btn" type="button" class="ui positive button" value="提交修改">-->
-<!--</div>-->
+<div class="ui right aligned basic segment">
+    <input id="computing-btn" type="button" class="ui positive button" value="全部提交">
+</div>
 
 <script src="{% static "javascript/semantic.min.js" %}"></script>
 <script src="{% static "javascript/aglaia.js" %}"></script>
@@ -130,7 +130,7 @@ function Loaded(){
 		on: 'hover'
 	});
     $('.goods.checkbox').checkbox({
-        onChange   : function() {
+        onChange: function() {
             {% for goods in goods_list %}
                 if($("#goods-checkbox-{{goods.id}}").is(':checked')){
                     var url = '{% url "excel.views.import_goods" %}';
@@ -157,7 +157,7 @@ function Loaded(){
         }
 	});
     $('.computing.checkbox').checkbox({
-        onChange   : function() {
+        onChange: function() {
             {% for computing in computing_list %}
                 if($("#computing-checkbox-{{computing.id}}").is(':checked')){
                     var url = '{% url "excel.views.import_computing" %}';
@@ -196,5 +196,66 @@ function Loaded(){
             {% endfor %}
         }
 	});
+    $("#goods-btn").on("click",function(){
+		{% for goods in goods_list %}
+			$("#goods-checkbox-{{goods.id}}").delay(1000).attr("checked",'true');
+            var url = '{% url "excel.views.import_goods" %}';
+            var data = {'type':"{{goods.type}}",
+                        'name':"{{goods.name}}",
+                        'sn':"{{goods.sn}}",
+                        'type_name':"{{goods.type_name}}",
+                        'pro_values':"{{goods.values}}"
+                       };
+            $.ajax({
+                type : "post",
+                url : url,
+                data : data,
+                async: true,
+                success: function(data){
+                    $("#goods-checkbox-div-{{goods.id}}").html(data)
+                },
+                error: function(){
+                    alert("修改出错，请重试");
+                }
+            });
+		{% endfor %}
+    });
+    $("#computing-btn").on("click",function(){
+		{% for computing in computing_list %}
+			$("#computing-checkbox-{{computing.id}}").delay(1000).attr("checked",'true');
+            var url = '{% url "excel.views.import_computing" %}';
+            var data = {'type':"{{computing.type}}",
+                        'name':"{{computing.name}}",
+                        'sn':"{{computing.sn}}",
+                        'user': "{{computing.user}}",
+                        'status': "{{computing.status}}",
+                        'pack_name': "{{computing.pack_name}}",
+                        'pc_type': "{{computing.pc_type}}",
+                        'cpu': "{{computing.cpu}}",
+                        'memory': "{{computing.memory}}",
+                        'disk_type': "{{computing.disk_type}}",
+                        'disk': "{{computing.disk}}",
+                        'os': "{{computing.os}}",
+                        'expire_time': "{{computing.expire_time}}",
+                        'login': "{{computing.login}}",
+                        'password': "{{computing.password}}",
+                        'ip': "{{computing.ip}}",
+                        'flag': "{{computing.flag}}",
+                        'data_content': "{{computing.data_content}}",
+                       };
+            $.ajax({
+                type : "post",
+                url : url,
+                data : data,
+                async: true,
+                success: function(data){
+                    $("#computing-checkbox-div-{{computing.id}}").html(data)
+                },
+                error: function(){
+                    alert("修改出错，请重试");
+                }
+            });
+		{% endfor %}
+    });
 }
 </script>

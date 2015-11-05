@@ -24,6 +24,16 @@ class PackageDoesNotExistError(Exception):
     pass
 
 
+def random_str(randomlength=16):
+    ran = str()
+    chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
+    length = len(chars) - 1
+    random = Random()
+    for i in range(randomlength):
+        ran += chars[random.randint(0, length)]
+    return ran
+
+
 def create_computing(computing_list):
     new_computing = []
     for computing in computing_list:
@@ -36,7 +46,7 @@ def create_computing(computing_list):
             disk = computing['disk']
             disk_type = computing['disk_type']
             os = computing['os']
-            sn = ''
+            sn = random_str
             if 'sn' in computing:
                 sn = computing['sn']
             expire_time = computing['expire_time']
