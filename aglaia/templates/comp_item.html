@@ -32,18 +32,20 @@
     </td>
 
     <td>
-        <div class="ui basic tiny button tip" data-content="
-      {% if item.type == "real" %}实体机{% else %}虚拟机{% endif %}<br>
-      套餐：{{ item.package_name | default:"无" }}<br>
-      CPU: {{ item.cpu }}<br>
-      内存: {{ item.memory }}GB<br>
-      硬盘: {{ item.disk }}GB {{ item.disk_type }}<br>
-      操作系统: {{ item.os }}<br>
-      用户名: {{ item.login }}<br>
-      初始密码: {{ item.initial_password }}<br>
-      IP: {{ item.ip }}<br>
-      是否含有重要数据：{% if item.flag == True %}是<br>数据内容:{{ item.data_content }}<br>{% else %}否<br>{% endif %}
-      ">详细配置
+
+        <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+            <table border="1" bordercolor="#989898">
+                <tr><td>CPU</td><td>{{ item.cpu }}</td></tr>
+                <tr><td>内存</td><td>{{ item.memory }}GB</td></tr>
+                <tr><td>硬盘类型</td><td>{{ item.disktype }}</td></tr>
+                <tr><td>硬盘大小</td><td>{{ item.disk }}GB</td></tr>
+                <tr><td>IP</td><td>{{ item.ip }}</td></tr>
+                <tr><td>OS</td><td>{{ item.os }}</td></tr>
+                <tr><td>登录用户名</td><td>{{ item.login }}</td></tr>
+                <tr><td>初始密码</td><td>{{ item.initial_password }}</td></tr>
+                {% if item.flag == True %}<tr><td>重要数据</td><td>{{ item.data_content }}</td></tr>{% endif %}
+            </table>
+            '>详细
         </div>
     </td>
     <td>
