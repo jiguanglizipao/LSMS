@@ -7,6 +7,8 @@ from account.interface import *
 from computing.models import *
 from log.interface import *
 from aglaia.messages import *
+from random import Random
+
 
 UNKNOWN_ADDR = '0.0.0.0'
 UNKNOWN_PASS = ''
