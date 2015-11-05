@@ -7,6 +7,8 @@ from account.interface import *
 from computing.models import *
 from log.interface import *
 from aglaia.messages import *
+from random import Random
+
 
 UNKNOWN_ADDR = '0.0.0.0'
 UNKNOWN_PASS = ''
@@ -24,6 +26,16 @@ class PackageDoesNotExistError(Exception):
     pass
 
 
+def random_str(randomlength=16):
+    ran = str()
+    chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
+    length = len(chars) - 1
+    random = Random()
+    for i in range(randomlength):
+        ran += chars[random.randint(0, length)]
+    return ran
+
+
 def create_computing(computing_list):
     new_computing = []
     for computing in computing_list:
@@ -36,9 +48,7 @@ def create_computing(computing_list):
             disk = computing['disk']
             disk_type = computing['disk_type']
             os = computing['os']
-            sn = ''
-            if 'sn' in computing:
-                sn = computing['sn']
+            sn = random_str()
             expire_time = computing['expire_time']
             login = computing['login']
             password = computing['password']
@@ -209,8 +219,6 @@ def update_computing(computing_id, update_content):
             computing.disk_type = update_content['disk_type']
         if 'os' in update_content:
             computing.os = update_content['os']
-        if 'sn' in update_content:
-            computing.sn = update_content['sn']
         if 'expire_time' in update_content:
             computing.expire_time = update_content['expire_time']
         if 'login' in update_content:

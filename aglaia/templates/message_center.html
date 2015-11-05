@@ -50,7 +50,13 @@
                 <td width="30%">
                     <div style="color:Blue; display:inline">{{ msg.time }}</div>
                 </td>
-                <td width="30%">{{ msg.text }}</td>
+                <td width="30%">
+                    {% if msg.flag == 'True' %}
+                        <span style="font-weight:bold;">{{ msg.text }}</span>
+                    {% else %}
+                        {{ msg.text }}
+                    {% endif %}
+                </td>
                 <td width="10%"> </td>
             </tr>
             {% endfor %}
