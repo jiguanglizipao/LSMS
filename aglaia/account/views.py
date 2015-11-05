@@ -182,13 +182,15 @@ def do_signin(request):
             if not username or not password:
                 return HttpResponse('mismatch')
 
-            if not packed_find_users(request, {'user_name': username}, {}):
-                return HttpResponse('unreg')
-
             user = authenticate(username=username, password=password)
             if not user or not user.is_active:
                 return HttpResponse('mismatch')
             else:
+                if not packed_find_users(request, {'user_name': username}, {}):
+                    account = Account(real_name=user.first_name+' '+user.last_name, tel=0,
+                                      status=status_authed_key, user=user,
+                                      type='none', school_id=0)
+                    account.save()
                 login(request, user)
                 return HttpResponse('ok')
 
