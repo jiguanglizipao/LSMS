@@ -13,6 +13,7 @@ class Message:
         else:
             self.root = etree.Element("root")
             self.root.set('max_num', str(max_num))
+            self.setTime()
 
     def append(self, data):
         try:
@@ -75,6 +76,15 @@ class Message:
             self.root,
             encoding="utf-8",
             xml_declaration=True)
+
+    def setTime(self):
+        self.root.set('time', time.strftime(
+                '%Y-%m-%d %H:%M:%S',
+                time.localtime(
+                    time.time())))
+
+    def getTime(self):
+        return self.root.get('time')
 
     def last(self):
         return self.index(self.__sizeof__() - 1)

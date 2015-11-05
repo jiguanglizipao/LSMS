@@ -49,8 +49,6 @@ def create_computing(computing_list):
             disk_type = computing['disk_type']
             os = computing['os']
             sn = random_str()
-            if 'sn' in computing:
-                sn = computing['sn']
             expire_time = computing['expire_time']
             login = computing['login']
             password = computing['password']
@@ -221,8 +219,6 @@ def update_computing(computing_id, update_content):
             computing.disk_type = update_content['disk_type']
         if 'os' in update_content:
             computing.os = update_content['os']
-        if 'sn' in update_content:
-            computing.sn = update_content['sn']
         if 'expire_time' in update_content:
             computing.expire_time = update_content['expire_time']
         if 'login' in update_content:

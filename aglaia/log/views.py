@@ -126,17 +126,23 @@ def show_message_center(request):
                 'msgs': [],
             }
         message = Message(brw.note)
-        for msgpiece in message.root:
+        for i in range(0, message.__sizeof__()):
+
             msg = {}
-            msg['direction'] = msgpiece.get("direction")
-            msg['info_type'] = msgpiece.get("info_type")
-            msg['associate'] = msgpiece[0].text
-            msg['time'] = msgpiece[1].text
-            msg['text'] = msgpiece[2].text
+            msg['direction'] = message.index(i)["direction"]
+            msg['info_type'] = message.index(i)["info_type"]
+            msg['associate'] = message.index(i)["user_name"]
+            msg['time'] = message.index(i)["time"]
+            msg['text'] = message.index(i)["text"]
+            msg['flag'] = (message.getTime() < msg['time']).__str__()
             if msg['text']:
                 goods[sn]['msgs'].append(msg)
+        message.setTime()
+        brw.note = message.tostring()
+        brw.save()
         goods[sn]['msgs'].sort(key=lambda tmsg: tmsg['time'])
         goods[sn]['msgs'].reverse()
+
     goodslist = []
     for key in goods:
         goodslist.append(goods[key])
