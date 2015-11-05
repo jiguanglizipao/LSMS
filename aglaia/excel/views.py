@@ -35,7 +35,8 @@ import xlsxwriter
 from random import Random
 import threading
 
-mutex=threading.Lock();
+mutex = threading.Lock()
+
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
@@ -627,5 +628,5 @@ def import_computing(request):
         return HttpResponse('Success')
 
     except Exception as e:
-        mutex.release() 
+        mutex.release()
         return HttpResponse('Error ' + e.__str__())

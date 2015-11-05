@@ -187,9 +187,15 @@ def do_signin(request):
                 return HttpResponse('mismatch')
             else:
                 if not packed_find_users(request, {'user_name': username}, {}):
-                    account = Account(real_name=user.first_name+' '+user.last_name, tel=0,
-                                      status=status_authed_key, user=user,
-                                      type='none', school_id=0)
+                    account = Account(
+                        real_name=user.first_name +
+                        ' ' +
+                        user.last_name,
+                        tel=0,
+                        status=status_authed_key,
+                        user=user,
+                        type='none',
+                        school_id=0)
                     account.save()
                 login(request, user)
                 return HttpResponse('ok')
