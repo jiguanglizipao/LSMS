@@ -140,6 +140,38 @@
   </div>
 </div>
 <div id="mainContent">
+    <div class="content">
+        <h1 div class="ui header">
+            <i class="large star inverted circular icon"></i>
+            数据库导出/导入
+        </h1>
+        <blockquote>
+        <div class="sub header"><p>单击导出数据库按钮，可以创建一个数据库文件，用于备份恢复数据库。</p>
+            <p>单击浏览按钮，选择文件之后单击导入数据库，可以导入本系统创建的数据库文件。</p></div>
+        <h3 div class="header">请不要修改该文件，会引起上传失败。导入数据库会清空当前数据库，若数据损坏或与该数据库不符，会导致系统数据全部丢失！！！</h3>
+        </blockquote>
+    </div>
+    <br><br><br>
+    <div class="content">
+        <h1 div class="ui header">
+            <i class="large star inverted circular icon"></i>
+            Excel导出/导入
+        </h1>
+        <blockquote>
+        <div class="sub header"><p>单击导出Excel按钮，可以创建一个Excel文件，用于备份和修改物品和计算资源信息。</p>
+            <p>单击浏览按钮，选择文件之后单击导入Excel文件，可以导入本系统创建的Excel文件。</p>
+            <p>Excel的格式约定如下：<br>
+                <blockquote>
+                    1. 文件有4个工作簿，依次为在库物品、借出物品、申请物资、计算资源。<br>
+                    2. 在上述的4个工作簿中，在库物品与计算资源可以修改并导入，借出物品与申请物资为只读部分。<br>
+                    3. 工作簿的格式详见导出后的文件，特别的，物品属性为连续的一些单元格组成，其中每一格内由“属性名 : 值”的形式。<br>
+                    4. 为保证数据库安全，在导入时，对工作簿的信息检查是严格的。即表格必须符合格式要求，且相关数据合法，否则导入将失败。<br>
+                </blockquote>
+            </p>
+        </div>
+        <h3 div class="header">在上传完成后，请确认数据正确后再次确认，或单击全部提交进行修改。</h3>
+        </blockquote>
+    </div>
 </div>
 {% endblock %}
 
