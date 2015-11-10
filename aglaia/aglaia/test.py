@@ -7,10 +7,10 @@ class MessageCenterTestCase(TestCase):
 
     def setUp(self):
         self.message = Message(max_num=5)
-        self.assertEqual(self.message.getTime()<=time.strftime(
-                '%Y-%m-%d %H:%M:%S',
-                time.localtime(
-                    time.time())), True)
+        self.assertEqual(self.message.getTime() <= time.strftime(
+            '%Y-%m-%d %H:%M:%S',
+            time.localtime(
+                time.time())), True)
 
     def test_init(self):
         self.assertEqual(self.message.root.get('max_num'), '5')

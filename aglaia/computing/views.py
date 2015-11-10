@@ -112,8 +112,10 @@ def do_borrow_request(request):
         comp['data_content'] = post['data_content']
 
         message = Message()
-        message.append({'direction': 'Recv', 'info_type': '',
-                        'user_name': request.user.username, 'text': comp['note']})
+        message.append({'direction': 'Recv',
+                        'info_type': '',
+                        'user_name': request.user.username,
+                        'text': comp['note']})
         comp['note'] = message.tostring()
 
         if 'name' in post:
@@ -158,8 +160,10 @@ def do_modif_request(request):
             return HttpResponse('denied')
 
         message = Message(comp.note)
-        message.append({'direction': 'Recv', 'info_type': '',
-                        'user_name': request.user.username, 'text': post['reason']})
+        message.append({'direction': 'Recv',
+                        'info_type': '',
+                        'user_name': request.user.username,
+                        'text': post['reason']})
         post['reason'] = message.tostring()
 
         packed_update_computing(request, id, {'status': MODIFY_APPLY_KEY, 'note': post[
@@ -279,8 +283,10 @@ def do_approve_modify(request):
             return show_denied_message(request)
 
         message = Message(comp.note)
-        message.append({'direction': 'Send', 'info_type': '',
-                        'user_name': request.user.username, 'text': post['note']})
+        message.append({'direction': 'Send',
+                        'info_type': '',
+                        'user_name': request.user.username,
+                        'text': post['note']})
         post['note'] = message.tostring()
 
         dic = {}
