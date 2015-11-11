@@ -465,10 +465,6 @@ def show_comp_verify(request):
     packs = Package.objects.all()
     cont = {}
 
-    pack_list = get_context_list(packs, get_context_pack)
-    cont['package_list'] = pack_list
-    cont['package_num'] = len(pack_list)
-
     b_list = get_context_list(borrow, get_context_computing)
     cont['borrowing_list'] = b_list
     cont['borrowing_num'] = len(b_list)
@@ -493,7 +489,21 @@ def show_comp_verify(request):
     cont['backup_list'] = backup_list
     cont['backup_num'] = len(backup_list)
 
-    return render(request, 'calc_resource.html', cont)
+    return render(request, 'calc_verify.html', cont)
+
+def show_comp_manage(request):
+    packs = Package.objects.all()
+    cont = {}
+
+    pack_list = get_context_list(packs, get_context_pack)
+    cont['package_list'] = pack_list
+    cont['package_num'] = len(pack_list)
+
+    user = get_context_user(request.user)
+    cont['user'] = user
+    cont['perm_list'] = request.user.get_all_permissions()
+
+    return render(request, 'calc_manage.html', cont)
 
 
 @method_required('GET')

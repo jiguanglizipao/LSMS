@@ -1,0 +1,487 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}计算资源{% endblock %}
+
+{% block leftside %}
+<div class="ui vertical menu">
+    <div class="header item">
+        <i class="cloud icon"></i>
+        计算资源
+    </div>
+    <div class="item">
+        <div class="menu">
+            <a href="#borrowing" class="item">
+                待审核借用申请
+                <div class="ui label">{{ borrowing_list|length }}</div>
+            </a>
+            <a href="#returning" class="item">
+                待审核归还申请
+                <div class="ui label">{{ returning_list|length }}</div>
+            </a>
+            <a href="#modifying" class="item">
+                待审核配置调整申请
+                <div class="ui label">{{ modifying_list|length }}</div>
+            </a>
+            <a href="#inuse" class="item">
+                使用资源
+                <div class="ui label">{{ inuse_list|length }}</div>
+            </a>
+            <a href="#backup" class="item">
+                备份重要数据的资源
+                <div class="ui label">{{ backup_list|length }}</div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+
+<!--待审核借用申请-->
+{% if borrowing_list %}
+<h3 id="borrowing" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">借用</font>申请</h3>
+<table class="ui small segment table attached">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>重要数据</th>
+        <th>资源类型</th>
+        <th>套餐类型</th>
+        <th>配置要求</th>
+        <th>申请者</th>
+        <th>申请理由</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for borrow in borrowing_list %}
+    <tr>
+        <td>{{ borrow.id }}</td>
+        <td>{% if borrow.flag == True %}含有{% else %}不含有{% endif %}</td>
+        <td>{% if borrow.type == 'real' %}实体{% elif borrow.type == 'virtual' %}虚拟{% endif %}</td>
+        <td>{{ borrow.package_name | default:"无" }}</td>
+        <td>
+            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                <table border="1" bordercolor="#989898">
+                    <tr><td>CPU</td><td>{{ borrow.cpu }}</td></tr>
+                    <tr><td>内存</td><td>{{ borrow.memory }}GB</td></tr>
+                    <tr><td>硬盘类型</td><td>{{ borrow.disktype }}</td></tr>
+                    <tr><td>硬盘大小</td><td>{{ borrow.disk }}GB</td></tr>
+                    <tr><td>IP</td><td>{{ borrow.ip }}</td></tr>
+                    <tr><td>OS</td><td>{{ borrow.os }}</td></tr>
+                    <tr><td>登录用户名</td><td>{{ borrow.login }}</td></tr>
+                    <tr><td>初始密码</td><td>{{ borrow.initial_password }}</td></tr>
+                    {% if borrow.flag == True %}<tr><td>重要数据</td><td>{{ borrow.data_content }}</td></tr>{% endif %}
+                </table>
+                '>详细
+            </div>
+        </td>
+        <td>{{ borrow.name }}</td>
+        <td>{{ borrow.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button agree-button" data-variation="inverted"
+               data-position="top center" data-html='
+                <h5 class="ui header">同意借出{% if borrow.type == 'real' %}实体{% elif borrow.type == 'virtual' %}虚拟{% endif %}资源</h5>
+                <form method="post" action="{% url "computing.views.do_approve_borrow" %}" class="do-approve-borrow">
+                    <input type="text" name="id" value="{{ borrow.id }}" hidden>
+                    <div class="ui form">
+                        <div class="inline field">
+                            <label><font color="#FFFFFF">编号</font></label>
+                            <input type="text" name="sn" placeholder="资源编号">
+                        </div>
+                        <div class="inline field">
+                            <label><font color="#FFFFFF">账号</font></label>
+                            <input type="text" name="login" placeholder="登陆用户名" value="{{ borrow.login }}">
+                        </div>
+                        <div class="inline field">
+                            <label><font color="#FFFFFF">密码</font></label>
+                            <input type="text" name="initial_password" placeholder="初始登陆密码" value="{{ borrow.initial_password }}">
+                        </div>
+                        <div class="inline field">
+                            <label><font color="#FFFFFF">地址</font></label>
+                            <input type="text" name="ip" placeholder="IP地址" value="{{ borrow.ip }}">
+                        </div>
+                        <div class="inline field">
+                            <label><font color="#FFFFFF">说明</font></label>
+                            <input type="text" name="note" placeholder="附加说明">
+                        </div>
+                    </div>
+                    <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认同意</div>
+                </form>
+                <script type="text/javascript">
+                    $(".agree-confirm-button").click(function(){
+                        $(this).parent().trigger("submit");
+                    });
+                </script>'>同意</a>
+            <a class="negative ui tiny circular button reject-button" data-variation="inverted"
+               data-position="top center" data-html='
+                <h5 class="ui header">拒绝借出{% if borrow.type == 'real' %}实体{% elif borrow.type == 'virtual' %}虚拟{% endif %}资源</h5>
+                <form method="post" action="{% url "computing.views.do_disapprove_borrow" %}" class="do-disapprove-borrow">
+                    <input type="text" name="id" value="{{ borrow.id }}" hidden>
+                    <div class="ui form">
+                        <div class="inline field">
+                            <label><font color="#FFFFFF">说明</font></label>
+                            <input type="text" name="note" placeholder="附加说明">
+                        </div>
+                    </div>
+                    <div class="negative ui tiny circular button floated right fluid reject-confirm-button">确认拒绝</div>
+                </form>
+                <script type="text/javascript">
+                    $(".reject-confirm-button").click(function(){
+                        $(this).parent().trigger("submit");
+                    });
+                </script>'>拒绝</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
+
+<!--待审核归还申请-->
+{% if returning_list %}
+<h3 id="returning" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">归还</font>申请</h3>
+<table class="ui small segment table attached">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>重要数据</th>
+        <th>资源类型</th>
+        <th>套餐类型</th>
+        <th>配置要求</th>
+        <th>申请者</th>
+        <th>释放说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for return in returning_list %}
+    <tr>
+        <td>{{ return.id }}</td>
+        <td>{% if return.flag == True %}含有{% else %}不含有{% endif %}</td>
+        <td>{% if return.type == 'real' %}实体{% elif return.type == 'virtual' %}虚拟{% endif %}</td>
+        <td>{{ return.package_name | default:"无" }}</td>
+        <td>
+            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                <table border="1" bordercolor="#989898">
+                    <tr><td>CPU</td><td>{{ return.cpu }}</td></tr>
+                    <tr><td>内存</td><td>{{ return.memory }}GB</td></tr>
+                    <tr><td>硬盘类型</td><td>{{ return.disktype }}</td></tr>
+                    <tr><td>硬盘大小</td><td>{{ return.disk }}GB</td></tr>
+                    <tr><td>IP</td><td>{{ return.ip }}</td></tr>
+                    <tr><td>OS</td><td>{{ return.os }}</td></tr>
+                    <tr><td>登录用户名</td><td>{{ return.login }}</td></tr>
+                    <tr><td>初始密码</td><td>{{ return.initial_password }}</td></tr>
+                    {% if return.flag == True %}<tr><td>重要数据</td><td>{{ return.data_content }}</td></tr>{% endif %}
+                </table>
+                '>详细
+            </div>
+        </td>
+        <td>{{ return.name }}</td>
+        <td>{{ return.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button agree-button" data-variation="inverted"
+               data-position="top center" data-html='
+                <h5 class="ui header">同意释放资源</h5>
+                <form method="post" action="{% url "computing.views.do_approve_return" %}">
+                    <input type="text" name="id" value="{{ return.id }}" hidden>
+                    <div class="ui form">
+                        <div class="inline field">
+                            <label><font color="#FFFFFF">说明</font></label>
+                            <input type="text" name="note" placeholder="附加说明">
+                        </div>
+                    </div>
+                    <div class="positive ui tiny circular button floated right fluid agree-confirm-button">确认同意</div>
+                </form>
+                <script type="text/javascript">
+                    $(".agree-confirm-button").click(function(){
+                        $(this).parent().trigger("submit");
+                    });
+                </script>'>同意</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
+
+<!--待审核配置调整申请-->
+{% if modifying_list %}
+<h3 id="modifying" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">配置调整</font>申请</h3>
+<table class="ui small segment table attached">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>重要数据</th>
+        <th>资源类型</th>
+        <th>套餐类型</th>
+        <th>配置要求</th>
+        <th>申请者</th>
+        <th>释放说明</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for modify in modifying_list %}
+    <tr>
+        <td>{{ modify.id }}</td>
+        <td>{% if modify.flag == True %}含有{% else %}不含有{% endif %}</td>
+        <td>{% if modify.type == 'real' %}实体{% elif modify.type == 'virtual' %}虚拟{% endif %}</td>
+        <td>{{ modify.package_name | default:"无" }}</td>
+        <td>
+            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                <table border="1" bordercolor="#989898">
+                    <tr><td>CPU</td><td>{{ modify.cpu }}</td></tr>
+                    <tr><td>内存</td><td>{{ modify.memory }}GB</td></tr>
+                    <tr><td>硬盘类型</td><td>{{ modify.disktype }}</td></tr>
+                    <tr><td>硬盘大小</td><td>{{ modify.disk }}GB</td></tr>
+                    <tr><td>IP</td><td>{{ modify.ip }}</td></tr>
+                    <tr><td>OS</td><td>{{ modify.os }}</td></tr>
+                    <tr><td>登录用户名</td><td>{{ modify.login }}</td></tr>
+                    <tr><td>初始密码</td><td>{{ modify.initial_password }}</td></tr>
+                    {% if modify.flag == True %}<tr><td>重要数据</td><td>{{ modify.data_content }}</td></tr>{% endif %}
+                </table>
+                '>详细
+            </div>
+        </td>
+        <td>{{ modify.name }}</td>
+        <td>{{ modify.note }}</td>
+        <td>
+            <a class="positive ui tiny circular button agree-button final-ultimate-approve-unique-button"
+               data-variation="inverted" data-position="top center" data-id="{{ modify.id }}">调整</a>
+            <a class="negative ui tiny circular button agree-button" data-variation="inverted"
+               data-position="top center" data-html='
+                <h5 class="ui header">拒绝配置调整</h5>
+                <form method="post" action="{% url "computing.views.do_disapprove_modify" %}" class="do-disapprove-borrow">
+                    <input type="text" name="id" value="{{ modify.id }}" hidden>
+                    <div class="ui form">
+                        <div class="inline field">
+                            <label><font color="#FFFFFF">说明</font></label>
+                            <input type="text" name="note" placeholder="附加说明">
+                        </div>
+                    </div>
+                    <div class="negative ui tiny circular button floated right fluid reject-confirm-button">确认拒绝</div>
+                </form>
+                <script type="text/javascript">
+                    $(".reject-confirm-button").click(function(){
+                       $(this).parent().trigger("submit");
+                    });
+                </script>'>拒绝</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
+<div class="ui modal res-modif">
+    <i class="close icon"></i>
+
+    <div class="header">配置调整</div>
+    <div class="content">
+        <form class="ui form" action="{% url "computing.views.do_approve_modify" %}" method="post">
+        <input type="hidden" name="id" id="id">
+
+        <div class="sn field">
+            <label>编号</label>
+            <input type="text" name="sn">
+        </div>
+        <div class="type field">
+            <label>类型</label>
+
+            <div class="ui selection dropdown fluid">
+                <input type="hidden" name="type">
+
+                <div class="default text"></div>
+                <i class="dropdown icon"></i>
+
+                <div class="menu">
+                    <div class="item" data-value="real">实体机</div>
+                    <div class="item" data-value="virtual">虚拟机</div>
+                </div>
+            </div>
+        </div>
+        <div class="cpu field">
+            <label>CPU</label>
+            <input type="text" name="cpu">
+        </div>
+        <div class="memory field">
+            <label>内存/GB</label>
+            <input type="text" name="memory">
+        </div>
+        <div class="disktype field">
+            <label>硬盘类型</label>
+
+            <div class="ui selection dropdown fluid">
+                <input type="hidden" name="disktype">
+
+                <div class="default text">HDD</div>
+                <i class="dropdown icon"></i>
+
+                <div class="menu">
+                    <div class="item" data-value="HDD">HDD</div>
+                    <div class="item" data-value="SSD">SSD</div>
+                </div>
+            </div>
+        </div>
+        <div class="disk field">
+            <label>硬盘大小/GB</label>
+            <input type="text" name="disk">
+        </div>
+        <div class="os field">
+            <label>操作系统</label>
+            <input type="text" name="os">
+        </div>
+        <div class="ip field">
+            <label>网络地址</label>
+            <input type="text" name="ip">
+        </div>
+        <div class="data_content field">
+            <label>数据内容</label>
+            <input type="text" name="data_content">
+        </div>
+        <div class="note field">
+            <label>说明</label>
+            <input type="text" name="note">
+        </div>
+        <button type="submit" class="ui green button">同意配置调整</button>
+        </form>
+    </div>
+</div>
+
+<!--使用中资源-->
+{% if inuse_list %}
+<h3 id="inuse" class="ui header top attached" style="margin-top:10px"><font color="#F05940">使用中</font>资源</h3>
+<table class="ui small segment table attached">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>重要数据</th>
+        <th>资源类型</th>
+        <th>套餐类型</th>
+        <th>配置要求</th>
+        <th>申请者</th>
+        <th>管理员答复</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for inuse in inuse_list %}
+    <tr>
+        <td>{{ inuse.id }}</td>
+        <td>{% if inuse.flag == True %}含有{% else %}不含有{% endif %}</td>
+        <td>{% if inuse.type == 'real' %}实体{% elif inuse.type == 'virtual' %}虚拟{% endif %}</td>
+        <td>{{ inuse.package_name | default:"无" }}</td>
+        <td>
+            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                <table border="1" bordercolor="#989898">
+                    <tr><td>CPU</td><td>{{ inuse.cpu }}</td></tr>
+                    <tr><td>内存</td><td>{{ inuse.memory }}GB</td></tr>
+                    <tr><td>硬盘类型</td><td>{{ inuse.disktype }}</td></tr>
+                    <tr><td>硬盘大小</td><td>{{ inuse.disk }}GB</td></tr>
+                    <tr><td>IP</td><td>{{ inuse.ip }}</td></tr>
+                    <tr><td>OS</td><td>{{ inuse.os }}</td></tr>
+                    <tr><td>登录用户名</td><td>{{ inuse.login }}</td></tr>
+                    <tr><td>初始密码</td><td>{{ inuse.initial_password }}</td></tr>
+                    {% if inuse.flag == True %}<tr><td>重要数据</td><td>{{ inuse.data_content }}</td></tr>{% endif %}
+                </table>
+                '>详细
+            </div>
+        </td>
+        <td>{{ inuse.name }}</td>
+        <td>{{ inuse.note }}</td>
+        <td>
+            {% if inuse.type == 'virtual' %}
+            {% if inuse.flag == True %}
+            <a class="ui tiny circular button black reject-button" data-variation="inverted"
+               data-position="top center" data-html='{% include 'confirm_with_yesno.html' with id=inuse.id title="确定要提醒用户备份数据吗？" url="computing.views.do_destroying_comp" %}'>
+                提醒用户备份数据</a>
+{#            <form action="{% url "computing.views.do_destroying_comp" %}" method="post">#}
+{#                <input type="hidden" name="id" value="{{ inuse.id }}">#}
+{#                <button type="submit" class="ui tiny circular button black horizontal">提醒用户备份数据</button>#}
+{#            </form>#}
+            {% else %}
+            <a class="ui tiny circular button black reject-button" data-variation="inverted"
+               data-position="top center" data-html='{% include 'confirm_with_yesno.html' with id=inuse.id title="确定要强制收回计算资源吗？" url="computing.views.do_destroyed_comp" %}'>
+                强制收回计算资源</a>
+{#            <form action="{% url "computing.views.do_destroyed_comp" %}" method="post">#}
+{#                <input type="hidden" name="id" value="{{ inuse.id }}">#}
+{#                <button type="submit" class="ui tiny circular button black horizontal">强制收回计算资源</button>#}
+{#            </form>#}
+            {% endif %}
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
+
+<!--备份重要数据资源-->
+{% if backup_list %}
+<h3 id="backup" class="ui header top attached" style="margin-top:10px"><font color="#F05940">备份重要数据</font>资源</h3>
+<table class="ui small segment table attached">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>重要数据</th>
+        <th>资源类型</th>
+        <th>套餐类型</th>
+        <th>配置要求</th>
+        <th>申请者</th>
+        <th>答复</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for backup in backup_list %}
+    <tr>
+        <td>{{ backup.id }}</td>
+        <td>{% if backup.flag == True %}含有{% else %}不含有{% endif %}</td>
+        <td>{% if backup.type == 'real' %}实体{% elif backup.type == 'virtual' %}虚拟{% endif %}</td>
+        <td>{{ backup.package_name | default:"无" }}</td>
+        <td>
+            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                <table border="1" bordercolor="#989898">
+                    <tr><td>CPU</td><td>{{ backup.cpu }}</td></tr>
+                    <tr><td>内存</td><td>{{ backup.memory }}GB</td></tr>
+                    <tr><td>硬盘类型</td><td>{{ backup.disktype }}</td></tr>
+                    <tr><td>硬盘大小</td><td>{{ backup.disk }}GB</td></tr>
+                    <tr><td>IP</td><td>{{ backup.ip }}</td></tr>
+                    <tr><td>OS</td><td>{{ backup.os }}</td></tr>
+                    <tr><td>登录用户名</td><td>{{ backup.login }}</td></tr>
+                    <tr><td>初始密码</td><td>{{ backup.initial_password }}</td></tr>
+                    {% if backup.flag == True %}<tr><td>重要数据</td><td>{{ backup.data_content }}</td></tr>{% endif %}
+                </table>
+                '>详细
+            </div>
+        </td>
+        <td>{{ backup.name }}</td>
+        <td>{{ backup.note }}</td>
+        <td>
+            {% if backup.type == 'virtual' %}
+               <a class="ui tiny circular button black reject-button" data-variation="inverted"
+               data-position="top center" data-html='{% include 'confirm_with_yesno.html' with id=backup.id title="确定要强制收回计算资源吗？" url="computing.views.do_destroyed_comp" %}'>
+                强制收回计算资源</a>
+{#            <form action="{% url "computing.views.do_destroyed_comp" %}" method="post">#}
+{#                <input type="hidden" name="id" value="{{ backup.id }}">#}
+{#                <button type="submit" class="ui tiny circular button black">强制收回计算资源</button>#}
+{#            </form>#}
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="ui divider"></div>
+{% endif %}
+
+
+
+{% endblock %}

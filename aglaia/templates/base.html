@@ -81,7 +81,7 @@
                 </div>
                 {% endfor %}
               </p>
-              <div class="ui small input"> 
+              <div class="ui small input">
                 <input type="text" placeholder="请输入部门名称" id="base-dept-search">
                 <div class="ui teal button" id="base-dept-add">添加部门</div>
               </div>
@@ -167,27 +167,28 @@
     {% if "account.normal" in perm_list %}
         <a href="{% url "goods.views.show_borrow" %}"
            class="{% ifequal curpage "borrow" %} active {% endifequal %} item">借还物资</a>
-        <a href="{% url "goods.views.show_list" %}" class="{% ifequal curpage "goods" %} active {% endifequal %} item">物资列表</a>
-    {% endif %}
-    {% if "account.goods_auth" in perm_list %}
-        <a href="{% url "goods.views.show_manage" %}" class="item">请求审核</a>
-    {% endif %}
-    {% if "account.comput_auth" in perm_list %}
-        <a href="{% url "computing.views.show_comp_verify" %}" class="item">计算资源</a>
-    {% endif %}
-    {% if "account.view_all" in perm_list %}
-        <a href="{% url "account.views.show_all_accounts" %}" class="item">用户列表</a>
-        <a href="{% url "goods.views.show_borrow_list" %}" class="item">借还日志</a>
-        <a href="{% url "computing.views.show_computing_list" %}" class="item">计算日志</a>
+        <a href="{% url "goods.views.show_list" %}" class="{% ifequal curpage "goods" %} active {% endifequal %} item">实物列表</a>
     {% endif %}
 
     <a href="{% url "log.views.show_message_center" %}" class="item">消息中心</a>
 
-    {% if "account.goods_auth" in perm_list %}
-        <a href="{% url "excel.views.index" %}" class="item">数据导入/导出</a>
-    {% endif %}
 
     <div class="right menu">
+        {% if "account.goods_auth" in perm_list %}
+            <a href="{% url "goods.views.show_manage" %}" class="item">实物审核</a>
+        {% endif %}
+        {% if "account.comput_auth" in perm_list %}
+            <a href="{% url "computing.views.show_comp_verify" %}" class="item">计算审核</a>
+            <a href="{% url "computing.views.show_comp_manage" %}" class="item">计算管理</a>
+        {% endif %}
+        {% if "account.view_all" in perm_list %}
+            <a href="{% url "account.views.show_all_accounts" %}" class="item">用户列表</a>
+            <a href="{% url "goods.views.show_borrow_list" %}" class="item">借还日志</a>
+            <a href="{% url "computing.views.show_computing_list" %}" class="item">计算日志</a>
+        {% endif %}
+        {% if "account.goods_auth" in perm_list %}
+            <a href="{% url "excel.views.index" %}" class="item">数据导入/导出</a>
+        {% endif %}
         <a class="item" id="account-sidebar-toggler">
             <i class="user icon"></i>{{ user.username }}
         </a>
