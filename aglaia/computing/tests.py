@@ -549,6 +549,24 @@ class TestTestCase(TestCase):
 
     #Test Goods View
 
+    def test_do_get_comp_prop(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+        dic = {}
+        comp = Computing.objects.get(name='comp1')
+        dic['id'] = comp.id
+        comp = Computing.objects.get(id=comp.id)
+        dc = get_context_computing(comp)
+        dc['retcode'] = 'ok'
+        correct = self.manager.post(
+            reverse('computing.views.do_get_comp_prop'),
+            dic
+        )
+        self.assertEqual(correct.content.decode(),json.dumps(dc))
+
     #Borrow
     def test_do_borrow_request(self):
         self.manager = Client()
@@ -611,6 +629,70 @@ class TestTestCase(TestCase):
             dic
         )
         self.assertEqual(correct.content.decode(), 'ok')
+    def test_do_disapprove_borrow(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+        dic = {}
+
+        message = Message()
+        message.append({'direction': 'Recv', 'info_type': '',
+                        'user_name': 'normal', 'text': 'hello world'})
+        computing3 = {'pc_type': 'p',
+                      'cpu': 'core',
+                      'memory': 1024,
+                      'disk': 100,
+                      'disk_type': 's',
+                      'os': 'linux',
+                      'expire_time': date.today() + timedelta(days=5),
+                      'login': 'yurong',
+                      'password': 'yurong',
+                      'status': VERIFYING_KEY,
+                      'account': Account.objects.get(id=1),
+                      'note': message.tostring(),
+                      'address': '127.0.0.2',
+                      'flag': False,
+                      'data_content': "",
+                      'name': 'comp3',
+                      'pack_name': 'pack2'}
+        create_computing([computing3])
+
+        dic = {}
+        comp = Computing.objects.get(name='comp1')
+        dic['id'] = comp.id
+        dic['note'] = 'hello world'
+        correct = self.manager.post(
+            reverse('computing.views.do_disapprove_borrow'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('computing.views.show_comp_verify'))
+        delete_computing(comp.id)
+    def test_do_approve_borrow(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+        dic = {}
+        comp = Computing.objects.get(name='comp1')
+        message = Message()
+        message.append({'direction': 'Recv', 'info_type': '',
+                        'user_name': 'normal', 'text': 'hello world'})
+        dic['id'] = comp.id
+        dic['login'] = 'yefang0326'
+        dic['initial_password'] = 'yefang0326'
+        dic['note'] = message.tostring()
+        dic['sn'] = comp.sn
+        dic['ip'] = '127.0.0.1'
+        correct = self.manager.post(
+            reverse('computing.views.do_approve_borrow'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('computing.views.show_comp_verify'))
+
+    #Return
     def test_do_return_request(self):
         self.manager = Client()
         self.assertTrue(
@@ -656,29 +738,47 @@ class TestTestCase(TestCase):
         )
         self.assertRedirects(correct, reverse('goods.views.show_borrow'))
         delete_computing(comp.id)
-    def test_do_approve_borrow(self):
+    def test_do_approve_return(self):
         self.manager = Client()
         self.assertTrue(
             self.manager.login(
                 username='rongyu',
                 password='rongyu'))
-        dic = {}
-        comp = Computing.objects.get(name='comp1')
+
         message = Message()
         message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': 'normal', 'text': 'hello world'})
+        computing3 = {'pc_type': 'p',
+                      'cpu': 'core',
+                      'memory': 1024,
+                      'disk': 100,
+                      'disk_type': 's',
+                      'os': 'linux',
+                      'expire_time': date.today() + timedelta(days=5),
+                      'login': 'yurong',
+                      'password': 'yurong',
+                      'status': RETURNING_KEY,
+                      'account': Account.objects.get(id=1),
+                      'note': message.tostring(),
+                      'address': '127.0.0.2',
+                      'flag': False,
+                      'data_content': "",
+                      'name': 'comp3',
+                      'pack_name': 'pack2'}
+        create_computing([computing3])
+
+        dic = {}
+        comp = Computing.objects.get(name='comp3')
         dic['id'] = comp.id
-        dic['login'] = 'yefang0326'
-        dic['initial_password'] = 'yefang0326'
-        dic['note'] = message.tostring()
-        dic['sn'] = comp.sn
-        dic['ip'] = '127.0.0.1'
+        dic['note'] = 'I am back'
         correct = self.manager.post(
-            reverse('computing.views.do_approve_borrow'),
+            reverse('computing.views.do_approve_return'),
             dic
         )
-        self.assertRedirects(correct, reverse('computing.views.show_comp_verify'))
+        self.assertRedirects(correct,reverse('computing.views.show_comp_verify'))
+        delete_computing(comp.id)
 
+    #Modify
     def test_do_modif_request(self):
         self.manager = Client()
         self.assertTrue(
@@ -686,7 +786,6 @@ class TestTestCase(TestCase):
                 username='rongyu',
                 password='rongyu'))
         message = Message()
-
         message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': 'normal', 'text': 'hello world'})
         computing3 = {'pc_type': 'p',
@@ -724,6 +823,119 @@ class TestTestCase(TestCase):
             dic
         )
         self.assertEqual(correct.content.decode(), 'ok')
+        delete_computing(comp.id)
+    def test_do_approve_modify(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+
+        message = Message()
+        message.append({'direction': 'Recv', 'info_type': '',
+                        'user_name': 'normal', 'text': 'hello world'})
+        computing3 = {'pc_type': 'p',
+                      'cpu': 'core',
+                      'memory': 1024,
+                      'disk': 100,
+                      'disk_type': 's',
+                      'os': 'linux',
+                      'expire_time': date.today() + timedelta(days=5),
+                      'login': 'yurong',
+                      'password': 'yurong',
+                      'status': MODIFY_APPLY_KEY,
+                      'account': Account.objects.get(id=1),
+                      'note': message.tostring(),
+                      'address': '127.0.0.2',
+                      'flag': False,
+                      'data_content': "",
+                      'name': 'comp3',
+                      'pack_name': 'pack2'}
+        create_computing([computing3])
+
+        dic = {}
+        comp = Computing.objects.get(name='comp3')
+        dic['id'] = comp.id
+        dic['note'] = 'hello world'
+        dic['type'] = 'real'
+        dic['disktype'] = 'SSD'
+        dic['cpu'] = 'core'
+        dic['memory'] = 8
+        dic['disk'] = 1024
+        dic['ip'] = '127.0.0.1'
+        dic['os'] = 'windows'
+        dic['data_content'] = 'hehe'
+        correct = self.manager.post(
+            reverse('computing.views.do_approve_modify'),
+            dic
+        )
+        self.assertRedirects(correct,reverse('computing.views.show_comp_verify'))
+        delete_computing(comp.id)
+        create_computing([computing3])
+        comp = Computing.objects.get(name='comp3')
+        dic['id'] = comp.id
+        dic['type'] = 'virtual'
+        correct = self.manager.post(
+            reverse('computing.views.do_approve_modify'),
+            dic
+        )
+        self.assertRedirects(correct,reverse('computing.views.show_comp_verify'))
+        delete_computing(comp.id)
+        create_computing([computing3])
+        comp = Computing.objects.get(name='comp3')
+        dic['id'] = comp.id
+        dic['disktype'] = 'HDD'
+        correct = self.manager.post(
+            reverse('computing.views.do_approve_modify'),
+            dic
+        )
+        self.assertRedirects(correct,reverse('computing.views.show_comp_verify'))
+    def test_do_disapprove_modify(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+
+        message = Message()
+        message.append({'direction': 'Recv', 'info_type': '',
+                        'user_name': 'normal', 'text': 'hello world'})
+        computing3 = {'pc_type': 'p',
+                      'cpu': 'core',
+                      'memory': 1024,
+                      'disk': 100,
+                      'disk_type': 's',
+                      'os': 'linux',
+                      'expire_time': date.today() + timedelta(days=5),
+                      'login': 'yurong',
+                      'password': 'yurong',
+                      'status': MODIFY_APPLY_KEY,
+                      'account': Account.objects.get(id=1),
+                      'note': message.tostring(),
+                      'address': '127.0.0.2',
+                      'flag': False,
+                      'data_content': "",
+                      'name': 'comp3',
+                      'pack_name': 'pack2'}
+        create_computing([computing3])
+
+        dic = {}
+        comp = Computing.objects.get(name='comp3')
+        dic['id'] = comp.id
+        dic['note'] = 'hello world'
+        dic['type'] = 'real'
+        dic['disktype'] = 'SSD'
+        dic['cpu'] = 'core'
+        dic['memory'] = 8
+        dic['disk'] = 1024
+        dic['ip'] = '127.0.0.1'
+        dic['os'] = 'windows'
+        dic['data_content'] = 'hehe'
+        correct = self.manager.post(
+            reverse('computing.views.do_disapprove_modify'),
+            dic
+        )
+        self.assertRedirects(correct,reverse('computing.views.show_comp_verify'))
         delete_computing(comp.id)
 
     #Flag
@@ -790,12 +1002,6 @@ class TestTestCase(TestCase):
         )
         self.assertRedirects(correct, reverse('computing.views.show_comp_manage'))
 
-        # wrong_brw = self.manager.post(
-        #     reverse('goods.views.do_reject_destroy'),
-        #     dic
-        # )
-        # self.assertIsMessage(wrong_brw,
-        #                      '')
     def test_do_package_get(self):
         self.manager = Client()
         self.assertTrue(
@@ -827,3 +1033,38 @@ class TestTestCase(TestCase):
             dic
         )
         self.assertRedirects(correct, reverse('computing.views.show_comp_manage'))
+
+    #Destroy computing resource
+    def test_do_destroying_comp(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+        dic = {}
+        comp = Computing.objects.get(name='comp1')
+        dic['id'] = comp.id
+
+        correct = self.manager.post(
+            reverse('computing.views.do_destroying_comp'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('computing.views.show_comp_verify'))
+
+    def test_do_destroyed_comp(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+        dic = {}
+        comp = Computing.objects.get(name='comp2')
+        dic['id'] = comp.id
+
+        correct = self.manager.post(
+            reverse('computing.views.do_destroyed_comp'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('computing.views.show_comp_verify'))
+
+
