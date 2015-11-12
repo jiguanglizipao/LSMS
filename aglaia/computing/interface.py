@@ -237,6 +237,9 @@ def update_computing(computing_id, update_content):
             computing.flag = update_content['flag']
         if 'data_content' in update_content:
             computing.data_content = update_content['data_content']
+        if 'sn' in update_content and update_content['sn'] != '':
+            computing.sn = update_content['sn']
+
         computing.save()
         return computing
     except KeyError:

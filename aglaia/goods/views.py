@@ -639,7 +639,7 @@ def do_return_repair(request):
 
 
 @method_required('POST')
-@permission_required(PERM_GOODS_AUTH)
+@permission_required(PERM_NORMAL)
 def do_user_finish_repair(request):
     try:
         id = request.POST['id']
@@ -655,7 +655,7 @@ def do_user_finish_repair(request):
                 request, 'This Request is not in a borrowed status!')
 
         message = Message(brw.note)
-        message.append({'direction': 'Send', 'info_type': '',
+        message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
 
         packed_update_borrow(request,
@@ -674,7 +674,7 @@ def do_user_finish_repair(request):
 
 
 @method_required('POST')
-@permission_required(PERM_GOODS_AUTH)
+@permission_required(PERM_NORMAL)
 def do_user_update_repair(request):
     try:
         id = request.POST['id']
@@ -690,7 +690,7 @@ def do_user_update_repair(request):
                 request, 'This Request is not in a borrowed status!')
 
         message = Message(brw.note)
-        message.append({'direction': 'Send', 'info_type': '',
+        message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
 
         packed_update_borrow(request,
@@ -746,7 +746,7 @@ def do_update_repair(request):
 
 
 @method_required('POST')
-@permission_required(PERM_NORMAL)
+@permission_required(PERM_GOODS_AUTH)
 def do_accept_apply_goods(request):
     try:
         id = request.POST['id']
@@ -773,7 +773,7 @@ def do_accept_apply_goods(request):
 
 
 @method_required('POST')
-@permission_required(PERM_NORMAL)
+@permission_required(PERM_GOODS_AUTH)
 def do_reject_apply_goods(request):
     try:
         id = request.POST['id']
@@ -868,14 +868,14 @@ def do_input_apply_goods(request):
         apgd = Apply_Goods.objects.get(id=id)
 
         if packed_find_single(request, {'sn': sn}, {}):
-            raise Exception("sn already exists")
+            raise Exception("SN already exists! Please specify a different one.")
         tp = packed_find_gtypes(request, type_name)
 
         pnsr = apgd.pro_names.split(sep)
         pnsr.remove('')
 
         if tp and tp[0].get_all_pros() != pnsr:
-            raise Exception("type cannot use this name")
+            raise Exception("Type name already in use! Please specify a different one.")
         if not apgd.status == FINISH_GOODS_APPLY_KEY:
             return show_message(
                 request, "This Request is not in a apply_goods finish status!")
@@ -1265,6 +1265,7 @@ def show_list(request):
     perm_list = request.user.get_all_permissions()
 
     return render(request, "goods_list.html", {
+        'curpage': 'goods_list',
         'user': get_context_user(request.user),
         "goods_list": sgl_list,
         "type_list": tp_list,
@@ -1454,6 +1455,7 @@ def show_manage(request):
     gainput_list = get_context_list(gainput, get_context_apply_goods)
 
     return render(request, 'goods_manage.html', {
+        'curpage': 'goods_manage',
         'user': get_context_user(request.user),
         'borrow_requests': b_req_list,
         'return_requests': r_req_list,
@@ -1470,10 +1472,7 @@ def show_manage(request):
         'goods_apply_requests': ga_pend_list,
         'goods_applying_requests': gaing_list,
         'goods_applied_requests': gaed_list,
-
-        # only check
         'goods_input_requests': gainput_list,
-
         'perm_list': request.user.get_all_permissions(),
     })
 

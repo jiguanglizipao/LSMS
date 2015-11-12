@@ -111,18 +111,32 @@ def show_log(request):
         return show_message(request, 'Show log Error: ' + e.__str__())
 
 
+@method_required('GET')
+@permission_required(PERM_NORMAL)
 def show_message_center(request):
     account = Account.objects.get(user=request.user)
     brws = packed_find_borrow(request, {'account': account}, {})
     comps = packed_find_computing(request, {'account': account}, {})
-    goods = {}
+
+    if request.user.has_perm(GOODS_AUTH):
+        brws = packed_find_borrow(request, {}, {})
+    if request.user.has_perm(COMPUT_AUTH):
+        comps = packed_find_computing(request, {}, {})
+
+    brws = brws.order_by('single', '-id')
+
+    goods = dict()
+    brws_dic = dict()
     for brw in brws:
+        if brw.single.sn in brws_dic:
+            continue
+        brws_dic[brw.single.sn] = True
         sn = str(brw.single.sn).replace(" ", "")
         if sn not in goods:
             goods[sn] = {
                 'id': sn,
                 'name': brw.single.goods.name,
-                'user': brw.single.user_name,
+                'user': brw.account,
                 'type': brw.single.goods.gtype,
                 'msgs': [],
             }
@@ -136,8 +150,8 @@ def show_message_center(request):
             msg['time'] = message.index(i)["time"]
             msg['text'] = message.index(i)["text"]
             msg['flag'] = (message.getTime() < msg['time']).__str__()
-            if msg['text']:
-                goods[sn]['msgs'].append(msg)
+            # if msg['text']:
+            goods[sn]['msgs'].append(msg)
         message.setTime()
         brw.note = message.tostring()
         brw.save()
@@ -149,7 +163,7 @@ def show_message_center(request):
         goodslist.append(goods[key])
     goodslist.sort(key=lambda tgood: tgood['id'])
 
-    compset = {}
+    compset = dict()
     for comp in comps:
         sn = str(comp.sn).replace(" ", "")
         if sn not in compset:
@@ -169,8 +183,8 @@ def show_message_center(request):
             msg['time'] = message.index(i)["time"]
             msg['text'] = message.index(i)["text"]
             msg['flag'] = (message.getTime() < msg['time']).__str__()
-            if msg['text']:
-                compset[sn]['msgs'].append(msg)
+            # if msg['text']:
+            compset[sn]['msgs'].append(msg)
         message.setTime()
         comp.note = message.tostring()
         comp.save()
@@ -182,8 +196,11 @@ def show_message_center(request):
         complist.append(compset[key])
     complist.sort(key=lambda tcomp: tcomp['id'])
 
-    cont = {'user': get_context_user(request.user),
-            'perm_list': request.user.get_all_permissions(),
-            'goods': goodslist,
-            'complist': complist, }
+    cont = {
+        'curpage': 'message_center',
+        'user': get_context_user(request.user),
+        'perm_list': request.user.get_all_permissions(),
+        'goods': goodslist,
+        'complist': complist,
+    }
     return render(request, 'message_center.html', cont)

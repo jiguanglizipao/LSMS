@@ -653,7 +653,7 @@ def show_all_accounts(request):
 
     cont = {}
 
-    cont['curpage'] = 'allaccounts'
+    cont['curpage'] = 'all_accounts'
     cont['num_accounts'] = 1
     cont['num_pages'] = 1
     cont['cur_index'] = 1
