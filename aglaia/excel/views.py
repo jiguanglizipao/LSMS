@@ -135,6 +135,7 @@ def import_database(request):
 def index(request):
     if request.method == 'GET':
         return render(request, "excel_index.html", {
+            'curpage': 'excel',
             'user': get_context_user(request.user),
             'perm_list': request.user.get_all_permissions()})
 

@@ -1265,6 +1265,7 @@ def show_list(request):
     perm_list = request.user.get_all_permissions()
 
     return render(request, "goods_list.html", {
+        'curpage': 'goods_list',
         'user': get_context_user(request.user),
         "goods_list": sgl_list,
         "type_list": tp_list,
@@ -1454,6 +1455,7 @@ def show_manage(request):
     gainput_list = get_context_list(gainput, get_context_apply_goods)
 
     return render(request, 'goods_manage.html', {
+        'curpage': 'goods_manage',
         'user': get_context_user(request.user),
         'borrow_requests': b_req_list,
         'return_requests': r_req_list,
@@ -1470,10 +1472,7 @@ def show_manage(request):
         'goods_apply_requests': ga_pend_list,
         'goods_applying_requests': gaing_list,
         'goods_applied_requests': gaed_list,
-
-        # only check
         'goods_input_requests': gainput_list,
-
         'perm_list': request.user.get_all_permissions(),
     })
 

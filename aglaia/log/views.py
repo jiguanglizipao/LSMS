@@ -184,8 +184,11 @@ def show_message_center(request):
         complist.append(compset[key])
     complist.sort(key=lambda tcomp: tcomp['id'])
 
-    cont = {'user': get_context_user(request.user),
-            'perm_list': request.user.get_all_permissions(),
-            'goods': goodslist,
-            'complist': complist, }
+    cont = {
+        'curpage': 'message_center',
+        'user': get_context_user(request.user),
+        'perm_list': request.user.get_all_permissions(),
+        'goods': goodslist,
+        'complist': complist,
+    }
     return render(request, 'message_center.html', cont)
