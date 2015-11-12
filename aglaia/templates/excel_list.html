@@ -1,6 +1,10 @@
 {% load static from staticfiles %}
 <h2 class="ui header" style="margin-top:10px; margin-left:10px">实物修改列表</h2>
-<table class="ui table segment small" style="margin-left:10px">
+<div class="ui error message" id="goods-error" style="display:none">
+        <div class="header">错误</div>
+        <p></p>
+    </div>
+<table class="ui table segment small" style="margin-left:10px" id="change-goods">
     <thead>
     <tr>
         <th>修改类型</th>
@@ -14,10 +18,10 @@
     <tbody>
     {% for goods in goods_list %}
         {% if goods.type == "create" %}
-            <tr class="positive">
+            <tr class="positive" id="goods-type-{{goods.id}}">
             <td class="change-type">创建</td>
         {% else %}
-            <tr class="negative">
+            <tr class="negative" id="goods-type-{{goods.id}}">
             <td class="change-type">修改</td>
         {% endif %}
         <td class="goods-name">{{ goods.name }}</td>
@@ -43,10 +47,17 @@
     </tbody>
 </table>
 <div class="ui right aligned basic segment">
-    <input id="goods-btn" type="button" class="ui positive button" value="全部提交">
+    <input id="goods-btn" type="button" class="ui positive button" value="提交修改">
 </div>
+<!--<div class="ui right aligned basic segment">-->
+    <!--<input id="goods-btn" type="button" class="ui positive button" value="全部提交">-->
+<!--</div>-->
 
 <h2 class="ui header" style="margin-top:10px; margin-left:10px">计算资源修改列表</h2>
+<div class="ui error message" id="computing-error" style="display:none">
+        <div class="header">错误</div>
+        <p></p>
+    </div>
 <table class="ui table segment small" style="margin-left:10px">
     <thead>
     <tr>
@@ -66,10 +77,10 @@
     <tbody>
     {% for computing in computing_list %}
         {% if computing.type == "create" %}
-            <tr class="positive">
+            <tr class="positive" id="computing-type-{{computing.id}}">
             <td class="change-type">创建</td>
         {% else %}
-            <tr class="negative">
+            <tr class="negative" id="computing-type-{{computing.id}}">
             <td class="change-type">修改</td>
         {% endif %}
         <td class="computing-name">{{ computing.name }}</td>
@@ -119,8 +130,11 @@
     </tbody>
 </table>
 <div class="ui right aligned basic segment">
-    <input id="computing-btn" type="button" class="ui positive button" value="全部提交">
+    <input id="computing-btn" type="button" class="ui positive button" value="提交修改">
 </div>
+<!--<div class="ui right aligned basic segment">-->
+    <!--<input id="computing-btn" type="button" class="ui positive button" value="全部提交">-->
+<!--</div>-->
 
 <script src="{% static "javascript/semantic.min.js" %}"></script>
 <script src="{% static "javascript/aglaia.js" %}"></script>
@@ -129,133 +143,186 @@ function Loaded(){
 	$('.config-detail').popup({
 		on: 'hover'
 	});
-    $('.goods.checkbox').checkbox({
-        onChange: function() {
-            {% for goods in goods_list %}
-                if($("#goods-checkbox-{{goods.id}}").is(':checked')){
-                    var url = '{% url "excel.views.import_goods" %}';
-                    var data = {'type':"{{goods.type}}",
-                                'name':"{{goods.name}}",
-                                'sn':"{{goods.sn}}",
-                                'type_name':"{{goods.type_name}}",
-                                'pro_values':"{{goods.values}}"
-                               };
-                    $.ajax({
-                        type : "post",
-                        url : url,
-                        data : data,
-                        async: true,
-                        success: function(data){
-                            $("#goods-checkbox-div-{{goods.id}}").html(data)
-                        },
-                        error: function(){
-                            alert("修改出错，请重试");
-                        }
-                    });
-                }
-            {% endfor %}
-        }
-	});
-    $('.computing.checkbox').checkbox({
-        onChange: function() {
-            {% for computing in computing_list %}
-                if($("#computing-checkbox-{{computing.id}}").is(':checked')){
-                    var url = '{% url "excel.views.import_computing" %}';
-                    var data = {'type':"{{computing.type}}",
-                                'name':"{{computing.name}}",
-                                'sn':"{{computing.sn}}",
-                                'user': "{{computing.user}}",
-                                'status': "{{computing.status}}",
-                                'pack_name': "{{computing.pack_name}}",
-                                'pc_type': "{{computing.pc_type}}",
-                                'cpu': "{{computing.cpu}}",
-                                'memory': "{{computing.memory}}",
-                                'disk_type': "{{computing.disk_type}}",
-                                'disk': "{{computing.disk}}",
-                                'os': "{{computing.os}}",
-                                'expire_time': "{{computing.expire_time}}",
-                                'login': "{{computing.login}}",
-                                'password': "{{computing.password}}",
-                                'ip': "{{computing.ip}}",
-                                'flag': "{{computing.flag}}",
-                                'data_content': "{{computing.data_content}}",
-                               };
-                    $.ajax({
-                        type : "post",
-                        url : url,
-                        data : data,
-                        async: true,
-                        success: function(data){
-                            $("#computing-checkbox-div-{{computing.id}}").html(data)
-                        },
-                        error: function(){
-                            alert("修改出错，请重试");
-                        }
-                    });
-                }
-            {% endfor %}
-        }
-	});
+	var repeatGoodsSn = new Array();
+	var createGoodsList = new Array();
+	function isGoodsRepeat(sn)
+	{
+        for(var i = 0; i < repeatGoodsSn.length; ++i)
+            if(repeatGoodsSn[i] == sn)
+                return true;
+        return false;
+	}
+	{% for goods in goods_list %}
+	    {% for goods_check in goods_list %}
+	        if("{{goods.sn}}" == "{{goods_check.sn}}" && "{{goods.id}}" != "{{goods_check.id}}")
+	            if(!isGoodsRepeat("{{goods.sn}}"))
+	                repeatGoodsSn.push("{{goods.sn}}");
+	    {% endfor %}
+	{% endfor %}
+	function getGoodsType(oldType,sn)
+	{
+	    if(oldType == "change") return oldType;
+	    else
+	    {
+	        if(isGoodsRepeat(sn))
+	        {
+                for(var i = 0; i < createGoodsList.length; ++i)
+                    if(createGoodsList[i] == sn)
+                        return "change";
+            }
+	        return "create";
+	    }
+	}
     $("#goods-btn").on("click",function(){
-		{% for goods in goods_list %}
-			$("#goods-checkbox-{{goods.id}}").delay(1000).attr("checked",'true');
-            var url = '{% url "excel.views.import_goods" %}';
-            var data = {'type':"{{goods.type}}",
-                        'name':"{{goods.name}}",
-                        'sn':"{{goods.sn}}",
-                        'type_name':"{{goods.type_name}}",
-                        'pro_values':"{{goods.values}}"
-                       };
-            $.ajax({
-                type : "post",
-                url : url,
-                data : data,
-                async: true,
-                success: function(data){
-                    $("#goods-checkbox-div-{{goods.id}}").html(data)
-                },
-                error: function(){
-                    alert("修改出错，请重试");
+        $('#goods-error').hide();
+        {% for goods in goods_list %}
+            if($("#goods-checkbox-{{goods.id}}").is(':checked'))
+            {
+                if(isGoodsRepeat("{{goods.sn}}"))
+                {
+                    {% for goods_check in goods_list %}
+                        if("{{goods.id}}" != "{{goods_check.id}}"
+                        && "{{goods.sn}}" == "{{goods_check.sn}}"
+                        && $("#goods-checkbox-{{goods_check.id}}").is(':checked'))
+                        {
+                            $('#goods-error').show();
+                            $('#goods-error').children('p').text('SN号为{{goods.sn}}的物品存在两次及以上的修改，请保留您想要的修改');
+                            return;
+                        }
+                    {% endfor %}
                 }
-            });
-		{% endfor %}
+            }
+        {% endfor %}
+        {% for goods in goods_list %}
+            if($("#goods-checkbox-{{goods.id}}").is(':checked')){
+                var url = '{% url "excel.views.import_goods" %}';
+                var data = {'type':getGoodsType("{{goods.type}}","{{goods.sn}}"),
+                            'name':"{{goods.name}}",
+                            'sn':"{{goods.sn}}",
+                            'type_name':"{{goods.type_name}}",
+                            'pro_values':"{{goods.values}}",
+                           };
+                $.ajax({
+                    type : "post",
+                    url : url,
+                    data : data,
+                    success: function(data){
+                        $("#goods-checkbox-div-{{goods.id}}").html(data);
+                        if(getGoodsType("{{goods.type}}","{{goods.sn}}") == "create" && isGoodsRepeat("{{goods.sn}}"))
+                        {
+                            createGoodsList.push("{{goods.sn}}");
+                            {% for goods_check in goods_list %}
+                                if("{{goods.sn}}" == "{{goods_check.sn}}" && "{{goods.id}}" != "{{goods_check.id}}")
+                                {
+                                    $('#goods-type-{{goods_check.id}}').removeClass().addClass("negative");
+                                    $('#goods-type-{{goods_check.id}}').children('.change-type').text("修改");
+                                }
+                            {% endfor %}
+                        }
+                    },
+                    error: function(){
+                        alert("修改出错，请重试");
+                    }
+                });
+            }
+        {% endfor %}
     });
+	var repeatComputingSn = new Array();
+	var createComputingList = new Array();
+	function isComputingRepeat(sn)
+	{
+        for(var i = 0; i < repeatComputingSn.length; ++i)
+            if(repeatComputingSn[i] == sn)
+                return true;
+        return false;
+	}
+	{% for computing in computing_list %}
+	    {% for computing_check in computing_list %}
+	        if("{{computing.sn}}" == "{{computing_check.sn}}" && "{{computing.id}}" != "{{computing_check.id}}")
+	            if(!isComputingRepeat("{{computing.sn}}"))
+	                repeatComputingSn.push("{{computing.sn}}");
+	    {% endfor %}
+	{% endfor %}
+	function getComputingType(oldType,sn)
+	{
+	    if(oldType == "change") return oldType;
+	    else
+	    {
+	        if(isComputingRepeat(sn))
+	        {
+                for(var i = 0; i < createComputingList.length; ++i)
+                    if(createComputingList[i] == sn)
+                        return "change";
+            }
+	        return "create";
+	    }
+	}
     $("#computing-btn").on("click",function(){
-		{% for computing in computing_list %}
-			$("#computing-checkbox-{{computing.id}}").delay(1000).attr("checked",'true');
-            var url = '{% url "excel.views.import_computing" %}';
-            var data = {'type':"{{computing.type}}",
-                        'name':"{{computing.name}}",
-                        'sn':"{{computing.sn}}",
-                        'user': "{{computing.user}}",
-                        'status': "{{computing.status}}",
-                        'pack_name': "{{computing.pack_name}}",
-                        'pc_type': "{{computing.pc_type}}",
-                        'cpu': "{{computing.cpu}}",
-                        'memory': "{{computing.memory}}",
-                        'disk_type': "{{computing.disk_type}}",
-                        'disk': "{{computing.disk}}",
-                        'os': "{{computing.os}}",
-                        'expire_time': "{{computing.expire_time}}",
-                        'login': "{{computing.login}}",
-                        'password': "{{computing.password}}",
-                        'ip': "{{computing.ip}}",
-                        'flag': "{{computing.flag}}",
-                        'data_content': "{{computing.data_content}}",
-                       };
-            $.ajax({
-                type : "post",
-                url : url,
-                data : data,
-                async: true,
-                success: function(data){
-                    $("#computing-checkbox-div-{{computing.id}}").html(data)
-                },
-                error: function(){
-                    alert("修改出错，请重试");
+        $('#computing-error').hide();
+        {% for computing in computing_list %}
+            if($("#computing-checkbox-{{computing.id}}").is(':checked'))
+            {
+                if(isComputingRepeat("{{computing.sn}}"))
+                {
+                    {% for computing_check in computing_list %}
+                        if("{{computing.id}}" != "{{computing_check.id}}"
+                        && "{{computing.sn}}" == "{{computing_check.sn}}"
+                        && $("#computing-checkbox-{{computing_check.id}}").is(':checked'))
+                        {
+                            $('#computing-error').show();
+                            $('#computing-error').children('p').text('SN号为{{computing.sn}}的物品存在两次及以上的修改，请保留您想要的修改');
+                            return;
+                        }
+                    {% endfor %}
                 }
-            });
-		{% endfor %}
+            }
+        {% endfor %}
+        {% for computing in computing_list %}
+            if($("#computing-checkbox-{{computing.id}}").is(':checked')){
+                var url = '{% url "excel.views.import_computing" %}';
+                var data = {'type':getComputingType("{{computing.type}}","{{computing.sn}}"),
+                            'name':"{{computing.name}}",
+                            'sn':"{{computing.sn}}",
+                            'user': "{{computing.user}}",
+                            'status': "{{computing.status}}",
+                            'pack_name': "{{computing.pack_name}}",
+                            'pc_type': "{{computing.pc_type}}",
+                            'cpu': "{{computing.cpu}}",
+                            'memory': "{{computing.memory}}",
+                            'disk_type': "{{computing.disk_type}}",
+                            'disk': "{{computing.disk}}",
+                            'os': "{{computing.os}}",
+                            'expire_time': "{{computing.expire_time}}",
+                            'login': "{{computing.login}}",
+                            'password': "{{computing.password}}",
+                            'ip': "{{computing.ip}}",
+                            'flag': "{{computing.flag}}",
+                            'data_content': "{{computing.data_content}}",
+                           };
+                $.ajax({
+                    type : "post",
+                    url : url,
+                    data : data,
+                    success: function(data){
+                        $("#computing-checkbox-div-{{computing.id}}").html(data);
+                        if(getComputingType("{{computing.type}}","{{computing.sn}}") == "create" && isComputingRepeat("{{computing.sn}}"))
+                        {
+                            createComputingList.push("{{computing.sn}}");
+                            {% for computing_check in computing_list %}
+                                if("{{computing.sn}}" == "{{computing_check.sn}}" && "{{computing.id}}" != "{{computing_check.id}}")
+                                {
+                                    $('#computing-type-{{computing_check.id}}').removeClass().addClass("negative");
+                                    $('#computing-type-{{computing_check.id}}').children('.change-type').text("修改");
+                                }
+                            {% endfor %}
+                        }
+                    },
+                    error: function(){
+                        alert("修改出错，请重试");
+                    }
+                });
+            }
+        {% endfor %}
     });
 }
 </script>

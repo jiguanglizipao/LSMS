@@ -1,6 +1,7 @@
 from datetime import *
 from django.core.exceptions import *
-from django.test import TestCase
+from django.test import *
+from computing.views import *
 from computing.models import *
 from computing.interface import *
 from account.models import Account
@@ -53,7 +54,7 @@ class TestTestCase(TestCase):
         s = [server1, server2]
         create_server(s)
 
-        package1 = {'cpu': 'core', 'pc_type': 'p',
+        package1 = {'cpu': 'core', 'pc_type': 'r',
                     'memory': 1024, 'disk': 1024, 'os': 'windows',
                     'disk_type': 's', 'name': 'package1'}
         package2 = {'cpu': 'xeon', 'pc_type': 'v',
@@ -529,3 +530,61 @@ class TestTestCase(TestCase):
     def test_package_delete_fail(self):
         self.assertRaises(PackageDoesNotExistError, delete_package, 5)
         self.assertRaises(PackageDoesNotExistError, delete_package, -1)
+
+    #Test Goods View
+
+    #Package
+    def test_do_package_create(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(username='manager', password='123456'))
+
+        dic = {}
+        note = 'testnote'
+        dic['name'] = self.computing1.name
+        dic['cpu'] = self.computing1.cpu
+        dic['memory'] = self.computing1.memory
+        dic['disk'] = self.computing1.disk
+        dic['os'] = self.computing1.os
+        dic['type'] = 'real'
+        dic['disk_type'] = 'SSD'
+        dic['os'] = self.computing.os
+        dic['sn'] = self.computing.sn
+        dic['expire_time'] = self.computing.expire_time
+        dic['login'] = self.computing.login
+        dic['password'] = self.computing.password
+        dic['status'] = self.computing.status
+        dic['account'] = self.computing.account
+        dic['note'] = self.computing.note
+        dic['address'] = self.computing.address
+        dic['flag'] = self.computing.flag
+        dic['data_content'] = self.computing.data_content
+        dic['pack_name'] = self.computing.pack_name
+
+        correct = self.manager.post(
+            reverse('computing.views.do_create_package'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('computing.views.show_comp_verify'))
+
+
+        # b2 = Borrow.objects.get(id=self.b1.id)
+        # self.assertEqual(b2.status, BORROWED_KEY)
+        # self.assertEqual(Message(b2.note).last()['text'], note)
+        #
+        # wrong_brw = self.manager.post(
+        #     reverse('goods.views.do_reject_destroy'),
+        #     dic
+        # )
+        # self.assertIsMessage(wrong_brw,
+        #                      'This Request is not in a destroy apply status!')
+        #
+        # update_borrow(self.b1.id, {'status': DESTROY_APPLY_KEY})
+        # update_single(self.s1.id, {'status': LOST_KEY})
+        #
+        # wrong_sgl = self.manager.post(
+        #     reverse('goods.views.do_reject_destroy'),
+        #     dic
+        # )
+        # self.assertIsMessage(
+        #     wrong_sgl, 'The good is not in a borrowed status!')
