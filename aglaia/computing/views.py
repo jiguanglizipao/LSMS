@@ -509,43 +509,43 @@ def show_comp_manage(request):
 
     return render(request, 'calc_manage.html', cont)
 
-
-@method_required('GET')
-@permission_required(PERM_COMPUT_AUTH)
-def show_calc_resource(request):
-    inuse = packed_find_computing(request, {'status': BORROWED_KEY}, {})
-    borrow = packed_find_computing(request, {'status': VERIFYING_KEY}, {})
-    ret = packed_find_computing(request, {'status': RETURNING_KEY}, {})
-    modif = packed_find_computing(request, {'status': MODIFY_APPLY_KEY}, {})
-
-    packs = Package.objects.all()
-    cont = {}
-
-    pack_list = get_context_list(packs, get_context_pack)
-    cont['package_list'] = pack_list
-    cont['package_num'] = len(pack_list)
-
-    b_list = get_context_list(borrow, get_context_computing)
-    cont['borrowing_list'] = b_list
-    cont['borrowing_num'] = len(b_list)
-
-    u_list = get_context_list(inuse, get_context_computing)
-    cont['inuse_list'] = u_list
-    cont['inuse_num'] = len(u_list)
-
-    m_list = get_context_list(modif, get_context_computing)
-    cont['modifying_list'] = m_list
-    cont['modifying_num'] = len(m_list)
-
-    r_list = get_context_list(ret, get_context_computing)
-    cont['returning_list'] = r_list
-    cont['returning_num'] = len(r_list)
-
-    user = get_context_user(request.user)
-    cont['user'] = user
-    cont['perm_list'] = request.user.get_all_permissions()
-
-    return render(request, 'calc_resource.html', cont)
+#
+# @method_required('GET')
+# @permission_required(PERM_COMPUT_AUTH)
+# def show_calc_resource(request):
+#     inuse = packed_find_computing(request, {'status': BORROWED_KEY}, {})
+#     borrow = packed_find_computing(request, {'status': VERIFYING_KEY}, {})
+#     ret = packed_find_computing(request, {'status': RETURNING_KEY}, {})
+#     modif = packed_find_computing(request, {'status': MODIFY_APPLY_KEY}, {})
+#
+#     packs = Package.objects.all()
+#     cont = {}
+#
+#     pack_list = get_context_list(packs, get_context_pack)
+#     cont['package_list'] = pack_list
+#     cont['package_num'] = len(pack_list)
+#
+#     b_list = get_context_list(borrow, get_context_computing)
+#     cont['borrowing_list'] = b_list
+#     cont['borrowing_num'] = len(b_list)
+#
+#     u_list = get_context_list(inuse, get_context_computing)
+#     cont['inuse_list'] = u_list
+#     cont['inuse_num'] = len(u_list)
+#
+#     m_list = get_context_list(modif, get_context_computing)
+#     cont['modifying_list'] = m_list
+#     cont['modifying_num'] = len(m_list)
+#
+#     r_list = get_context_list(ret, get_context_computing)
+#     cont['returning_list'] = r_list
+#     cont['returning_num'] = len(r_list)
+#
+#     user = get_context_user(request.user)
+#     cont['user'] = user
+#     cont['perm_list'] = request.user.get_all_permissions()
+#
+#     return render(request, 'calc_resource.html', cont)
 
 
 @method_required('GET')
@@ -580,7 +580,7 @@ def do_destroyed_comp(request):
         message.append({'direction': 'Recv',
                         'info_type': '',
                         'user_name': request.user.username,
-                        'text': '该计算资源已被管理员强制收回'})
+                        'text': '璇ヨ绠楄祫婧愬凡琚鐞嗗憳寮哄埗鏀跺洖'})
         note = message.tostring()
         packed_update_computing(request, id, {
             'status': DESTROYED_KEY,'note':note}, log=get_comp_destroyed_log())
@@ -604,7 +604,7 @@ def do_destroying_comp(request):
         message.append({'direction': 'Recv',
                         'info_type': '',
                         'user_name': request.user.username,
-                        'text': '该计算资源即将被收回，请尽快备份重要数据！'})
+                        'text': '璇ヨ绠楄祫婧愬嵆灏嗚鏀跺洖锛岃灏藉揩澶囦唤閲嶈鏁版嵁锛�'})
         note = message.tostring()
         packed_update_computing(request, id, {
             'status': DESTROYING_KEY,'note':note}, log=get_comp_destroying_log())
