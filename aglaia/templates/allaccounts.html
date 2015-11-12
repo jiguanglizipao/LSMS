@@ -12,14 +12,14 @@
 {% block allcontent %}
 <div class="ui page grid">
   <div class="sixteen wide column">
-    <table class="ui table segment" style="font-size: 0.75em">
+    <table class="ui table segment" style="font-size: 0.9em">
       <thead>
         <tr>
           <th>用户名</th>
           <th>真实姓名</th>
-          <th>学工号</th>
+          <!--<th>学工号</th>-->
           <th>电子邮件</th>
-          <th>联系电话</th>
+          <!--<th>联系电话</th>-->
           <th>操作</th>
         </tr>
       </thead>
@@ -51,15 +51,15 @@
         <td>
           {{ account.realname }}
         </td>
-        <td>
-          {{ account.number }}
-        </td>
+        <!--<td>-->
+          <!--{{ account.number }}-->
+        <!--</td>-->
         <td>
           {{ account.email }}
         </td>
-        <td>
-          {{ account.tel }}
-        </td>
+        <!--<td>-->
+          <!--{{ account.tel }}-->
+        <!--</td>-->
         <td>
           <div class="ui tiny black buttons operations">
             <div class="ui tip button set-perm" data-content="修改权限" data-position="top left" data-user="{{ account.username }}">

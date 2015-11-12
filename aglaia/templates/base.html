@@ -33,14 +33,14 @@
                             <i class="lock icon tip" data-content="不可更改"></i>
                         </div>
                     </div>
-                    <div class="field" id="base-number">
-                        <label>学工号</label>
+                    <!--<div class="field" id="base-number">-->
+                        <!--<label>学工号</label>-->
 
-                        <div class="ui left labeled icon input">
-                            <input type="text" value="{{ user.number }}" readonly="readonly">
-                            <i class="lock icon tip" data-content="不可更改"></i>
-                        </div>
-                    </div>
+                        <!--<div class="ui left labeled icon input">-->
+                            <!--<input type="text" value="{{ user.number }}" readonly="readonly">-->
+                            <!--<i class="lock icon tip" data-content="不可更改"></i>-->
+                        <!--</div>-->
+                    <!--</div>-->
                     <div class="field">
                         <label>类型</label>
 
@@ -62,14 +62,14 @@
                             <i class="lock icon tip" data-content="请在【更改电子邮件】中更改"></i>
                         </div>
                     </div>
-                    <div class="field" id="base-tel">
-                        <label>联系方式</label>
+                    <!--<div class="field" id="base-tel">-->
+                        <!--<label>联系方式</label>-->
 
-                        <div class="ui left labeled icon input">
-                            <input type="text" value="{{ user.tel }}">
-                            <i class="unlock icon tip" data-content="可更改"></i>
-                        </div>
-                    </div>
+                        <!--<div class="ui left labeled icon input">-->
+                            <!--<input type="text" value="{{ user.tel }}">-->
+                            <!--<i class="unlock icon tip" data-content="可更改"></i>-->
+                        <!--</div>-->
+                    <!--</div>-->
                     <!--
             <div class="field" id="base-depts">
               <label>部门</label>
@@ -89,9 +89,9 @@
             </div>
             -->
 
-                    <div class="ui hidden message" id="base-info-msg">
-                    </div>
-                    <button type="button" id="base-info-btn" class="ui teal button">保存修改</button>
+                    <!--<div class="ui hidden message" id="base-info-msg">-->
+                    <!--</div>-->
+                    <!--<button type="button" id="base-info-btn" class="ui teal button">保存修改</button>-->
                 </form>
             </div>
             <!--
@@ -168,9 +168,8 @@
         <a href="{% url "goods.views.show_borrow" %}"
            class="{% ifequal curpage "borrow" %} active {% endifequal %} item">借还物资</a>
         <a href="{% url "goods.views.show_list" %}" class="{% ifequal curpage "goods_list" %} active {% endifequal %} item">实物列表</a>
-    {% endif %}
-
     <a href="{% url "log.views.show_message_center" %}" class="{% ifequal curpage "message_center" %} active {% endifequal %} item">消息中心</a>
+    {% endif %}
 
 
     <div class="right menu">

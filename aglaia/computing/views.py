@@ -112,6 +112,8 @@ def do_borrow_request(request):
         comp['flag'] = post['flag']
         comp['data_content'] = post['data_content']
 
+        if comp['note'] == '':
+            comp['note'] = get_comp_request_log()
         message = Message()
         message.append({'direction': 'Recv',
                         'info_type': '',
@@ -160,6 +162,8 @@ def do_modif_request(request):
         if not comp.status == BORROWED_KEY:
             return HttpResponse('denied')
 
+        if post['reason'] == '':
+            post['reason'] = get_comp_modif_log()
         message = Message(comp.note)
         message.append({'direction': 'Recv',
                         'info_type': '',
@@ -191,6 +195,8 @@ def do_approve_borrow(request):
         if not comp.status == VERIFYING_KEY:
             return show_denied_message(request)
 
+        if note == '':
+            note = get_comp_approve_log()
         message = Message(comp.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -226,6 +232,8 @@ def do_disapprove_borrow(request):
         if not comp.status == VERIFYING_KEY:
             return show_denied_message(request)
 
+        if note == '':
+            note = get_comp_disap_log()
         message = Message(comp.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -256,6 +264,8 @@ def do_approve_return(request):
         if not comp.status == RETURNING_KEY:
             return show_denied_message(request)
 
+        if note == '':
+            note = get_comp_reted_log()
         message = Message(comp.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -283,6 +293,8 @@ def do_approve_modify(request):
         if not comp.status == MODIFY_APPLY_KEY:
             return show_denied_message(request)
 
+        if post['note'] == '':
+            post['note'] = get_comp_modfed_log()
         message = Message(comp.note)
         message.append({'direction': 'Send',
                         'info_type': '',
@@ -334,6 +346,8 @@ def do_disapprove_modify(request):
         if not comp.status == MODIFY_APPLY_KEY:
             return show_denied_message(request)
 
+        if note == '':
+            note = get_comp_rej_modf_log()
         message = Message(comp.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -580,7 +594,7 @@ def do_destroyed_comp(request):
         message.append({'direction': 'Recv',
                         'info_type': '',
                         'user_name': request.user.username,
-                        'text': '璇ヨ绠楄祫婧愬凡琚鐞嗗憳寮哄埗鏀跺洖'})
+                        'text': get_comp_destroyed_log()})
         note = message.tostring()
         packed_update_computing(request, id, {
             'status': DESTROYED_KEY,'note':note}, log=get_comp_destroyed_log())
@@ -604,7 +618,7 @@ def do_destroying_comp(request):
         message.append({'direction': 'Recv',
                         'info_type': '',
                         'user_name': request.user.username,
-                        'text': '璇ヨ绠楄祫婧愬嵆灏嗚鏀跺洖锛岃灏藉揩澶囦唤閲嶈鏁版嵁锛�'})
+                        'text': get_comp_destroying_log()})
         note = message.tostring()
         packed_update_computing(request, id, {
             'status': DESTROYING_KEY,'note':note}, log=get_comp_destroying_log())

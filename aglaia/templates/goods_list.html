@@ -145,6 +145,7 @@
                             <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted"
                                  data-content="销毁"><i class="icon trash"></i></div>
                         {% endif %}
+                        {% if "account.view_all" in perm_list %}
                         <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
                             <input type="hidden" name="id" value="{{ goods.id }}">
                             <input type="hidden" name="type" value="goods">
@@ -153,6 +154,7 @@
                                 <i class="unordered list icon"></i>
                             </button>
                         </form>
+                        {% endif %}
                     </td>
                     {% if "account.goods_auth" in perm_list %}
                     <td>
@@ -191,6 +193,7 @@
                             <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted"
                                  data-content="销毁"><i class="icon trash"></i></div>
                         {% endif %}
+                        {% if "account.view_all" in perm_list %}
                         <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
                             <input type="hidden" name="id" value="{{ goods.id }}">
                             <input type="hidden" name="type" value="goods">
@@ -199,6 +202,7 @@
                                 <i class="unordered list icon"></i>
                             </button>
                         </form>
+                        {% endif %}
                     </td>
                     <td>
                         <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
@@ -235,6 +239,7 @@
                             <div class="circular ui icon black button tiny disabled disabled-trash-destroy"
                                  data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
                         {% endif %}
+                        {% if "account.view_all" in perm_list %}
                         <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
                             <input type="hidden" name="id" value="{{ goods.id }}">
                             <input type="hidden" name="type" value="goods">
@@ -243,6 +248,7 @@
                                 <i class="unordered list icon"></i>
                             </button>
                         </form>
+                        {% endif %}
                     </td>
                     <td>
                         <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
@@ -279,6 +285,7 @@
                             <div class="circular ui icon black button tiny disabled disabled-trash-destroy"
                                  data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
                         {% endif %}
+                        {% if "account.view_all" in perm_list %}
                         <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
                             <input type="hidden" name="id" value="{{ goods.id }}">
                             <input type="hidden" name="type" value="goods">
@@ -287,6 +294,7 @@
                                 <i class="unordered list icon"></i>
                             </button>
                         </form>
+                        {% endif %}
                     </td>
                     <td>
                         <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
@@ -325,6 +333,7 @@
                             <div class="circular ui icon orange button tiny find-goods" data-variation="inverted"
                                  data-content="找回物品"><i class="leaf icon"></i></div>
                         {% endif %}
+                        {% if "account.view_all" in perm_list %}
                         <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
                             <input type="hidden" name="id" value="{{ goods.id }}">
                             <input type="hidden" name="type" value="goods">
@@ -333,6 +342,7 @@
                                 <i class="unordered list icon"></i>
                             </button>
                         </form>
+                        {% endif %}
                     </td>
                     <td>
                         <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
@@ -369,6 +379,7 @@
                             <div class="circular ui icon black button tiny disabled disabled-trash-destroy"
                                  data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
                         {% endif %}
+                        {% if "account.view_all" in perm_list %}
                         <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
                             <input type="hidden" name="id" value="{{ goods.id }}">
                             <input type="hidden" name="type" value="goods">
@@ -377,6 +388,7 @@
                                 <i class="unordered list icon"></i>
                             </button>
                         </form>
+                        {% endif %}
                     </td>
                     <td>
                         <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"

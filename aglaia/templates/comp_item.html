@@ -104,6 +104,7 @@
                     </button>
                 </form>
             {% endif %}
+            {% if "account.view_all" in perm_list %}
             <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
                 <input type="hidden" name="id" value="{{ item.id }}">
                 <input type="hidden" name="type" value="computing">
@@ -111,6 +112,7 @@
                     <i class="unordered list icon"></i>
                 </button>
             </form>
+            {% endif %}
         {% else %}
             <button class="ui circular tiny inverted icon teal tip disabled button" data-content="释放">
                 <i class="unlock icon"></i>
@@ -122,9 +124,11 @@
                     data-content="{% if item.flag == True %}取消{% else %}标记{% endif %}重要数据"
                     data-destiny="{% if item.flag == True %}false{% else %}true{% endif %}" data-fuckyou="verymuch">
                 <i class="flag icon"></i></button>
+            {% if "account.view_all" in perm_list %}
             <button class="ui circular tiny inverted icon teal disabled tip button" data-content="日志">
                 <i class="unordered list icon"></i>
             </button>
+            {% endif %}
         {% endif %}
     </td>
 </tr>
