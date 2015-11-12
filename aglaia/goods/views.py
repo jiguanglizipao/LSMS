@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, render_to_response
 from django.http import Http404, HttpResponseRedirect, HttpResponse
@@ -1010,7 +1011,6 @@ def do_find_back(request):
         if not sgl.status == LOST_KEY:
             return show_message(
                 request, 'The goods cannot be find back!')
-
         packed_update_single(
             request, id, {
                 'status': AVALIABLE_KEY}, log=get_good_findback_log())

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from aglaia.mail_tools import *
 
 from account.views import get_context_user
@@ -575,8 +576,14 @@ def do_destroyed_comp(request):
         post = request.POST
         id = post['id']
         comp = Computing.objects.get(id=id)
+        message = Message(comp.note)
+        message.append({'direction': 'Recv',
+                        'info_type': '',
+                        'user_name': request.user.username,
+                        'text': '该计算资源已被管理员强制收回'})
+        note = message.tostring()
         packed_update_computing(request, id, {
-            'status': DESTROYED_KEY}, log=get_comp_destroyed_log())
+            'status': DESTROYED_KEY,'note':note}, log=get_comp_destroyed_log())
         return HttpResponseRedirect(
             reverse('computing.views.show_comp_verify'))
     except Exception as e:
@@ -593,8 +600,14 @@ def do_destroying_comp(request):
         post = request.POST
         id = post['id']
         comp = Computing.objects.get(id=id)
+        message = Message(comp.note)
+        message.append({'direction': 'Recv',
+                        'info_type': '',
+                        'user_name': request.user.username,
+                        'text': '该计算资源即将被收回，请尽快备份重要数据！'})
+        note = message.tostring()
         packed_update_computing(request, id, {
-            'status': DESTROYING_KEY}, log=get_comp_destroying_log())
+            'status': DESTROYING_KEY,'note':note}, log=get_comp_destroying_log())
         send_user_mail(
             comp.account,
             'Aglaia Item Notify',
