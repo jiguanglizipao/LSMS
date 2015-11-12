@@ -111,6 +111,8 @@ def show_log(request):
         return show_message(request, 'Show log Error: ' + e.__str__())
 
 
+@method_required('GET')
+@permission_required(PERM_NORMAL)
 def show_message_center(request):
     account = Account.objects.get(user=request.user)
     brws = packed_find_borrow(request, {'account': account}, {})

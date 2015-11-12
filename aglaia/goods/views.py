@@ -639,7 +639,7 @@ def do_return_repair(request):
 
 
 @method_required('POST')
-@permission_required(PERM_GOODS_AUTH)
+@permission_required(PERM_NORMAL)
 def do_user_finish_repair(request):
     try:
         id = request.POST['id']
@@ -655,7 +655,7 @@ def do_user_finish_repair(request):
                 request, 'This Request is not in a borrowed status!')
 
         message = Message(brw.note)
-        message.append({'direction': 'Send', 'info_type': '',
+        message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
 
         packed_update_borrow(request,
@@ -674,7 +674,7 @@ def do_user_finish_repair(request):
 
 
 @method_required('POST')
-@permission_required(PERM_GOODS_AUTH)
+@permission_required(PERM_NORMAL)
 def do_user_update_repair(request):
     try:
         id = request.POST['id']
@@ -690,7 +690,7 @@ def do_user_update_repair(request):
                 request, 'This Request is not in a borrowed status!')
 
         message = Message(brw.note)
-        message.append({'direction': 'Send', 'info_type': '',
+        message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
 
         packed_update_borrow(request,
@@ -746,7 +746,7 @@ def do_update_repair(request):
 
 
 @method_required('POST')
-@permission_required(PERM_NORMAL)
+@permission_required(PERM_GOODS_AUTH)
 def do_accept_apply_goods(request):
     try:
         id = request.POST['id']
@@ -773,7 +773,7 @@ def do_accept_apply_goods(request):
 
 
 @method_required('POST')
-@permission_required(PERM_NORMAL)
+@permission_required(PERM_GOODS_AUTH)
 def do_reject_apply_goods(request):
     try:
         id = request.POST['id']
