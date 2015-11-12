@@ -117,8 +117,20 @@ def show_message_center(request):
     account = Account.objects.get(user=request.user)
     brws = packed_find_borrow(request, {'account': account}, {})
     comps = packed_find_computing(request, {'account': account}, {})
-    goods = {}
+
+    if request.user.has_perm(GOODS_AUTH):
+        brws = packed_find_borrow(request, {}, {})
+    if request.user.has_perm(COMPUT_AUTH):
+        comps = packed_find_computing(request, {}, {})
+
+    brws = brws.order_by('single', '-id')
+
+    goods = dict()
+    brws_dic = dict()
     for brw in brws:
+        if brw.single.sn in brws_dic:
+            continue
+        brws_dic[brw.single.sn] = True
         sn = str(brw.single.sn).replace(" ", "")
         if sn not in goods:
             goods[sn] = {
@@ -151,7 +163,7 @@ def show_message_center(request):
         goodslist.append(goods[key])
     goodslist.sort(key=lambda tgood: tgood['id'])
 
-    compset = {}
+    compset = dict()
     for comp in comps:
         sn = str(comp.sn).replace(" ", "")
         if sn not in compset:
