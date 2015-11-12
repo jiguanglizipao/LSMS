@@ -495,6 +495,45 @@ $(function () {
     $('.reject-button').popup({
         on: 'click'
     });
+    $('.final-ultimate-approve-unique-button').click(function () {
+        $.ajax({
+            url: '{% url "computing.views.do_get_comp_prop" %}',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                id: $(this).attr('data-id'),
+            },
+        })
+            .done(function (prop) {
+                if (prop.retcode == 'denied') {
+                    alert('Denied!');
+                    return;
+                }
+                if (prop.server_type == 'real') {
+                    $('.res-modif .type .text').html('实体机');
+                    $('.res-modif .type input').val('real');
+                } else {
+                    $('.res-modif .type .text').html('虚拟机');
+                    $('.res-modif .type input').val('virtual');
+                }
+                $('.res-modif #id').val(prop.id);
+                $('.res-modif .sn input').val(prop.sn);
+                $('.res-modif .ip input').val(prop.ip);
+                $('.res-modif .cpu input').val(prop.cpu);
+                $('.res-modif .memory input').val(prop.memory);
+                $('.res-modif .disk input').val(prop.disk);
+                $('.res-modif .os input').val(prop.os);
+                $('.res-modif .disktype input').val(prop.disktype);
+                $('.res-modif .disktype .text').html(prop.disktype);
+                $('.res-modif .data_content input').val(prop.data_content);
+                if (!prop.flag) {
+                    $('.res-modif .data_content').hide();
+                }
+                $('.res-modif').modal('show');
+            }).failed(function () {
+                alert(':-(');
+            });
+    });
 });
 
 </script>

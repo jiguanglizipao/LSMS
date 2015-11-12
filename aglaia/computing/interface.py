@@ -228,8 +228,8 @@ def update_computing(computing_id, update_content):
             computing.status = update_content['status']
         if 'note' in update_content:
             note = update_content['note']
-            if (len(note) > 500):
-                raise FormatInvalidError("Format of note is invalid")
+            # if (len(note) > 500):
+            #     raise FormatInvalidError("Format of note is invalid")
             computing.note = note
         if 'address' in update_content:
             computing.address = update_content['address']
