@@ -136,7 +136,7 @@ def show_message_center(request):
             goods[sn] = {
                 'id': sn,
                 'name': brw.single.goods.name,
-                'user': brw.single.user_name,
+                'user': brw.account,
                 'type': brw.single.goods.gtype,
                 'msgs': [],
             }
