@@ -79,9 +79,9 @@ class Message:
 
     def setTime(self):
         self.root.set('time', time.strftime(
-                '%Y-%m-%d %H:%M:%S',
-                time.localtime(
-                    time.time())))
+            '%Y-%m-%d %H:%M:%S',
+            time.localtime(
+                time.time())))
 
     def getTime(self):
         return self.root.get('time')

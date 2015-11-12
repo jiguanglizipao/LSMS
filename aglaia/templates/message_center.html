@@ -32,13 +32,15 @@
                 </td>
             </tr>
             {% if brw.msgs %}
-            <th class={{ brw.id }} data-value="{{ brw.id }}" width="10%" hidden></th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" width="10%" hidden>▼</th>
+            <tr>
+                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="10%" hidden></th>
+                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
+                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
+                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
+                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="10%" hidden>▼</th>
+            </tr>
             {% for msg in brw.msgs %}
-            <tr class={{ brw.id }} data-value="{{ brw.id }}" hidden>
+            <tr class="{{ brw.id }}" data-value="{{ brw.id }}" hidden>
                 <td width="10%"></td>
                 <td width="20%">
                     {% if msg.direction == 'Send' %}
@@ -60,16 +62,93 @@
                 <td width="10%"> </td>
             </tr>
             {% endfor %}
-            <th class={{ brw.id }} data-value="{{ brw.id }}" width="10%" hidden> </th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-            <th class={{ brw.id }} data-value="{{ brw.id }}" width="10%" hidden>▲</th>
+            <tr>
+                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="10%" hidden> </th>
+                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
+                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
+                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
+                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="10%" hidden>▲</th>
+            </tr>
             {% endif %}
             {% endfor %}
 
         </table>
     </div>
+
+    <h2 class="ui header" style="margin-top:10px; margin-left:10px">计算资源消息列表</h2>
+
+    <div class="sixteen wide column">
+        <table class="ui small table">
+            <thead>
+            <tr>
+                <th width="10%">SN</th>
+                <th width="20%">资源类型</th>
+                <th width="30%">操作系统</th>
+                <th width="30%">是否含有重要资源</th>
+                <th width="10%">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for comp in complist %}
+            <tr>
+                <td>{{ comp.id }}</td>
+                <td>
+                    {% if comp.pc_type == 'v' %}虚拟机
+                    {% else %}实体机{% endif %}
+                </td>
+                <td>{{ comp.os }}</td>
+                <td>
+                    {% if comp.flag == 'False' %}不含有
+                    {% else %}含有{% endif %}
+                </td>
+                <td class="comps-sn" style="font-size:20px;">
+                    <span class="ui green mini button msg-button" data-value="true" id="{{ comp.id }}">显示消息</span>
+                </td>
+            </tr>
+            {% if comp.msgs %}
+            <tr>
+                <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden></th>
+                <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
+                <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
+                <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
+                <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▼</th>
+            </tr>
+            {% for msg in comp.msgs %}
+            <tr class="{{ comp.id }}" data-value="{{ comp.id }}" hidden>
+                <td width="10%"></td>
+                <td width="20%">
+                    {% if msg.direction == 'Send' %}
+                    <div style="color:Red; font-weight:bold;">{{ msg.associate }}</div>
+                    {% else %}
+                    <div style="color:Green; font-weight:bold;">{{ msg.associate }}</div>
+                    {% endif %}
+                </td>
+                <td width="30%">
+                    <div style="color:Blue; display:inline">{{ msg.time }}</div>
+                </td>
+                <td width="30%">
+                    {% if msg.flag == 'True' %}
+                        <span style="font-weight:bold;">{{ msg.text }}</span>
+                    {% else %}
+                        {{ msg.text }}
+                    {% endif %}
+                </td>
+                <td width="10%"> </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden> </th>
+                <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
+                <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
+                <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
+                <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▲</th>
+            </tr>
+            {% endif %}
+            {% endfor %}
+
+        </table>
+    </div>
+
 </div>
 
 {% endblock %}

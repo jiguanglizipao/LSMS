@@ -90,7 +90,7 @@ class Computing(models.Model):
     password = models.CharField(max_length=30)
     status = models.CharField(max_length=3, choices=STATUS_CHOICES)
     account = models.ForeignKey(Account)
-    note = models.CharField(max_length=500)
+    note = models.TextField(max_length=40000)
     address = models.CharField(max_length=30, blank=True)
     flag = models.BooleanField(default=False)
     data_content = models.CharField(max_length=500, blank=True)

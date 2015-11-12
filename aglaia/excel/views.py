@@ -7,6 +7,7 @@ from django.contrib.auth.models import *
 from django.contrib.auth.decorators import login_required
 from django.db import models
 
+
 from aglaia.settings import LOGIN_URL, ACCOUNT_HOME_URL, EMAIL_AUTH_PREFIX, USER_RETURN_MESSAGE, USER_MISS_MESSAGE
 from aglaia.views import get_context_list, no_excp_post, no_excp_get
 from aglaia.decorators import permission_required, method_required, http_denied, show_denied_message
@@ -19,6 +20,7 @@ from account.interface import *
 from computing.interface import *
 from goods.interface import *
 from aglaia.mail_tools import *
+
 
 from computing.views import get_context_computing, get_context_pack
 import json
@@ -500,7 +502,7 @@ def import_goods(request):
                 sn=request.POST['sn'],
                 goods=goods,
                 status=AVALIABLE_KEY,
-                note='',
+                note='管理员创建',
                 user_name='')
             single.save()
 
@@ -549,6 +551,9 @@ def import_computing(request):
             status = STATUS_CHOICES[request.POST['status']]
             pc_type = TYPE_CHOICES[request.POST['pc_type']]
             disk_type = DISK_CHOICES[request.POST['disk_type']]
+            message = Message()
+            message.append({'direction': 'Send', 'info_type': '',
+                            'user_name': request.POST['user'], 'text': '管理员创建'})
             computing = Computing(
                 pc_type=pc_type,
                 cpu=request.POST['cpu'],
@@ -566,7 +571,7 @@ def import_computing(request):
                 password=request.POST['password'],
                 status=status,
                 account=account,
-                note='',
+                note=message.tostring(),
                 address=request.POST['ip'],
                 flag=request.POST['flag'],
                 name=request.POST['name'],

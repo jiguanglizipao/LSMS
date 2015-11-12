@@ -756,7 +756,7 @@ def do_accept_apply_goods(request):
 
         if not apgd.status == GOODS_APPLY_KEY:
             return show_message(
-                request, 'This Request is not in a apply_goods apply satus!')
+                request, 'This Request is not in a apply_goods apply status!')
 
         packed_update_apply_goods(request, id,
                                   {'status': GOODS_APPLY_PEND_KEY, 'note': note},
@@ -1088,7 +1088,7 @@ def do_return_goods(request):
                 request, 'The good is not in a borrowed status!')
 
         message = Message(brw.note)
-        message.append({'direction': 'Send', 'info_type': '',
+        message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
 
         packed_update_borrow(request,

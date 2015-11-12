@@ -2,6 +2,7 @@ from aglaia.mail_tools import *
 
 from account.views import get_context_user
 from computing.interface import *
+from aglaia.message_center import Message
 
 
 # ===============================================
@@ -17,7 +18,7 @@ def get_context_computing(comp):
     dc['name'] = comp.name
     dc['status'] = comp.get_status_display()
     dc['package_name'] = comp.pack_name
-    dc['note'] = comp.note
+    dc['note'] = Message(comp.note).last()['text']
     dc['type'] = comp.get_pc_type_display()
     dc['cpu'] = comp.cpu
     dc['memory'] = comp.memory
@@ -109,6 +110,14 @@ def do_borrow_request(request):
         comp['note'] = post['reason']
         comp['flag'] = post['flag']
         comp['data_content'] = post['data_content']
+
+        message = Message()
+        message.append({'direction': 'Recv',
+                        'info_type': '',
+                        'user_name': request.user.username,
+                        'text': comp['note']})
+        comp['note'] = message.tostring()
+
         if 'name' in post:
             comp['name'] = post['name']
         else:
@@ -149,6 +158,14 @@ def do_modif_request(request):
         comp = Computing.objects.get(id=id)
         if not comp.status == BORROWED_KEY:
             return HttpResponse('denied')
+
+        message = Message(comp.note)
+        message.append({'direction': 'Recv',
+                        'info_type': '',
+                        'user_name': request.user.username,
+                        'text': post['reason']})
+        post['reason'] = message.tostring()
+
         packed_update_computing(request, id, {'status': MODIFY_APPLY_KEY, 'note': post[
             'reason']}, log=get_comp_modif_log())
         send_notify_mail(request, CompModfApplyMail, comp=comp)
@@ -172,6 +189,12 @@ def do_approve_borrow(request):
         addr = post['ip']
         if not comp.status == VERIFYING_KEY:
             return show_denied_message(request)
+
+        message = Message(comp.note)
+        message.append({'direction': 'Send', 'info_type': '',
+                        'user_name': request.user.username, 'text': note})
+        note = message.tostring()
+
         packed_update_computing(request, id,
                                 {'status': BORROWED_KEY,
                                  'note': note,
@@ -201,6 +224,12 @@ def do_disapprove_borrow(request):
         comp = Computing.objects.get(id=id)
         if not comp.status == VERIFYING_KEY:
             return show_denied_message(request)
+
+        message = Message(comp.note)
+        message.append({'direction': 'Send', 'info_type': '',
+                        'user_name': request.user.username, 'text': note})
+        note = message.tostring()
+
         packed_update_computing(
             request, id, {
                 'status': VERIFY_FAIL_KEY, 'note': note}, log=get_comp_disap_log())
@@ -225,6 +254,12 @@ def do_approve_return(request):
         comp = Computing.objects.get(id=id)
         if not comp.status == RETURNING_KEY:
             return show_denied_message(request)
+
+        message = Message(comp.note)
+        message.append({'direction': 'Send', 'info_type': '',
+                        'user_name': request.user.username, 'text': note})
+        note = message.tostring()
+
         packed_update_computing(
             request, id, {
                 'status': RETURNED_KEY, 'note': note}, log=get_comp_reted_log())
@@ -246,6 +281,14 @@ def do_approve_modify(request):
         comp = Computing.objects.get(id=id)
         if not comp.status == MODIFY_APPLY_KEY:
             return show_denied_message(request)
+
+        message = Message(comp.note)
+        message.append({'direction': 'Send',
+                        'info_type': '',
+                        'user_name': request.user.username,
+                        'text': post['note']})
+        post['note'] = message.tostring()
+
         dic = {}
         dic['status'] = BORROWED_KEY
         dic['note'] = post['note']
@@ -289,6 +332,12 @@ def do_disapprove_modify(request):
         comp = Computing.objects.get(id=id)
         if not comp.status == MODIFY_APPLY_KEY:
             return show_denied_message(request)
+
+        message = Message(comp.note)
+        message.append({'direction': 'Send', 'info_type': '',
+                        'user_name': request.user.username, 'text': note})
+        note = message.tostring()
+
         packed_update_computing(
             request, id, {
                 'status': BORROWED_KEY, 'note': note}, log=get_comp_rej_modf_log())
@@ -416,10 +465,6 @@ def show_comp_verify(request):
     packs = Package.objects.all()
     cont = {}
 
-    pack_list = get_context_list(packs, get_context_pack)
-    cont['package_list'] = pack_list
-    cont['package_num'] = len(pack_list)
-
     b_list = get_context_list(borrow, get_context_computing)
     cont['borrowing_list'] = b_list
     cont['borrowing_num'] = len(b_list)
@@ -444,7 +489,21 @@ def show_comp_verify(request):
     cont['backup_list'] = backup_list
     cont['backup_num'] = len(backup_list)
 
-    return render(request, 'calc_resource.html', cont)
+    return render(request, 'calc_verify.html', cont)
+
+def show_comp_manage(request):
+    packs = Package.objects.all()
+    cont = {}
+
+    pack_list = get_context_list(packs, get_context_pack)
+    cont['package_list'] = pack_list
+    cont['package_num'] = len(pack_list)
+
+    user = get_context_user(request.user)
+    cont['user'] = user
+    cont['perm_list'] = request.user.get_all_permissions()
+
+    return render(request, 'calc_manage.html', cont)
 
 
 @method_required('GET')
