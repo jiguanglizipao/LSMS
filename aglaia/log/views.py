@@ -150,8 +150,8 @@ def show_message_center(request):
             msg['time'] = message.index(i)["time"]
             msg['text'] = message.index(i)["text"]
             msg['flag'] = (message.getTime() < msg['time']).__str__()
-            # if msg['text']:
-            goods[sn]['msgs'].append(msg)
+            if msg['text']:
+                goods[sn]['msgs'].append(msg)
         message.setTime()
         brw.note = message.tostring()
         brw.save()
@@ -183,8 +183,8 @@ def show_message_center(request):
             msg['time'] = message.index(i)["time"]
             msg['text'] = message.index(i)["text"]
             msg['flag'] = (message.getTime() < msg['time']).__str__()
-            # if msg['text']:
-            compset[sn]['msgs'].append(msg)
+            if msg['text']:
+                compset[sn]['msgs'].append(msg)
         message.setTime()
         comp.note = message.tostring()
         comp.save()

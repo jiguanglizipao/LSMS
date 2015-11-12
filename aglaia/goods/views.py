@@ -255,6 +255,8 @@ def do_accept_borrow(request):
         if not brw.single.status == AVALIABLE_KEY:
             return show_message(request, 'The good is not avaliable!')
 
+        if note == '':
+            note = get_accept_brw_log()
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -282,6 +284,8 @@ def do_reject_borrow(request):
             return show_message(
                 request, 'This Request is not under verifying!')
 
+        if note == '':
+            note = get_reject_brw_log(brw)
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -345,6 +349,8 @@ def do_accept_return(request):
             return show_message(
                 request, 'The good is not in a borrowed status!')
 
+        if note == '':
+            note = get_accept_ret_log()
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -418,6 +424,8 @@ def do_accept_repair(request):
             return show_message(
                 request, 'The good is not in a borrowed status!')
 
+        if note == "":
+            note = get_accept_repair_log()
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -451,6 +459,8 @@ def do_accept_destroy(request):
             return show_message(
                 request, 'The good is not in a borrowed status!')
 
+        if note == '':
+            note = get_accept_destroy_log()
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -487,6 +497,8 @@ def do_reject_repair(request):
             return show_message(
                 request, 'The good is not in a borrowed status!')
 
+        if note == '':
+            note = get_reject_repair_log()
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -520,6 +532,8 @@ def do_reject_destroy(request):
             return show_message(
                 request, 'The good is not in a borrowed status!')
 
+        if note == '':
+            note = get_reject_repair_log()
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -551,7 +565,8 @@ def do_start_repair(request):
         if not brw.single.status == BORROWED_KEY:
             return show_message(
                 request, 'The good is not in a borrowed status!')
-
+        if note == "":
+            note = get_good_repairing_log()
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -586,7 +601,9 @@ def do_finish_repair(request):
         if not (brw.single.status == REPAIRING_KEY):
             return show_message(
                 request, 'The good is not in a repairing status!')
-
+        
+        if note == "":
+            note = get_finish_repair_log()
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -620,6 +637,8 @@ def do_return_repair(request):
             return show_message(
                 request, 'The good is not in a repairing status!')
 
+        if note == "":
+            note = get_ret_repaired_log();
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -655,10 +674,12 @@ def do_user_finish_repair(request):
             return show_message(
                 request, 'This Request is not in a borrowed status!')
 
+        if note == "":
+            note = get_finish_repair_log()
         message = Message(brw.note)
         message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
-
+        
         packed_update_borrow(request,
                              id,
                              {'status': BORROWED_KEY,
@@ -928,7 +949,9 @@ def do_finish_lost(request):
         if not brw.single.status == BORROWED_KEY:
             return show_message(
                 request, 'The good is not in a borrowed status!')
-
+        
+        if note == "":
+            note = get_good_lost_log()
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -1053,6 +1076,8 @@ def do_borrow(request):
             return show_message(request, 'The good is not avaliable!')
         account = Account.objects.get(user=request.user)
 
+        if note == '':
+            note = get_brw_request_log()
         message = Message()
         message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -1062,7 +1087,7 @@ def do_borrow(request):
             status=BORROW_AUTHING_KEY,
             note=message.tostring(),
             account=account,
-            log=get_brw_requst_log())
+            log=get_brw_request_log())
 
         send_notify_mail(request, BrwRequstMail, borrow=brw)
 
@@ -1087,6 +1112,8 @@ def do_return_goods(request):
             return show_message(
                 request, 'The good is not in a borrowed status!')
 
+        if note == '':
+            note = get_ret_request_log()
         message = Message(brw.note)
         message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -1119,6 +1146,8 @@ def do_miss_goods(request):
             return show_message(
                 request, 'The good is not in a borrowed status!')
 
+        if note == '':
+            note = get_miss_request_log()
         message = Message(brw.note)
         message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -1151,6 +1180,8 @@ def do_destroy_goods(request):
             return show_message(
                 request, 'The good is not in a borrowed status!')
 
+        if note == '':
+            note = get_destroy_apply_log()
         message = Message(brw.note)
         message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -1187,6 +1218,8 @@ def do_repair_goods(request):
             return show_message(
                 request, 'The good is not in a borrowed status!')
 
+        if note == '':
+            note = get_repair_apply_log()
         message = Message(brw.note)
         message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': request.user.username, 'text': note})

@@ -46,7 +46,7 @@ def get_good_unvail_log(*args, **kwargs):
     return '置为不可用'
 
 
-def get_brw_requst_log(*args, **kwargs):
+def get_brw_request_log(*args, **kwargs):
     return '提出借用申请'
 
 
