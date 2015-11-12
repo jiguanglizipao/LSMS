@@ -183,8 +183,8 @@
         {% endif %}
         {% if "account.view_all" in perm_list %}
             <a href="{% url "account.views.show_all_accounts" %}" class="item">用户列表</a>
-            <a href="{% url "goods.views.show_borrow_list" %}" class="item">借还日志</a>
-            <a href="{% url "computing.views.show_computing_list" %}" class="item">计算日志</a>
+            <!--<a href="{% url "goods.views.show_borrow_list" %}" class="item">借还日志</a>-->
+            <!--<a href="{% url "computing.views.show_computing_list" %}" class="item">计算日志</a>-->
         {% endif %}
         {% if "account.goods_auth" in perm_list %}
             <a href="{% url "excel.views.index" %}" class="item">数据导入/导出</a>
