@@ -18,7 +18,6 @@ def get_context_computing(comp):
     dc['name'] = comp.name
     dc['status'] = comp.get_status_display()
     dc['package_name'] = comp.pack_name
-    dc['note'] = Message(comp.note).last()['text']
     dc['type'] = comp.get_pc_type_display()
     dc['cpu'] = comp.cpu
     dc['memory'] = comp.memory
@@ -33,6 +32,7 @@ def get_context_computing(comp):
     dc['flag'] = comp.flag
     dc['sn'] = comp.sn
     dc['data_content'] = comp.data_content
+    dc['note'] = Message(comp.note).last()['text']
     return dc
 
 
@@ -373,7 +373,7 @@ def do_create_package(request):
             dc['disk_type'] = MACHINE_KEY
         packed_create_package(request, dc)
         return HttpResponseRedirect(
-            reverse('computing.views.show_comp_verify'))
+            reverse('computing.views.show_comp_manage'))
     except Exception as e:
         return show_message(request, 'Creating package failed: ' + e.__str__())
 
@@ -387,7 +387,7 @@ def do_delete_package(request):
         pk = Package.objects.get(name=nm)
         packed_delete_package(request, pk.id)
         return HttpResponseRedirect(
-            reverse('computing.views.show_comp_verify'))
+            reverse('computing.views.show_comp_manage'))
     except Exception as e:
         return show_message(request, 'Delete package failed: ' + e.__str__())
 

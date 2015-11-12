@@ -6,6 +6,9 @@ from computing.models import *
 from computing.interface import *
 from account.models import Account
 from account.interface import *
+from goods.views import *
+from aglaia.message_center import *
+from aglaia.messages import *
 
 
 class TestTestCase(TestCase):
@@ -16,7 +19,14 @@ class TestTestCase(TestCase):
                    'real_name': 'rongyu', 'department': ['a lab', 'b lab'],
                    'tel': '12345678',
                    'status': 'test', 'school_id': '0123456789'}
-        create_user([account])
+        account = create_user([account])
+        account[0].user.user_permissions.add(
+            Permission.objects.get(codename="comput_auth"))
+        account[0].user.user_permissions.add(
+            Permission.objects.get(codename="normal"))
+        message = Message()
+        message.append({'direction': 'Recv', 'info_type': '',
+                        'user_name': 'normal', 'text': 'hello world'})
         computing1 = {'pc_type': 'p', 'cpu': 'core', 'memory': 1024,
                       'disk': 100, 'disk_type': 's', 'os': 'windows',
                       'sn': 'c1',
@@ -24,7 +34,7 @@ class TestTestCase(TestCase):
                       'expire_time': date.today() + timedelta(days=4),
                       'login': 'rongyu', 'password': 'rongyu',
                       'status': 'vi', 'account': Account.objects.get(id=1),
-                      'note': "what the fuck", 'address': '127.0.0.1', 'flag': 'True',
+                      'note': message.tostring(), 'address': '127.0.0.1', 'flag': 'True',
                       'data_content': "I'm important",
                       'name': 'comp1', 'pack_name': 'pack1'}
         computing2 = {'pc_type': 'p',
@@ -38,7 +48,7 @@ class TestTestCase(TestCase):
                       'password': 'yurong',
                       'status': 'vf',
                       'account': Account.objects.get(id=1),
-                      'note': "what the hell",
+                      'note': message.tostring(),
                       'address': '127.0.0.2',
                       'flag': False,
                       'data_content': "",
@@ -177,17 +187,20 @@ class TestTestCase(TestCase):
         self.assertEqual(computing.disk, 100)
         self.assertEqual(computing.disk_type, 's')
         self.assertEqual(computing.os, 'windows')
-        self.assertEqual(computing.sn, 'c1')
+        # self.assertEqual(computing.sn, 'c1')
         # self.assertEqual(computing.expire_time.year, 2014)
         # self.assertEqual(computing.expire_time.month, 11)
         # self.assertEqual(computing.expire_time.day, 21)
         self.assertEqual(computing.flag, True)
         computing = Computing.objects.get(id=2)
         self.assertEqual(computing.os, 'linux')
-        self.assertEqual(computing.sn, '')
+        # self.assertEqual(computing.sn, '')
         self.assertEqual(computing.status, 'vf')
         self.assertEqual(computing.account, Account.objects.get(id=1))
-        self.assertEqual(computing.note, "what the hell")
+        message = Message()
+        message.append({'direction': 'Recv', 'info_type': '',
+                        'user_name': 'normal', 'text': 'hello world'})
+        self.assertEqual(computing.note, message.tostring().decode())
         # self.assertEqual(computing.expire_time.year, 2014)
         # self.assertEqual(computing.expire_time.month, 11)
         # self.assertEqual(computing.expire_time.day, 22)
@@ -196,12 +209,15 @@ class TestTestCase(TestCase):
 
     def test_create_key_error(self):
         account = Account.objects.get(id=1)
+        message = Message()
+        message.append({'direction': 'Recv', 'info_type': '',
+                        'user_name': 'normal', 'text': 'hello world'})
         computing1 = {'pc_type': 'p', 'cpu': 'core', 'memory': 1024,
                       'disk': 100, 'disk_type': 's', 'os': 'win',
                       'expire_time': date(2014, 11, 1),
                       'logn': 'rongyu', 'password': 'rongyu',
                       'status': 'vi', 'account': account,
-                      'note': "what the fuck", 'address': '127.0.0.1'}
+                      'note': message.tostring(), 'address': '127.0.0.1'}
         self.assertRaises(KeyError, create_computing, [computing1])
         account = Account.objects.get(id=1)
         computing1 = {'pc_type': 'p', 'cpu': 'core', 'memory': 1024,
@@ -209,7 +225,7 @@ class TestTestCase(TestCase):
                       # 'expire_time': date(2014, 11, 1),
                       'login': 'rongyu', 'password': 'rongyu',
                       'status': 'vi', 'account': account,
-                      'note': "what the fuck", 'address': '127.0.0.1'}
+                      'note': message.tostring(), 'address': '127.0.0.1'}
         self.assertRaises(KeyError, create_computing, [computing1])
 
     def test_normal_filter(self):
@@ -232,12 +248,12 @@ class TestTestCase(TestCase):
         self.assertEqual(len(find_computing(filt, exclude)), 1)
         filt = {'os': 'mac os'}
         self.assertEqual(len(find_computing(filt, exclude)), 0)
-        filt = {'sn': 'c1'}
-        self.assertEqual(len(find_computing(filt, exclude)), 1)
-        filt = {'sn': ''}
-        self.assertEqual(len(find_computing(filt, exclude)), 1)
-        filt = {'sn': 'c2'}
-        self.assertEqual(len(find_computing(filt, exclude)), 0)
+        # filt = {'sn': 'c1'}
+        # self.assertEqual(len(find_computing(filt, exclude)), 1)
+        # filt = {'sn': ''}
+        # self.assertEqual(len(find_computing(filt, exclude)), 1)
+        # filt = {'sn': 'c2'}
+        # self.assertEqual(len(find_computing(filt, exclude)), 0)
         filt = {'address': '127.0.0.1'}
         self.assertEqual(len(find_computing(filt, exclude)), 1)
         filt = {'address': '127.0.0.2'}
@@ -260,12 +276,12 @@ class TestTestCase(TestCase):
         self.assertEqual(len(find_computing(filt, exclude)), 1)
         exclude = {'pc_type': 'q'}
         self.assertEqual(len(find_computing(filt, exclude)), 2)
-        exclude = {'sn': 'c1'}
-        self.assertEqual(len(find_computing(filt, exclude)), 1)
-        exclude = {'sn': ''}
-        self.assertEqual(len(find_computing(filt, exclude)), 1)
-        exclude = {'sn': 'c2'}
-        self.assertEqual(len(find_computing(filt, exclude)), 2)
+        # exclude = {'sn': 'c1'}
+        # self.assertEqual(len(find_computing(filt, exclude)), 1)
+        # exclude = {'sn': ''}
+        # self.assertEqual(len(find_computing(filt, exclude)), 1)
+        # exclude = {'sn': 'c2'}
+        # self.assertEqual(len(find_computing(filt, exclude)), 2)
         exclude = {'address': '127.0.0.1'}
         self.assertEqual(len(find_computing(filt, exclude)), 1)
         exclude = {'address': '127.0.0.2'}
@@ -436,7 +452,7 @@ class TestTestCase(TestCase):
         self.assertEqual(comput2.disk, 101)
         self.assertEqual(comput1.disk_type, 'm')
         self.assertEqual(comput1.os, 'mac os')
-        self.assertEqual(comput1.sn, 'c2')
+        # self.assertEqual(comput1.sn, 'c2')
         self.assertEqual(comput2.expire_time.year, 2015)
         self.assertEqual(comput1.expire_time.month, 12)
         self.assertEqual(comput2.expire_time.day, 3)
@@ -533,58 +549,281 @@ class TestTestCase(TestCase):
 
     #Test Goods View
 
+    #Borrow
+    def test_do_borrow_request(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+
+        dic = {}
+        dic['package'] = 'package1'
+        dic['login'] = 'rongyu'
+        dic['initial_password'] = 'rongyu'
+        dic['reason'] = 'I want it'
+        dic['flag'] = 'true'
+        dic['data_content'] = 'rescue human'
+
+        correct = self.manager.post(
+            reverse('computing.views.do_borrow_request'),
+            dic
+        )
+        self.assertEqual(correct.content.decode(), 'ok')
+
+        dic['package'] = 'package2'
+        correct = self.manager.post(
+            reverse('computing.views.do_borrow_request'),
+            dic
+        )
+        self.assertEqual(correct.content.decode(), 'ok')
+
+        dic['name'] = 'answer42'
+        correct = self.manager.post(
+            reverse('computing.views.do_borrow_request'),
+            dic
+        )
+        self.assertEqual(correct.content.decode(), 'ok')
+
+        dic['package'] = 'none'
+        dic['type'] = 'real'
+        dic['cpu'] = 'core'
+        dic['memory'] = 8
+        dic['disk'] = 1024
+        dic['disk_type'] = 'SSD'
+        dic['os'] = 'windows'
+        correct = self.manager.post(
+            reverse('computing.views.do_borrow_request'),
+            dic
+        )
+        self.assertEqual(correct.content.decode(), 'ok')
+
+        dic['type'] = 'virtual'
+        correct = self.manager.post(
+            reverse('computing.views.do_borrow_request'),
+            dic
+        )
+        self.assertEqual(correct.content.decode(), 'ok')
+
+        dic['disk_type'] = 'HDD'
+        correct = self.manager.post(
+            reverse('computing.views.do_borrow_request'),
+            dic
+        )
+        self.assertEqual(correct.content.decode(), 'ok')
+    def test_do_return_request(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+
+        message = Message()
+        message.append({'direction': 'Recv', 'info_type': '',
+                        'user_name': 'normal', 'text': 'hello world'})
+        computing3 = {'pc_type': 'p',
+                      'cpu': 'core',
+                      'memory': 1024,
+                      'disk': 100,
+                      'disk_type': 's',
+                      'os': 'linux',
+                      'expire_time': date.today() + timedelta(days=5),
+                      'login': 'yurong',
+                      'password': 'yurong',
+                      'status': 'bo',
+                      'account': Account.objects.get(id=1),
+                      'note': message.tostring(),
+                      'address': '127.0.0.2',
+                      'flag': False,
+                      'data_content': "",
+                      'name': 'comp3',
+                      'pack_name': 'pack2'}
+        create_computing([computing3])
+
+        dic = {}
+        comp = Computing.objects.get(name='comp1')
+        dic['id'] = comp.id
+        correct = self.manager.post(
+            reverse('computing.views.do_return_request'),
+            dic
+        )
+        self.assertEqual(correct.content.decode(), 'denied')
+        comp = Computing.objects.get(name='comp3')
+        dic['id'] = comp.id
+        correct = self.manager.post(
+            reverse('computing.views.do_return_request'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('goods.views.show_borrow'))
+        delete_computing(comp.id)
+    def test_do_approve_borrow(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+        dic = {}
+        comp = Computing.objects.get(name='comp1')
+        message = Message()
+        message.append({'direction': 'Recv', 'info_type': '',
+                        'user_name': 'normal', 'text': 'hello world'})
+        dic['id'] = comp.id
+        dic['login'] = 'yefang0326'
+        dic['initial_password'] = 'yefang0326'
+        dic['note'] = message.tostring()
+        dic['sn'] = comp.sn
+        dic['ip'] = '127.0.0.1'
+        correct = self.manager.post(
+            reverse('computing.views.do_approve_borrow'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('computing.views.show_comp_verify'))
+
+    def test_do_modif_request(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+        message = Message()
+
+        message.append({'direction': 'Recv', 'info_type': '',
+                        'user_name': 'normal', 'text': 'hello world'})
+        computing3 = {'pc_type': 'p',
+                      'cpu': 'core',
+                      'memory': 1024,
+                      'disk': 100,
+                      'disk_type': 's',
+                      'os': 'linux',
+                      'expire_time': date.today() + timedelta(days=5),
+                      'login': 'yurong',
+                      'password': 'yurong',
+                      'status': 'bo',
+                      'account': Account.objects.get(id=1),
+                      'note': message.tostring(),
+                      'address': '127.0.0.2',
+                      'flag': False,
+                      'data_content': "",
+                      'name': 'comp3',
+                      'pack_name': 'pack2'}
+        create_computing([computing3])
+
+        dic = {}
+        comp = Computing.objects.get(name='comp1')
+        dic['id'] = comp.id
+        dic['reason'] = 'Shadow fiend comes, and I have to escape'
+        correct = self.manager.post(
+            reverse('computing.views.do_modif_request'),
+            dic
+        )
+        self.assertEqual(correct.content.decode(), 'denied')
+        comp = Computing.objects.get(name='comp3')
+        dic['id'] = comp.id
+        correct = self.manager.post(
+            reverse('computing.views.do_modif_request'),
+            dic
+        )
+        self.assertEqual(correct.content.decode(), 'ok')
+        delete_computing(comp.id)
+
+    #Flag
+    def test_do_set_flag(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+        comp = Computing.objects.get(name='comp1')
+        dic = {}
+        dic['id'] = comp.id
+        dic['flag'] = 'true'
+        dic['content'] = 'very very important'
+        correct = self.manager.post(
+            reverse('computing.views.do_set_flag'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('goods.views.show_borrow'))
+        dic['flag'] = 'false'
+        correct = self.manager.post(
+            reverse('computing.views.do_set_flag'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('goods.views.show_borrow'))
+
     #Package
     def test_do_package_create(self):
         self.manager = Client()
         self.assertTrue(
-            self.manager.login(username='manager', password='123456'))
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+        pack1 = {
+            'name':'pack_test',
+            'cpu':'core',
+            'memory':10,
+            'disk':200,
+            'os':'windows',
+            'type':'real',
+            'disktype':'SSD'
+        }
 
         dic = {}
-        note = 'testnote'
-        dic['name'] = self.computing1.name
-        dic['cpu'] = self.computing1.cpu
-        dic['memory'] = self.computing1.memory
-        dic['disk'] = self.computing1.disk
-        dic['os'] = self.computing1.os
-        dic['type'] = 'real'
-        dic['disk_type'] = 'SSD'
-        dic['os'] = self.computing.os
-        dic['sn'] = self.computing.sn
-        dic['expire_time'] = self.computing.expire_time
-        dic['login'] = self.computing.login
-        dic['password'] = self.computing.password
-        dic['status'] = self.computing.status
-        dic['account'] = self.computing.account
-        dic['note'] = self.computing.note
-        dic['address'] = self.computing.address
-        dic['flag'] = self.computing.flag
-        dic['data_content'] = self.computing.data_content
-        dic['pack_name'] = self.computing.pack_name
+        dic['name'] = pack1['name']
+        dic['cpu'] = pack1['cpu']
+        dic['memory'] = pack1['memory']
+        dic['disk'] = pack1['disk']
+        dic['os'] = pack1['os']
+        dic['type'] = pack1['type']
+        dic['disktype'] = pack1['disktype']
 
         correct = self.manager.post(
             reverse('computing.views.do_create_package'),
             dic
         )
-        self.assertRedirects(correct, reverse('computing.views.show_comp_verify'))
+        self.assertRedirects(correct, reverse('computing.views.show_comp_manage'))
 
+        dic['type'] = 'virtual'
 
-        # b2 = Borrow.objects.get(id=self.b1.id)
-        # self.assertEqual(b2.status, BORROWED_KEY)
-        # self.assertEqual(Message(b2.note).last()['text'], note)
-        #
+        correct = self.manager.post(
+            reverse('computing.views.do_create_package'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('computing.views.show_comp_manage'))
+
         # wrong_brw = self.manager.post(
         #     reverse('goods.views.do_reject_destroy'),
         #     dic
         # )
         # self.assertIsMessage(wrong_brw,
-        #                      'This Request is not in a destroy apply status!')
-        #
-        # update_borrow(self.b1.id, {'status': DESTROY_APPLY_KEY})
-        # update_single(self.s1.id, {'status': LOST_KEY})
-        #
-        # wrong_sgl = self.manager.post(
-        #     reverse('goods.views.do_reject_destroy'),
-        #     dic
-        # )
-        # self.assertIsMessage(
-        #     wrong_sgl, 'The good is not in a borrowed status!')
+        #                      '')
+    def test_do_package_get(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+        dic = {}
+        dic['name'] = 'package1'
+
+        correct = self.manager.post(
+            reverse('computing.views.do_get_package'),
+            dic
+        )
+        p = Package.objects.get(name='package1')
+        d = get_context_pack(p)
+        self.assertEqual(correct.content.decode(),json.dumps(d))
+
+    def test_do_package_delete(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(
+                username='rongyu',
+                password='rongyu'))
+        dic = {}
+        dic['name'] = 'package2'
+
+        correct = self.manager.post(
+            reverse('computing.views.do_delete_package'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('computing.views.show_comp_manage'))

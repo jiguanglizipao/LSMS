@@ -196,7 +196,6 @@ def update_computing(computing_id, update_content):
                     'password', 'status', 'note', 'address', 'flag',
                     'name', 'data_content']
     for key in update_content:
-        print('key:' + key)
         if not (key in correct_keys):
             raise KeyError("The key: %s is wrong", key)
     computing = None
