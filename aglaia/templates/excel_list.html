@@ -47,6 +47,7 @@
     </tbody>
 </table>
 <div class="ui right aligned basic segment">
+    <input id="goods-all" type="button" class="ui blue button" value="全部选择">
     <input id="goods-btn" type="button" class="ui positive button" value="提交修改">
 </div>
 <!--<div class="ui right aligned basic segment">-->
@@ -130,6 +131,7 @@
     </tbody>
 </table>
 <div class="ui right aligned basic segment">
+    <input id="computing-all" type="button" class="ui blue button" value="全部选择">
     <input id="computing-btn" type="button" class="ui positive button" value="提交修改">
 </div>
 <!--<div class="ui right aligned basic segment">-->
@@ -141,6 +143,8 @@
 <script>
 function Loaded(){
 	$('.config-detail').popup({
+        inline   : true,
+        position : 'bottom left',
 		on: 'hover'
 	});
 	var repeatGoodsSn = new Array();
@@ -323,6 +327,16 @@ function Loaded(){
                 });
             }
         {% endfor %}
+    });
+    $("#goods-all").on("click",function(){
+		{% for goods in goods_list %}
+			$("#goods-checkbox-{{goods.id}}").delay(1000).attr("checked",'true');
+		{% endfor %}
+    });
+    $("#computing-all").on("click",function(){
+		{% for computing in computing_list %}
+			$("#computing-checkbox-{{computing.id}}").delay(1000).attr("checked",'true');
+		{% endfor %}
     });
 }
 </script>
