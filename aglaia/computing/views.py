@@ -464,6 +464,7 @@ def show_comp_verify(request):
 
     packs = Package.objects.all()
     cont = {}
+    cont['curpage'] = 'comp_verify'
 
     b_list = get_context_list(borrow, get_context_computing)
     cont['borrowing_list'] = b_list
@@ -491,9 +492,11 @@ def show_comp_verify(request):
 
     return render(request, 'calc_verify.html', cont)
 
+
 def show_comp_manage(request):
     packs = Package.objects.all()
     cont = {}
+    cont['curpage'] = 'comp_manage'
 
     pack_list = get_context_list(packs, get_context_pack)
     cont['package_list'] = pack_list
