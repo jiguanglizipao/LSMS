@@ -868,14 +868,14 @@ def do_input_apply_goods(request):
         apgd = Apply_Goods.objects.get(id=id)
 
         if packed_find_single(request, {'sn': sn}, {}):
-            raise Exception("sn already exists")
+            raise Exception("SN already exists! Please specify a different one.")
         tp = packed_find_gtypes(request, type_name)
 
         pnsr = apgd.pro_names.split(sep)
         pnsr.remove('')
 
         if tp and tp[0].get_all_pros() != pnsr:
-            raise Exception("type cannot use this name")
+            raise Exception("Type name already in use! Please specify a different one.")
         if not apgd.status == FINISH_GOODS_APPLY_KEY:
             return show_message(
                 request, "This Request is not in a apply_goods finish status!")

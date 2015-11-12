@@ -482,6 +482,21 @@
 <div class="ui divider"></div>
 {% endif %}
 
+{% endblock %}
 
+{% block js %}
+
+<script type="text/javascript">
+
+$(function () {
+    $('.agree-button').popup({
+        on: 'click'
+    });
+    $('.reject-button').popup({
+        on: 'click'
+    });
+});
+
+</script>
 
 {% endblock %}

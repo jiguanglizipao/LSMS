@@ -373,7 +373,7 @@ def do_create_package(request):
             dc['disk_type'] = MACHINE_KEY
         packed_create_package(request, dc)
         return HttpResponseRedirect(
-            reverse('computing.views.show_comp_verify'))
+            reverse('computing.views.show_comp_manage'))
     except Exception as e:
         return show_message(request, 'Creating package failed: ' + e.__str__())
 
