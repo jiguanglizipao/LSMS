@@ -151,8 +151,7 @@
             {% endif %}
         {% endif %}
 
-
-
+        {% if "account.view_all" in perm_list %}
         <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
             <input type="hidden" name="id" value="{{ item.id }}">
             <input type="hidden" name="type" value="borrow">
@@ -160,5 +159,6 @@
                 <i class="unordered list icon"></i>
             </button>
         </form>
+        {% endif %}
     </td>
 </tr>

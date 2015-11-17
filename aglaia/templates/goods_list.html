@@ -204,10 +204,12 @@
                         </form>
                         {% endif %}
                     </td>
+                    {% if "account.goods_auth" in perm_list %}
                     <td>
                         <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
                              data-content="选择"><i class="icon star sign"></i></div>
                     </td>
+                    {% endif %}
                 </tr>
             {% elif goods.status == "borrowed" %}
                 <tr>
@@ -250,10 +252,12 @@
                         </form>
                         {% endif %}
                     </td>
+                    {% if "account.goods_auth" in perm_list %}
                     <td>
                         <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
                              data-content="选择"><i class="icon star sign"></i></div>
                     </td>
+                    {% endif %}
                 </tr>
             {% elif goods.status == "destroyed" %}
                 <tr class="disabled">
@@ -296,10 +300,12 @@
                         </form>
                         {% endif %}
                     </td>
+                    {% if "account.goods_auth" in perm_list %}
                     <td>
                         <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
                              data-content="选择"><i class="icon star sign"></i></div>
                     </td>
+                    {% endif %}
                 </tr>
             {% elif goods.status == "lost" %}
                 <tr>
@@ -344,10 +350,12 @@
                         </form>
                         {% endif %}
                     </td>
+                    {% if "account.goods_auth" in perm_list %}
                     <td>
                         <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
                              data-content="选择"><i class="icon star sign"></i></div>
                     </td>
+                    {% endif %}
                 </tr>
             {% elif goods.status == "repairing" %}
                 <tr>
@@ -390,10 +398,12 @@
                         </form>
                         {% endif %}
                     </td>
+                    {% if "account.goods_auth" in perm_list %}
                     <td>
                         <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
                               data-content="选择"><i class="icon star sign"></i></div>
                     </td>
+                    {% endif %}
                 </tr>
             {% endif %}
         {% endfor %}
