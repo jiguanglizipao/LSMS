@@ -14,7 +14,10 @@ from django.contrib.auth.decorators import login_required
 
 
 def show_message(request, msg):
-    return render(request, "message.html", {'message': msg})
+    return render(request, "message.html", {
+        'message': msg,
+        'perm_list':request.user.get_all_permissions(),
+    })
 
 
 def get_context_list(obj_list, func):
