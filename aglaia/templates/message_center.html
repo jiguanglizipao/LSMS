@@ -24,7 +24,11 @@
             {% for brw in goods %}
             <tr>
                 <td>{{ brw.id }}</td>
-                <td>{{ brw.name }}</td>
+                <td>{{ brw.name }}
+                {% if brw.newMessage %}
+                    <div class="ui red label">新消息</div>&nbsp;
+                {% endif %}
+                </td>
                 <td>{{ brw.type }}</td>
                 <td>{{ brw.user }}</td>
                 <td class="goods-sn" style="font-size:20px;">
@@ -95,6 +99,9 @@
                 <td>
                     {% if comp.pc_type == 'v' %}虚拟机
                     {% else %}实体机{% endif %}
+                    {% if comp.newMessage %}
+                        <div class="ui red label">新消息</div>&nbsp;
+                    {% endif %}
                 </td>
                 <td>{{ comp.os }}</td>
                 <td>

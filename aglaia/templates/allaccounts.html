@@ -36,15 +36,15 @@
         <!--</td>-->
         <td>
           {% if account.type == 'normal' %}
-            <div class="ui label">普通用户</div>&nbsp;
+            <div class="ui blue label">普通用户</div>&nbsp;
           {% elif account.type == 'manager' %}
-            <div class="ui label">管理员</div>&nbsp;
+            <div class="ui orange label">管理员</div>&nbsp;
           {% elif account.type == 'supervisor' %}
-            <div class="ui label">超级管理员</div>&nbsp;
+            <div class="ui purple label">超级管理员</div>&nbsp;
           {% elif account.type == 'none' %}
             <div class="ui label">无权限</div>&nbsp;
           {% else%}
-            <div class="ui label">特殊管理员</div>&nbsp;
+            <div class="ui green label">特殊管理员</div>&nbsp;
           {% endif %}
           {{ account.username }}
         </td>

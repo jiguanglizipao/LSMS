@@ -162,6 +162,14 @@ def show_message_center(request):
     for key in goods:
         goodslist.append(goods[key])
     goodslist.sort(key=lambda tgood: tgood['id'])
+    for goodsItem in goodslist:
+        if len(goodsItem['msgs']) == 0:
+            goodsItem['newMessage'] = False
+        else:
+            if goodsItem['msgs'][0]['flag'] == 'True':
+                goodsItem['newMessage'] = True
+            else:
+                goodsItem['newMessage'] = False
 
     compset = dict()
     for comp in comps:
@@ -194,8 +202,17 @@ def show_message_center(request):
     complist = []
     for key in compset:
         complist.append(compset[key])
+
     complist.sort(key=lambda tcomp: tcomp['id'])
 
+    for compItem in complist:
+        if len(compItem['msgs']) == 0:
+            compItem['newMessage'] = False
+        else:
+            if compItem['msgs'][0]['flag'] == 'True':
+                compItem['newMessage'] = True
+            else:
+                compItem['newMessage'] = False
     cont = {
         'curpage': 'message_center',
         'user': get_context_user(request.user),
