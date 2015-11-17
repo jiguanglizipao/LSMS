@@ -8,6 +8,9 @@
 
 <div class="ui page grid">
   <div class="sixteen wide column">
+    {% ifequal is_empty True %}
+        <div align="center" style="font-size:20px">该物品暂无日志可显示</div>
+    {% else %}
     <table class="ui small table">
       <thead>
         <tr>
@@ -30,6 +33,7 @@
         {% endfor %}
       </tbody>
     </table>
+    {% endifequal %}
   </div>
 </div>
 

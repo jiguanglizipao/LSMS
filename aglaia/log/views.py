@@ -95,20 +95,24 @@ log_list_func = {
 @method_required('GET')
 @permission_required(PERM_VIEW_ALL)
 def show_log(request):
-    try:
+    # try:
         g = request.GET
         is_actor = None
         if 'is_actor' in g:
             is_actor = g['is_actor']
         llist = log_list_func[g['type']](g['id'], is_actor)
-
+        if len(llist) == 0:
+            is_empty = True
+        else:
+            is_empty = False
         return render(request, 'log.html', {
             'user': get_context_user(request.user),
             'logs': llist,
+            'is_empty': is_empty,
             'perm_list': request.user.get_all_permissions()
         })
-    except Exception as e:
-        return show_message(request, 'Show log Error: ' + e.__str__())
+    # except Exception as e:
+    #     return show_message(request, 'Show log Error: ' + e.__str__())
 
 
 @method_required('GET')
