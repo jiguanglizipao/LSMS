@@ -84,8 +84,10 @@ def check_type(account):
         account.save()
         return
     type_normal = True  # 判断是否为普通用户
-    for perm in normal_perms:
-        if not account.user.has_perm('account.' + perm.lower()):
+    for perm in super_perms:
+        if account.user.has_perm('account.' + perm.lower()) and not perm in normal_perms:
+            type_normal = False
+        if not account.user.has_perm('account.' + perm.lower()) and perm in normal_perms:
             type_normal = False
     if type_normal:
         account.type = "normal"
