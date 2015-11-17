@@ -158,8 +158,8 @@
                     </td>
                     {% if "account.goods_auth" in perm_list %}
                     <td>
-                        <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
-                             data-content="选择"><i class="icon star sign"></i></div>
+                        <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
+                             <!--data-content="选择"><i class="icon star sign"></i></div>-->
                     </td>
                     {% endif %}
                 </tr>
@@ -206,8 +206,8 @@
                     </td>
                     {% if "account.goods_auth" in perm_list %}
                     <td>
-                        <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
-                             data-content="选择"><i class="icon star sign"></i></div>
+                        <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
+                             <!--data-content="选择"><i class="icon star sign"></i></div>-->
                     </td>
                     {% endif %}
                 </tr>
@@ -302,8 +302,8 @@
                     </td>
                     {% if "account.goods_auth" in perm_list %}
                     <td>
-                        <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
-                             data-content="选择"><i class="icon star sign"></i></div>
+                        <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
+                             <!--data-content="选择"><i class="icon star sign"></i></div>-->
                     </td>
                     {% endif %}
                 </tr>
@@ -352,8 +352,8 @@
                     </td>
                     {% if "account.goods_auth" in perm_list %}
                     <td>
-                        <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
-                             data-content="选择"><i class="icon star sign"></i></div>
+                        <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
+                             <!--data-content="选择"><i class="icon star sign"></i></div>-->
                     </td>
                     {% endif %}
                 </tr>
@@ -510,7 +510,8 @@
             });
             $('.choose-mail').click(function () {
                 if($(this).attr('data-value')=='false'){
-                    if($(this).parent().parent().children('.good-status').attr('data-value')=='borrowed'){
+                    if($(this).parent().parent().children('.good-status').attr('data-value')=='borrowed'
+                    || $(this).parent().parent().children('.good-status').attr('data-value')=='repairing'){
                         $(this).attr('data-value','true');
                         $(this).parent().parent().css("background-color","#C8C8E3");
                     }
@@ -521,14 +522,19 @@
                 }
             });
             $('.send-mail').click(function () {
-                $('.modal#mail-action').modal('show');
                 var ans = "";
+                var chooseFlag = false;
                 for(var i=0;i<$('.choose-mail').length;++i){
                     if($($('.choose-mail')[i]).attr('data-value')=='true'){
                         ans += $($('.choose-mail')[i]).parent().parent().children().children('.goods-id').text();
                         ans += "&";
+                        chooseFlag = true;
                     }
                 }
+                if(chooseFlag)
+                    $('.modal#mail-action').modal('show');
+                else
+                    alert('请先通过选择按钮选中对应物资！');
                 $('.mail-targets').attr('value',ans);
             });
             $('.borrow-goods').popup({
