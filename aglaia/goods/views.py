@@ -898,7 +898,7 @@ def do_input_apply_goods(request):
         tp = packed_find_gtypes(request, type_name)
 
         pnsr = apgd.pro_names.split(sep)
-        pnsr.remove('')
+        pnsr.pop()
 
         if tp and tp[0].get_all_pros() != pnsr:
             raise Exception("Type name already in use! Please specify a different one.")

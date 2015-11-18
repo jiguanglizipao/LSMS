@@ -2,7 +2,7 @@ from django.test import *
 from django.contrib.auth.models import *
 
 from django.shortcuts import render, render_to_response
-from django.http import Http404, HttpResponseRedirect, HttpResponse, HttpRequest
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import *
