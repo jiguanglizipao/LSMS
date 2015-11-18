@@ -833,7 +833,7 @@ def do_start_apply_goods(request):
 
         if not apgd.status == GOODS_APPLY_PEND_KEY:
             return show_message(
-                request, "This Request is not in a apply_goods apply status!")
+                request, "This Request is not in a apply_goods pend status!")
 
         packed_update_apply_goods(request, id,
                                   {'status': GOODS_APPLYING_KEY, 'note': note},
@@ -845,7 +845,7 @@ def do_start_apply_goods(request):
     except Exception as e:
         return show_message(
             request,
-            'Reject Apply_Goods failed: ' +
+            'Pend Apply_Goods failed: ' +
             e.__str__())
 
 
@@ -860,7 +860,7 @@ def do_finish_apply_goods(request):
 
         if not apgd.status == GOODS_APPLYING_KEY:
             return show_message(
-                request, "This Request is not in a apply_goods apply status!")
+                request, "This Request is not in a apply_goods ongoing status!")
 
         packed_update_apply_goods(request, id,
                                   {'status': FINISH_GOODS_APPLY_KEY, 'note': note},
@@ -873,7 +873,7 @@ def do_finish_apply_goods(request):
     except Exception as e:
         return show_message(
             request,
-            'Reject Apply_Goods failed: ' +
+            'Finish Apply_Goods failed: ' +
             e.__str__())
 
 
@@ -888,6 +888,10 @@ def do_input_apply_goods(request):
         note = request.POST['note']
 
         apgd = Apply_Goods.objects.get(id=id)
+
+        if not apgd.status == FINISH_GOODS_APPLY_KEY:
+            return show_message(
+                request, "This Request is not in a apply_goods finish status!")
 
         if packed_find_single(request, {'sn': sn}, {}):
             raise Exception("SN already exists! Please specify a different one.")
