@@ -48,6 +48,7 @@
 </table>
 <div class="ui right aligned basic segment">
     <input id="goods-all" type="button" class="ui blue button" value="全部选择">
+    <input id="goods-clear" type="button" class="ui purple button" value="取消选择">
     <input id="goods-btn" type="button" class="ui positive button" value="提交修改">
 </div>
 <!--<div class="ui right aligned basic segment">-->
@@ -132,6 +133,7 @@
 </table>
 <div class="ui right aligned basic segment">
     <input id="computing-all" type="button" class="ui blue button" value="全部选择">
+    <input id="computing-clear" type="button" class="ui purple button" value="取消选择">
     <input id="computing-btn" type="button" class="ui positive button" value="提交修改">
 </div>
 <!--<div class="ui right aligned basic segment">-->
@@ -330,12 +332,22 @@ function Loaded(){
     });
     $("#goods-all").on("click",function(){
 		{% for goods in goods_list %}
-			$("#goods-checkbox-{{goods.id}}").delay(1000).attr("checked",'true');
+			$("#goods-checkbox-{{goods.id}}").delay(1000).prop("checked",true);
 		{% endfor %}
     });
     $("#computing-all").on("click",function(){
 		{% for computing in computing_list %}
-			$("#computing-checkbox-{{computing.id}}").delay(1000).attr("checked",'true');
+			$("#computing-checkbox-{{computing.id}}").delay(1000).prop("checked",true);
+		{% endfor %}
+    });
+    $("#goods-clear").on("click",function(){
+		{% for goods in goods_list %}
+			$("#goodsc-checkbox-{{goods.id}}").delay(1000).prop("checked",false);
+		{% endfor %}
+    });
+    $("#computing-clear").on("click",function(){
+		{% for computing in computing_list %}
+			$("#computing-checkbox-{{computing.id}}").delay(1000).prop("checked",false);
 		{% endfor %}
     });
 }
