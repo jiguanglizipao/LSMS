@@ -9,7 +9,7 @@
     {% if "account.goods_auth" in perm_list %}
         <div class="ui vertical menu">
             <div class="header item">
-                <i class="cloud icon"></i>
+                <i class="archive icon"></i>
                 添加/申请
             </div>
         </div>
@@ -21,7 +21,7 @@
     {% else %}
         <div class="ui vertical menu">
             <div class="header item">
-                <i class="cloud icon"></i>
+                <i class="archive icon"></i>
                 申请采购
             </div>
         </div>
@@ -32,7 +32,7 @@
 
     <div class="ui vertical menu">
         <div class="header item">
-            <i class="cloud icon"></i>
+            <i class="archive icon"></i>
             筛选
         </div>
     </div>
@@ -125,16 +125,11 @@
                         </div>
                     </td>
 
-                    <!--<td>-->
-                    <!--<div class="ui basic button tiny config-detail" data-variation="inverted" data-html='-->
                     <!--{% for pro in goods.prop %}-->
                         <!--{% if pro.pro_name != "" %}-->
                             <!--<div class="ui label" style="margin-top:5px">{{ pro.pro_name }}: {{ pro.pro_value }}</div>-->
                             <!--{% endif %}-->
                         <!--{% endfor %}-->
-                    <!--'>详细</div>-->
-                    <!--</td>-->
-
                     <td></td>
                     <td>
                         <span hidden class="goods-id">{{ goods.id }}</span>
