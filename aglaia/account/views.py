@@ -21,22 +21,14 @@ normal_perms = [NORMAL]
 
 manager_perms = [NORMAL,
                  GOODS_AUTH,
-                 USER_AUTH,
                  VIEW_ALL,
-                 MODF_NORMAL,
-                 MODF_KEY,
                  COMPUT_AUTH]
 
 super_perms = [NORMAL,
                GOODS_AUTH,
-               USER_AUTH,
                VIEW_ALL,
-               MODF_NORMAL,
-               MODF_KEY,
                COMPUT_AUTH,
-               DEL_USER,
-               MODF_PERM,
-               MODF_GROUP]
+               MODF_PERM,]
 
 # ===============================================
 # ===============================================
@@ -432,7 +424,7 @@ def do_disapprove_account(request):
 
 
 @method_required('POST')
-@permission_required(PERM_MODF_GROUP, http_denied)
+@permission_required(PERM_MODF_PERM, http_denied)
 def do_set_manager(request):
     try:
         account = Account.objects.get(user__username=request.POST['username'])
@@ -458,7 +450,7 @@ def do_set_manager(request):
 
 
 @method_required('POST')
-@permission_required(PERM_MODF_GROUP, http_denied)
+@permission_required(PERM_MODF_PERM, http_denied)
 def do_set_normal(request):
     try:
         account = Account.objects.get(user__username=request.POST['username'])
@@ -484,7 +476,7 @@ def do_set_normal(request):
 
 
 @method_required('POST')
-@permission_required(PERM_MODF_GROUP, http_denied)
+@permission_required(PERM_MODF_PERM, http_denied)
 def do_set_super(request):
     try:
         account = Account.objects.get(user__username=request.POST['username'])
@@ -510,7 +502,7 @@ def do_set_super(request):
 
 
 @method_required('POST')
-@permission_required(PERM_MODF_GROUP, http_denied)
+@permission_required(PERM_MODF_PERM, http_denied)
 def do_clear_manager(request):
     try:
         account = Account.objects.get(user__username=request.POST['username'])
