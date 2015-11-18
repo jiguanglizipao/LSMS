@@ -9,73 +9,73 @@
     {% if "account.goods_auth" in perm_list %}
         <div class="ui vertical menu">
             <div class="header item">
-                <i class="cloud icon"></i>
+                <i class="archive icon"></i>
                 添加/申请
             </div>
         </div>
         <a class="ui green button  fluid" href='{% url "goods.views.show_add_goods" %}'>新增实物</a>
         <br/>
         <a class="ui orange button fluid" href='{% url "goods.views.show_apply_goods" %}'>申请采购</a>
-        <br />
+        <br/>
 
     {% else %}
         <div class="ui vertical menu">
             <div class="header item">
-                <i class="cloud icon"></i>
+                <i class="archive icon"></i>
                 申请采购
             </div>
         </div>
         <a class="ui orange button fluid" href='{% url "goods.views.show_apply_goods" %}'>申请采购</a>
-        <br />
+        <br/>
 
     {% endif %}
 
     <div class="ui vertical menu">
         <div class="header item">
-            <i class="cloud icon"></i>
+            <i class="archive icon"></i>
             筛选
         </div>
     </div>
 
     <!--<form action="" method="get">-->
-        <div class="ui form fluid">
-            <div class="field">
-                <input type="text" placeholder="实物名称" id="filter-name" name="name" value="">
-            </div>
+    <div class="ui form fluid">
+        <div class="field">
+            <input type="text" placeholder="实物名称" id="filter-name" name="name" value="">
         </div>
-        <div class="ui selection dropdown fluid">
-            <input type="hidden" id="filter-status" name="status" value="">
+    </div>
+    <div class="ui selection dropdown fluid">
+        <input type="hidden" id="filter-status" name="status" value="">
 
-            <div class="text">状态</div>
-            <i class="dropdown icon"></i>
+        <div class="text">状态</div>
+        <i class="dropdown icon"></i>
 
-            <div class="menu">
-                <div class="item" data-value="all">所有状态</div>
-                <div class="item" data-value="available">在库</div>
-                <div class="item" data-value="unavailable">不在库</div>
-                <div class="item" data-value="borrowed">已借出</div>
-                <div class="item" data-value="destroyed">已销毁</div>
-                <div class="item" data-value="lost">已挂失</div>
-                <div class="item" data-value="repairing">维修中</div>
-            </div>
+        <div class="menu">
+            <div class="item" data-value="all">所有状态</div>
+            <div class="item" data-value="available">在库</div>
+            <div class="item" data-value="unavailable">不在库</div>
+            <div class="item" data-value="borrowed">已借出</div>
+            <div class="item" data-value="destroyed">已销毁</div>
+            <div class="item" data-value="lost">已挂失</div>
+            <div class="item" data-value="repairing">维修中</div>
         </div>
-        <br/>
+    </div>
+    <br/>
 
-        <div class="ui selection dropdown fluid">
-            <input type="hidden" id="filter-type" name="type" value="">
+    <div class="ui selection dropdown fluid">
+        <input type="hidden" id="filter-type" name="type" value="">
 
-            <div class="text">类型</div>
-            <i class="dropdown icon"></i>
+        <div class="text">类型</div>
+        <i class="dropdown icon"></i>
 
-            <div class="menu">
-                <div class="item" data-value="">所有类型</div>
-                {% for type in type_list %}
-                    <div class="item" data-value="{{ type }}">{{ type }}</div>
-                {% endfor %}
-            </div>
+        <div class="menu">
+            <div class="item" data-value="">所有类型</div>
+            {% for type in type_list %}
+                <div class="item" data-value="{{ type }}">{{ type }}</div>
+            {% endfor %}
         </div>
-        <br/>
-        <div type="text" id="confirm-sift" class="ui blue button fluid">提交筛选</div>
+    </div>
+    <br/>
+    <div type="text" id="confirm-sift" class="ui blue button fluid">提交筛选</div>
     <!--</form>-->
 {% endblock %}
 
@@ -94,14 +94,16 @@
             <th>备注</th>
             <th>操作</th>
             {% if "account.goods_auth" in perm_list %}
-            <th><div class="ui icon blue button mini send-mail" data-variation="inverted" data-content="发送邮件">
-                <i class="icon mail circle"></i>
-            </div>
-            </th>
+                <th>
+                    <div class="ui icon blue button mini send-mail" data-variation="inverted" data-content="发送邮件">
+                        <i class="icon mail circle"></i>
+                    </div>
+                </th>
             {% endif %}
         </tr>
         </thead>
         <tbody>
+
         {% for goods in goods_list %}
             {% if goods.status == "available" %}
                 <tr class="positive">
@@ -123,16 +125,11 @@
                         </div>
                     </td>
 
-                    <!--<td>-->
-                        <!--<div class="ui basic button tiny config-detail" data-variation="inverted" data-html='-->
-                            <!--{% for pro in goods.prop %}-->
-                            <!--{% if pro.pro_name != "" %}-->
+                    <!--{% for pro in goods.prop %}-->
+                        <!--{% if pro.pro_name != "" %}-->
                             <!--<div class="ui label" style="margin-top:5px">{{ pro.pro_name }}: {{ pro.pro_value }}</div>-->
                             <!--{% endif %}-->
-                            <!--{% endfor %}-->
-                            <!--'>详细</div>-->
-                    <!--</td>-->
-
+                        <!--{% endfor %}-->
                     <td></td>
                     <td>
                         <span hidden class="goods-id">{{ goods.id }}</span>
@@ -146,24 +143,28 @@
                                  data-content="销毁"><i class="icon trash"></i></div>
                         {% endif %}
                         {% if "account.view_all" in perm_list %}
-                        <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-                            <input type="hidden" name="id" value="{{ goods.id }}">
-                            <input type="hidden" name="type" value="goods">
-                            <button type="submit" class="ui circular tiny inverted icon teal tip button"
-                                    data-content="日志">
-                                <i class="unordered list icon"></i>
-                            </button>
-                        </form>
+                            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                                <input type="hidden" name="id" value="{{ goods.id }}">
+                                <input type="hidden" name="type" value="goods">
+                                <button type="submit" class="ui circular tiny inverted icon teal tip button"
+                                        data-content="日志">
+                                    <i class="unordered list icon"></i>
+                                </button>
+                            </form>
                         {% endif %}
                     </td>
                     {% if "account.goods_auth" in perm_list %}
-                    <td>
-                        <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
-                             <!--data-content="选择"><i class="icon star sign"></i></div>-->
-                    </td>
+                        <td>
+                            <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
+                            <!--data-content="选择"><i class="icon star sign"></i></div>-->
+                        </td>
                     {% endif %}
                 </tr>
-            {% elif goods.status == "unavailable" %}
+            {% endif %}
+        {% endfor %}
+        {% for goods in goods_list %}
+
+            {% if goods.status == "unavailable" %}
                 <tr>
                     <td class="goods-sn">{{ goods.sn }}</td>
                     <td class="goods-name">{{ goods.name }}</td>
@@ -194,21 +195,21 @@
                                  data-content="销毁"><i class="icon trash"></i></div>
                         {% endif %}
                         {% if "account.view_all" in perm_list %}
-                        <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-                            <input type="hidden" name="id" value="{{ goods.id }}">
-                            <input type="hidden" name="type" value="goods">
-                            <button type="submit" class="ui circular tiny inverted icon teal tip button"
-                                    data-content="日志">
-                                <i class="unordered list icon"></i>
-                            </button>
-                        </form>
+                            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                                <input type="hidden" name="id" value="{{ goods.id }}">
+                                <input type="hidden" name="type" value="goods">
+                                <button type="submit" class="ui circular tiny inverted icon teal tip button"
+                                        data-content="日志">
+                                    <i class="unordered list icon"></i>
+                                </button>
+                            </form>
                         {% endif %}
                     </td>
                     {% if "account.goods_auth" in perm_list %}
-                    <td>
-                        <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
-                             <!--data-content="选择"><i class="icon star sign"></i></div>-->
-                    </td>
+                        <td>
+                            <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
+                            <!--data-content="选择"><i class="icon star sign"></i></div>-->
+                        </td>
                     {% endif %}
                 </tr>
             {% elif goods.status == "borrowed" %}
@@ -242,21 +243,22 @@
                                  data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
                         {% endif %}
                         {% if "account.view_all" in perm_list %}
-                        <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-                            <input type="hidden" name="id" value="{{ goods.id }}">
-                            <input type="hidden" name="type" value="goods">
-                            <button type="submit" class="ui circular tiny inverted icon teal tip button"
-                                    data-content="日志">
-                                <i class="unordered list icon"></i>
-                            </button>
-                        </form>
+                            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                                <input type="hidden" name="id" value="{{ goods.id }}">
+                                <input type="hidden" name="type" value="goods">
+                                <button type="submit" class="ui circular tiny inverted icon teal tip button"
+                                        data-content="日志">
+                                    <i class="unordered list icon"></i>
+                                </button>
+                            </form>
                         {% endif %}
                     </td>
                     {% if "account.goods_auth" in perm_list %}
-                    <td>
-                        <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
-                             data-content="选择"><i class="icon star sign"></i></div>
-                    </td>
+                        <td>
+                            <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted"
+                                 data-value="false"
+                                 data-content="选择"><i class="icon star sign"></i></div>
+                        </td>
                     {% endif %}
                 </tr>
             {% elif goods.status == "destroyed" %}
@@ -291,21 +293,21 @@
                                  data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
                         {% endif %}
                         {% if "account.view_all" in perm_list %}
-                        <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-                            <input type="hidden" name="id" value="{{ goods.id }}">
-                            <input type="hidden" name="type" value="goods">
-                            <button type="submit" class="ui circular tiny inverted icon teal tip button"
-                                    data-content="日志">
-                                <i class="unordered list icon"></i>
-                            </button>
-                        </form>
+                            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                                <input type="hidden" name="id" value="{{ goods.id }}">
+                                <input type="hidden" name="type" value="goods">
+                                <button type="submit" class="ui circular tiny inverted icon teal tip button"
+                                        data-content="日志">
+                                    <i class="unordered list icon"></i>
+                                </button>
+                            </form>
                         {% endif %}
                     </td>
                     {% if "account.goods_auth" in perm_list %}
-                    <td>
-                        <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
-                             <!--data-content="选择"><i class="icon star sign"></i></div>-->
-                    </td>
+                        <td>
+                            <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
+                            <!--data-content="选择"><i class="icon star sign"></i></div>-->
+                        </td>
                     {% endif %}
                 </tr>
             {% elif goods.status == "lost" %}
@@ -341,21 +343,21 @@
                                  data-content="找回物品"><i class="leaf icon"></i></div>
                         {% endif %}
                         {% if "account.view_all" in perm_list %}
-                        <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-                            <input type="hidden" name="id" value="{{ goods.id }}">
-                            <input type="hidden" name="type" value="goods">
-                            <button type="submit" class="ui circular tiny inverted icon teal tip button"
-                                    data-content="日志">
-                                <i class="unordered list icon"></i>
-                            </button>
-                        </form>
+                            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                                <input type="hidden" name="id" value="{{ goods.id }}">
+                                <input type="hidden" name="type" value="goods">
+                                <button type="submit" class="ui circular tiny inverted icon teal tip button"
+                                        data-content="日志">
+                                    <i class="unordered list icon"></i>
+                                </button>
+                            </form>
                         {% endif %}
                     </td>
                     {% if "account.goods_auth" in perm_list %}
-                    <td>
-                        <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
-                             <!--data-content="选择"><i class="icon star sign"></i></div>-->
-                    </td>
+                        <td>
+                            <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
+                            <!--data-content="选择"><i class="icon star sign"></i></div>-->
+                        </td>
                     {% endif %}
                 </tr>
             {% elif goods.status == "repairing" %}
@@ -389,21 +391,22 @@
                                  data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
                         {% endif %}
                         {% if "account.view_all" in perm_list %}
-                        <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-                            <input type="hidden" name="id" value="{{ goods.id }}">
-                            <input type="hidden" name="type" value="goods">
-                            <button type="submit" class="ui circular tiny inverted icon teal tip button"
-                                    data-content="日志">
-                                <i class="unordered list icon"></i>
-                            </button>
-                        </form>
+                            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                                <input type="hidden" name="id" value="{{ goods.id }}">
+                                <input type="hidden" name="type" value="goods">
+                                <button type="submit" class="ui circular tiny inverted icon teal tip button"
+                                        data-content="日志">
+                                    <i class="unordered list icon"></i>
+                                </button>
+                            </form>
                         {% endif %}
                     </td>
                     {% if "account.goods_auth" in perm_list %}
-                    <td>
-                        <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"
-                              data-content="选择"><i class="icon star sign"></i></div>
-                    </td>
+                        <td>
+                            <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted"
+                                 data-value="false"
+                                 data-content="选择"><i class="icon star sign"></i></div>
+                        </td>
                     {% endif %}
                 </tr>
             {% endif %}
@@ -415,6 +418,7 @@
 
     <div class="ui small modal" id="mail-action">
         <i class="close icon"></i>
+
         <div class="header">通知内容</div>
         <div class="ui form" style="padding:2em">
             <form method="post" action='{% url "goods.views.MailNotify" %}' id="mail-action-form" class="content">
@@ -486,12 +490,12 @@
         </div>
     </div>
 
-<div class="ui small modal" id="info">
-    <div class="header">提示</div>
-    <div class="content">
-        <p></p>
+    <div class="ui small modal" id="info">
+        <div class="header">提示</div>
+        <div class="content">
+            <p></p>
+        </div>
     </div>
-</div>
     <!--</form>-->
 
 
@@ -507,9 +511,8 @@
 
         $(function () {
             var tdset = $('.goods-typename').parent();
-            for(var i=0;i<tdset.length;++i){
-                if($(tdset[i]).children('.good-status').attr('data-value') == 'destroyed')
-                {
+            for (var i = 0; i < tdset.length; ++i) {
+                if ($(tdset[i]).children('.good-status').attr('data-value') == 'destroyed') {
                     $(tdset[i]).hide();
                 }
             }
@@ -524,36 +527,35 @@
                 on: 'hover'
             });
             $('.choose-mail').click(function () {
-                if($(this).attr('data-value')=='false'){
-                    if($(this).parent().parent().children('.good-status').attr('data-value')=='borrowed'
-                    || $(this).parent().parent().children('.good-status').attr('data-value')=='repairing'){
-                        $(this).attr('data-value','true');
-                        $(this).parent().parent().css("background-color","#C8C8E3");
+                if ($(this).attr('data-value') == 'false') {
+                    if ($(this).parent().parent().children('.good-status').attr('data-value') == 'borrowed'
+                            || $(this).parent().parent().children('.good-status').attr('data-value') == 'repairing') {
+                        $(this).attr('data-value', 'true');
+                        $(this).parent().parent().css("background-color", "#C8C8E3");
                     }
                 }
-                else{
-                    $(this).attr('data-value','false');
-                    $(this).parent().parent().css("background-color","white");
+                else {
+                    $(this).attr('data-value', 'false');
+                    $(this).parent().parent().css("background-color", "white");
                 }
             });
             $('.send-mail').click(function () {
                 var ans = "";
                 var chooseFlag = false;
-                for(var i=0;i<$('.choose-mail').length;++i){
-                    if($($('.choose-mail')[i]).attr('data-value')=='true'){
+                for (var i = 0; i < $('.choose-mail').length; ++i) {
+                    if ($($('.choose-mail')[i]).attr('data-value') == 'true') {
                         ans += $($('.choose-mail')[i]).parent().parent().children().children('.goods-id').text();
                         ans += "&";
                         chooseFlag = true;
                     }
                 }
-                if(chooseFlag)
+                if (chooseFlag)
                     $('.modal#mail-action').modal('show');
-                else
-                {
+                else {
                     $('#info').modal('show');
                     $('#info').children('.content').children('p').text('请先通过选择按钮选中对应物资才能发送邮件给对应用户！');
                 }
-                $('.mail-targets').attr('value',ans);
+                $('.mail-targets').attr('value', ans);
             });
             $('.borrow-goods').popup({
                 on: 'hover'
@@ -568,11 +570,11 @@
                 $('post-action-confirm-content').text('借用');
                 $('.modal#post-action').modal('show');
                 <!--$('.modal#post-action')-->
-                  <!--.modal('setting', {-->
-                    <!--onHidden    : function(){-->
-                        <!--location.reload(true);-->
-                    <!--}-->
-                  <!--})-->
+                <!--.modal('setting', {-->
+                <!--onHidden    : function(){-->
+                <!--location.reload(true);-->
+                <!--}-->
+                <!--})-->
             });
             $('.do-available').popup({
                 on: 'hover'
@@ -591,15 +593,15 @@
                 on: 'hover'
             });
             $('.find-goods').click(function () {
-                $('#post-action-form').attr('action', do_find_back);
-                $('#post-action-header').text('找回物品');
-                $('#id').val($(this).parent().children('.goods-id').text());
-                $('#sn').val($(this).parent().parent().children('.goods-sn').text());
-                $('#name').val($(this).parent().parent().children('.goods-name').text());
-                $('#type').val($(this).parent().parent().children('.goods-typename').text());
-                $('post-action-confirm-content').text('找回物品');
-                $('.modal#post-action').modal('show');
-            }
+                        $('#post-action-form').attr('action', do_find_back);
+                        $('#post-action-header').text('找回物品');
+                        $('#id').val($(this).parent().children('.goods-id').text());
+                        $('#sn').val($(this).parent().parent().children('.goods-sn').text());
+                        $('#name').val($(this).parent().parent().children('.goods-name').text());
+                        $('#type').val($(this).parent().parent().children('.goods-typename').text());
+                        $('post-action-confirm-content').text('找回物品');
+                        $('.modal#post-action').modal('show');
+                    }
             );
             $('.do-unavailable').popup({
                 on: 'hover'
@@ -631,45 +633,40 @@
                 $('#post-action-form').trigger('submit');
             });
             $('#mail-action-confirm').click(function () {
-                $('#mail-action-form').trigger('submit');
-            }
+                        $('#mail-action-form').trigger('submit');
+                    }
             );
-            function goods_filter()
-            {
+            function goods_filter() {
                 var tdset = $('.goods-typename').parent();
-                if($('#filter-status').attr('value') == "destroyed")
-                {
-                    for(var i=0;i<tdset.length;++i){
-                        if( ($('#filter-type').attr('value')=="" || $('#filter-type').attr('value')== $(tdset[i]).children('.goods-typename').get(0).innerHTML)
-                        && ($('#filter-status').attr('value')=="all" || $('#filter-status').attr('value')=="" || $('#filter-status').attr('value')== $(tdset[i]).children('.good-status').attr('data-value'))
-                        && ($('#filter-name').val()=="" || $(tdset[i]).children('.goods-name').get(0).innerHTML.indexOf($('#filter-name').val()) != -1))
-                        {
+                if ($('#filter-status').attr('value') == "destroyed") {
+                    for (var i = 0; i < tdset.length; ++i) {
+                        if (($('#filter-type').attr('value') == "" || $('#filter-type').attr('value') == $(tdset[i]).children('.goods-typename').get(0).innerHTML)
+                                && ($('#filter-status').attr('value') == "all" || $('#filter-status').attr('value') == "" || $('#filter-status').attr('value') == $(tdset[i]).children('.good-status').attr('data-value'))
+                                && ($('#filter-name').val() == "" || $(tdset[i]).children('.goods-name').get(0).innerHTML.indexOf($('#filter-name').val()) != -1)) {
                             $(tdset[i]).show();
                         }
-                        else{
+                        else {
                             $(tdset[i]).hide();
                         }
                     }
                 }
-                else
-                {
-                    for(var i=0;i<tdset.length;++i){
-                        if($(tdset[i]).children('.good-status').attr('data-value') == 'destroyed')
+                else {
+                    for (var i = 0; i < tdset.length; ++i) {
+                        if ($(tdset[i]).children('.good-status').attr('data-value') == 'destroyed')
                             $(tdset[i]).hide();
-                        else if( ($('#filter-type').attr('value')=="" || $('#filter-type').attr('value')== $(tdset[i]).children('.goods-typename').get(0).innerHTML)
-                        && ($('#filter-status').attr('value')=="all" || $('#filter-status').attr('value')=="" || $('#filter-status').attr('value')== $(tdset[i]).children('.good-status').attr('data-value'))
-                        && ($('#filter-name').val()=="" || $(tdset[i]).children('.goods-name').get(0).innerHTML.indexOf($('#filter-name').val()) != -1))
-                        {
+                        else if (($('#filter-type').attr('value') == "" || $('#filter-type').attr('value') == $(tdset[i]).children('.goods-typename').get(0).innerHTML)
+                                && ($('#filter-status').attr('value') == "all" || $('#filter-status').attr('value') == "" || $('#filter-status').attr('value') == $(tdset[i]).children('.good-status').attr('data-value'))
+                                && ($('#filter-name').val() == "" || $(tdset[i]).children('.goods-name').get(0).innerHTML.indexOf($('#filter-name').val()) != -1)) {
                             $(tdset[i]).show();
                         }
-                        else{
+                        else {
                             $(tdset[i]).hide();
                         }
                     }
                 }
             };
-            $('#filter-name').keydown(function(event){
-                if(event.keyCode==13){
+            $('#filter-name').keydown(function (event) {
+                if (event.keyCode == 13) {
                     goods_filter();
                 }
             });

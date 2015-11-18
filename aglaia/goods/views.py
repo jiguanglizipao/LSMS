@@ -1419,7 +1419,6 @@ def show_borrow(request):
     if 'filtdata' in request.POST:
         if request.POST['filtdata'] == 'true' or request.POST[
                 'filtdata'] == 'True' or request.POST['filtdata'] == 'TRUE':
-            print("true!")
             cont['filtdata'] = True
 
     return render(request, 'borrow.html', cont)
