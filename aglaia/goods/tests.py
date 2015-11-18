@@ -2,7 +2,7 @@ from django.test import *
 from django.contrib.auth.models import *
 
 from django.shortcuts import render, render_to_response
-from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.http import Http404, HttpResponseRedirect, HttpResponse, HttpRequest
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import *
@@ -1432,3 +1432,303 @@ class ViewTestCase(TestCase):
         noname = self.manager.post(reverse('goods.views.apply_goods'),
                                    dic)
         self.assertIsMessage(noname, 'Key not found: "\'name\'"')
+
+    def test_do_accept_apply_goods(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(username='manager', password='123456')
+        )
+
+        request = {}
+        name = 'applyname'
+        type_name = 'applytypename'
+        pro_name = ['applypro1name', 'applypro2name', 'applypro3name']
+        pro_value = ['applypro1value', 'applypro2value', 'applypro3value']
+        sns = ['applysn']
+        account = Account.objects.get(id=3)
+        note = 'applynote'
+
+        packed_create_apply_goods(
+            request, name, type_name, pro_name, pro_value, sns, GOODS_APPLYING_KEY, account, note
+        )
+
+        dic = {}
+
+        noid = self.manager.post(
+            reverse('goods.views.do_accept_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            noid, 'Accept Apply_Goods failed: "\'id\'"'
+        )
+
+        dic['id'] = Apply_Goods.objects.get(name='applyname').id
+        nonote = self.manager.post(
+            reverse('goods.views.do_accept_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            nonote, 'Accept Apply_Goods failed: "\'note\'"'
+        )
+
+        dic['note'] = 'applyacceptnote'
+        wrontstatus = self.manager.post(
+            reverse('goods.views.do_accept_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            wrontstatus, 'This Request is not in a apply_goods apply status!'
+        )
+
+        packed_update_apply_goods(
+            request, dic['id'], {'status': GOODS_APPLY_KEY, 'note': note}
+        )
+
+        goodstatus = self.manager.post(
+            reverse('goods.views.do_accept_apply_goods'), dic
+        )
+        self.assertRedirects(
+            goodstatus, reverse('goods.views.show_manage')
+        )
+
+    def test_do_reject_apply_goods(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(username='manager', password='123456')
+        )
+
+        request = {}
+        name = 'applyname'
+        type_name = 'applytypename'
+        pro_name = ['applypro1name', 'applypro2name', 'applypro3name']
+        pro_value = ['applypro1value', 'applypro2value', 'applypro3value']
+        sns = ['applysn']
+        account = Account.objects.get(id=3)
+        note = 'applynote'
+
+        packed_create_apply_goods(
+            request, name, type_name, pro_name, pro_value, sns, GOODS_APPLYING_KEY, account, note
+        )
+
+        dic = {}
+
+        noid = self.manager.post(
+            reverse('goods.views.do_reject_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            noid, 'Reject Apply_Goods failed: "\'id\'"'
+        )
+
+        dic['id'] = Apply_Goods.objects.get(name='applyname').id
+        nonote = self.manager.post(
+            reverse('goods.views.do_reject_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            nonote, 'Reject Apply_Goods failed: "\'note\'"'
+        )
+
+        dic['note'] = 'applyrejectnote'
+        wrontstatus = self.manager.post(
+            reverse('goods.views.do_reject_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            wrontstatus, 'This Request is not in a apply_goods apply status!'
+        )
+
+        packed_update_apply_goods(
+            request, dic['id'], {'status': GOODS_APPLY_KEY, 'note': note}
+        )
+
+        goodstatus = self.manager.post(
+            reverse('goods.views.do_reject_apply_goods'), dic
+        )
+        self.assertRedirects(
+            goodstatus, reverse('goods.views.show_manage')
+        )
+
+    def test_do_start_apply_goods(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(username='manager', password='123456')
+        )
+
+        request = {}
+        name = 'applyname'
+        type_name = 'applytypename'
+        pro_name = ['applypro1name', 'applypro2name', 'applypro3name']
+        pro_value = ['applypro1value', 'applypro2value', 'applypro3value']
+        sns = ['applysn']
+        account = Account.objects.get(id=3)
+        note = 'applynote'
+
+        packed_create_apply_goods(
+            request, name, type_name, pro_name, pro_value, sns, GOODS_APPLY_KEY, account, note
+        )
+
+        dic = {}
+
+        noid = self.manager.post(
+            reverse('goods.views.do_start_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            noid, 'Pend Apply_Goods failed: "\'id\'"'
+        )
+
+        dic['id'] = Apply_Goods.objects.get(name='applyname').id
+        nonote = self.manager.post(
+            reverse('goods.views.do_start_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            nonote, 'Pend Apply_Goods failed: "\'note\'"'
+        )
+
+        dic['note'] = 'applypendnote'
+        wrontstatus = self.manager.post(
+            reverse('goods.views.do_start_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            wrontstatus, 'This Request is not in a apply_goods pend status!'
+        )
+
+        packed_update_apply_goods(
+            request, dic['id'], {'status': GOODS_APPLY_PEND_KEY, 'note': note}
+        )
+
+        goodstatus = self.manager.post(
+            reverse('goods.views.do_start_apply_goods'), dic
+        )
+        self.assertRedirects(
+            goodstatus, reverse('goods.views.show_manage')
+        )
+
+    def test_do_finish_apply_goods(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(username='manager', password='123456')
+        )
+
+        request = {}
+        name = 'applyname'
+        type_name = 'applytypename'
+        pro_name = ['applypro1name', 'applypro2name', 'applypro3name']
+        pro_value = ['applypro1value', 'applypro2value', 'applypro3value']
+        sns = ['applysn']
+        account = Account.objects.get(id=3)
+        note = 'applynote'
+
+        packed_create_apply_goods(
+            request, name, type_name, pro_name, pro_value, sns, GOODS_APPLY_PEND_KEY, account, note
+        )
+
+        dic = {}
+
+        noid = self.manager.post(
+            reverse('goods.views.do_finish_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            noid, 'Finish Apply_Goods failed: "\'id\'"'
+        )
+
+        dic['id'] = Apply_Goods.objects.get(name='applyname').id
+        nonote = self.manager.post(
+            reverse('goods.views.do_finish_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            nonote, 'Finish Apply_Goods failed: "\'note\'"'
+        )
+
+        dic['note'] = 'applyfinishnote'
+        wrontstatus = self.manager.post(
+            reverse('goods.views.do_finish_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            wrontstatus, 'This Request is not in a apply_goods ongoing status!'
+        )
+
+        packed_update_apply_goods(
+            request, dic['id'], {'status': GOODS_APPLYING_KEY, 'note': note}
+        )
+
+        goodstatus = self.manager.post(
+            reverse('goods.views.do_finish_apply_goods'), dic
+        )
+        self.assertRedirects(
+            goodstatus, reverse('goods.views.show_manage')
+        )
+
+    def test_do_input_apply_goods(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(username='manager', password='123456')
+        )
+
+        request = {}
+
+        name = 'applyname'
+        type_name = 'applytypename'
+        pro_name = ['applypro1name', 'applypro2name', 'applypro3name']
+        pro_value = ['applypro1value', 'applypro2value', 'applypro3value']
+        sns = ['applysn']
+        account = Account.objects.get(id=3)
+        note = 'applynote'
+
+        packed_create_apply_goods(
+            request, name, type_name, pro_name, pro_value, sns, GOODS_APPLYING_KEY, account, note
+        )
+
+        dic = {}
+
+        noid = self.manager.post(
+            reverse('goods.views.do_input_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            noid, 'Input Apply_Goods failed: "\'id\'"'
+        )
+
+        dic['id'] = Apply_Goods.objects.get(name='applyname').id
+        nosn = self.manager.post(
+            reverse('goods.views.do_input_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            nosn, 'Input Apply_Goods failed: "\'sn\'"'
+        )
+
+        dic['sn'] = Apply_Goods.objects.get(name='applyname').sn
+        noname = self.manager.post(
+            reverse('goods.views.do_input_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            noname, 'Input Apply_Goods failed: "\'name\'"'
+        )
+
+        dic['name'] = Apply_Goods.objects.get(name='applyname').name
+        notypename = self.manager.post(
+            reverse('goods.views.do_input_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            notypename, 'Input Apply_Goods failed: "\'type_name\'"',
+        )
+
+        dic['type_name'] = Apply_Goods.objects.get(name='applyname').type_name
+        nonote = self.manager.post(
+            reverse('goods.views.do_input_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            nonote, 'Input Apply_Goods failed: "\'note\'"'
+        )
+
+        dic['note'] = 'applyinputnote'
+        wrongstatus = self.manager.post(
+            reverse('goods.views.do_input_apply_goods'), dic
+        )
+        self.assertIsMessage(
+            wrongstatus, 'This Request is not in a apply_goods finish status!'
+        )
+
+        packed_update_apply_goods(
+            request, dic['id'], {'status': FINISH_GOODS_APPLY_KEY, 'note': note}
+        )
+
+        goodstatus = self.manager.post(
+            reverse('goods.views.do_input_apply_goods'), dic
+        )
+        self.assertRedirects(
+            goodstatus, reverse('goods.views.show_manage')
+        )
