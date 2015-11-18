@@ -54,7 +54,7 @@
                 <div class="item" data-value="available">在库</div>
                 <div class="item" data-value="unavailable">不在库</div>
                 <div class="item" data-value="borrowed">已借出</div>
-                <!--<div class="item" data-value="destroyed">已销毁</div>-->
+                <div class="item" data-value="destroyed">已销毁</div>
                 <div class="item" data-value="lost">已挂失</div>
                 <div class="item" data-value="repairing">维修中</div>
             </div>
@@ -260,7 +260,8 @@
                     {% endif %}
                 </tr>
             {% elif goods.status == "destroyed" %}
-                <tr class="disabled">
+                <!--<tr>-->
+                <tr>
                     <td class="goods-sn">{{ goods.sn }}</td>
                     <td class="goods-name">{{ goods.name }}</td>
                     <td class="good-status" data-value='{{ goods.status }}'>已销毁</td>
@@ -484,6 +485,13 @@
             </div>
         </div>
     </div>
+
+<div class="ui small modal" id="info">
+    <div class="header">提示</div>
+    <div class="content">
+        <p></p>
+    </div>
+</div>
     <!--</form>-->
 
 
@@ -498,6 +506,13 @@
         var do_destroy = '{% url "goods.views.do_destroy" %}';
 
         $(function () {
+            var tdset = $('.goods-typename').parent();
+            for(var i=0;i<tdset.length;++i){
+                if($(tdset[i]).children('.good-status').attr('data-value') == 'destroyed')
+                {
+                    $(tdset[i]).hide();
+                }
+            }
             $('.ui.dropdown').dropdown();
             $('.config-detail').popup({
                 on: 'hover'
@@ -534,7 +549,10 @@
                 if(chooseFlag)
                     $('.modal#mail-action').modal('show');
                 else
-                    alert('请先通过选择按钮选中对应物资！');
+                {
+                    $('#info').modal('show');
+                    $('#info').children('.content').children('p').text('请先通过选择按钮选中对应物资才能发送邮件给对应用户！');
+                }
                 $('.mail-targets').attr('value',ans);
             });
             $('.borrow-goods').popup({
@@ -619,19 +637,38 @@
             function goods_filter()
             {
                 var tdset = $('.goods-typename').parent();
-                for(var i=0;i<tdset.length;++i){
-                    if( ($('#filter-type').attr('value')=="" || $('#filter-type').attr('value')== $(tdset[i]).children('.goods-typename').get(0).innerHTML)
-                    && ($('#filter-status').attr('value')=="all" || $('#filter-status').attr('value')=="" || $('#filter-status').attr('value')== $(tdset[i]).children('.good-status').attr('data-value'))
-                    && ($('#filter-name').val()=="" || $(tdset[i]).children('.goods-name').get(0).innerHTML.indexOf($('#filter-name').val()) != -1))
-                    {
-                        $(tdset[i]).show();
+                if($('#filter-status').attr('value') == "destroyed")
+                {
+                    for(var i=0;i<tdset.length;++i){
+                        if( ($('#filter-type').attr('value')=="" || $('#filter-type').attr('value')== $(tdset[i]).children('.goods-typename').get(0).innerHTML)
+                        && ($('#filter-status').attr('value')=="all" || $('#filter-status').attr('value')=="" || $('#filter-status').attr('value')== $(tdset[i]).children('.good-status').attr('data-value'))
+                        && ($('#filter-name').val()=="" || $(tdset[i]).children('.goods-name').get(0).innerHTML.indexOf($('#filter-name').val()) != -1))
+                        {
+                            $(tdset[i]).show();
+                        }
+                        else{
+                            $(tdset[i]).hide();
+                        }
                     }
-                    else{
-                        $(tdset[i]).hide();
+                }
+                else
+                {
+                    for(var i=0;i<tdset.length;++i){
+                        if($(tdset[i]).children('.good-status').attr('data-value') == 'destroyed')
+                            $(tdset[i]).hide();
+                        else if( ($('#filter-type').attr('value')=="" || $('#filter-type').attr('value')== $(tdset[i]).children('.goods-typename').get(0).innerHTML)
+                        && ($('#filter-status').attr('value')=="all" || $('#filter-status').attr('value')=="" || $('#filter-status').attr('value')== $(tdset[i]).children('.good-status').attr('data-value'))
+                        && ($('#filter-name').val()=="" || $(tdset[i]).children('.goods-name').get(0).innerHTML.indexOf($('#filter-name').val()) != -1))
+                        {
+                            $(tdset[i]).show();
+                        }
+                        else{
+                            $(tdset[i]).hide();
+                        }
                     }
                 }
             };
-            $('#filter-name').keydown(function(){
+            $('#filter-name').keydown(function(event){
                 if(event.keyCode==13){
                     goods_filter();
                 }

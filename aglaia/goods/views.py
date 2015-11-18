@@ -1284,7 +1284,8 @@ def show_list(request):
 
     singles = None
     if not status or status == 'all':
-        singles = Single.objects.exclude(status=DESTROYED_KEY)
+        # singles = Single.objects.exclude(status=DESTROYED_KEY)
+        singles = Single.objects.exclude()
     else:
         singles = Single.objects.filter(status=sgl_sta_map[status])
 
