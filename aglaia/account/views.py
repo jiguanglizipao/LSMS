@@ -605,7 +605,7 @@ def do_send_mail(request):
         send_user_mail(acnt, subj, msg)
         if 'next' in request.POST:
             return HttpResponseRedirect(request.POST['next'])
-        return show_message(request, 'Send mail succeed!')
+        return show_message(request, '发送邮件成功!')
     except Exception as e:
         return show_message(request, 'Send mail failed: ' + e.__str__())
 
