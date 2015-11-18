@@ -12,7 +12,6 @@
         </div>
         <div class="item">
             <div class="menu">
-                <div class="item"></div>
                 <a href="#" class="item">
                     使用中
                     <div class="teal ui label">{{ num_goods_used }}</div>
@@ -151,10 +150,12 @@
 
     <div class="ui header attached top">
         计算资源&nbsp;&nbsp;
-        <button id="siftvipbtn" class="ui circular mini icon orange tip return button" data-content="筛选重要数据" name="filtdata" value="True">
-        <i class="tags icon"></i></button>
-        <button id="unsiftvipbtn" class="ui circular mini icon white tip return button" data-content="显示全部数据" name="filtdata" value="False">
-        <i class="tags icon"></i></button>
+        <button id="siftvipbtn" class="ui circular mini icon orange tip return button" data-content="筛选重要数据"
+                name="filtdata" value="True">
+            <i class="tags icon"></i></button>
+        <button id="unsiftvipbtn" class="ui circular mini icon white tip return button" data-content="显示全部数据"
+                name="filtdata" value="False">
+            <i class="tags icon"></i></button>
     </div>
     <table class="ui table segment small attached">
         <thead>
@@ -400,16 +401,16 @@
         $(function () {
             $('#siftvipbtn').click(function () {
                 var trset = $('.resource-item');
-                for(var i = 0; i < trset.length; ++i){
-                    if($(trset[i]).attr('data-value') == 'False'){
-                        $(trset[i]).attr('hidden','')
+                for (var i = 0; i < trset.length; ++i) {
+                    if ($(trset[i]).attr('data-value') == 'False') {
+                        $(trset[i]).attr('hidden', '')
                     }
                 }
             })
             $('#unsiftvipbtn').click(function () {
                 var trset = $('.resource-item');
-                for(var i = 0; i < trset.length; ++i){
-                   $(trset[i]).removeAttr('hidden')
+                for (var i = 0; i < trset.length; ++i) {
+                    $(trset[i]).removeAttr('hidden')
                 }
             })
             $('.res-modif .submit').click(function () {
@@ -489,10 +490,10 @@
 
             });
 
-            $('.res-borrow').keydown(function(event){
-            if(event.keyCode==13){
-               $('.res-borrow .submit').trigger("click");
-            }
+            $('.res-borrow').keydown(function (event) {
+                if (event.keyCode == 13) {
+                    $('.res-borrow .submit').trigger("click");
+                }
             });
 
             $('.resource-item .modify.button').click(function () {
@@ -552,25 +553,27 @@
             });
 
             <!--$('.resource-item .agree-button.button').click(function () {-->
-                <!--var item = $(this).parent().parent();-->
+            <!--var item = $(this).parent().parent();-->
 
-                <!--if ($(this).hasClass('disabled'))-->
-                    <!--return;-->
+            <!--if ($(this).hasClass('disabled'))-->
+            <!--return;-->
 
-                <!--$(this).addClass('disabled');-->
+            <!--$(this).addClass('disabled');-->
 
-                <!--$.ajax({-->
-                    <!--url: '{% url "computing.views.do_set_flag" %}',-->
-                    <!--type: 'POST',-->
-                    <!--dataType: 'text',-->
-                    <!--data: {-->
-                        <!--id: item.attr('data-request-id'),-->
-                        <!--flag: $(this).attr('data-destiny'),-->
-                    <!--},-->
-                <!--})-->
-                        <!--.always(function () {-->
-                            <!--location.reload(true);-->
-                        <!--});-->
+            <!--$.ajax({-->
+            <!--url: '
+
+            {% url "computing.views.do_set_flag" %}',-->
+            <!--type: 'POST',-->
+            <!--dataType: 'text',-->
+            <!--data: {-->
+            <!--id: item.attr('data-request-id'),-->
+            <!--flag: $(this).attr('data-destiny'),-->
+            <!--},-->
+            <!--})-->
+            <!--.always(function () {-->
+            <!--location.reload(true);-->
+            <!--});-->
             <!--});-->
 
 

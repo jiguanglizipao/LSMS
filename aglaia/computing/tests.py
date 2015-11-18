@@ -197,10 +197,7 @@ class TestTestCase(TestCase):
         # self.assertEqual(computing.sn, '')
         self.assertEqual(computing.status, 'vf')
         self.assertEqual(computing.account, Account.objects.get(id=1))
-        message = Message()
-        message.append({'direction': 'Recv', 'info_type': '',
-                        'user_name': 'normal', 'text': 'hello world'})
-        self.assertEqual(computing.note, message.tostring().decode())
+        self.assertEqual(Message(computing.note).last()['text'], 'hello world')
         # self.assertEqual(computing.expire_time.year, 2014)
         # self.assertEqual(computing.expire_time.month, 11)
         # self.assertEqual(computing.expire_time.day, 22)

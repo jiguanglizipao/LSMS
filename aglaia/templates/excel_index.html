@@ -179,6 +179,12 @@
         </blockquote>
     </div>
 </div>
+<div class="ui small modal" id="info">
+    <div class="header">提示</div>
+    <div class="content">
+        <p></p>
+    </div>
+</div>
 {% endblock %}
 
 
@@ -218,9 +224,21 @@ $(function(){
         });
     });
     $("#excel-btn").on("click",function(){
+        if($('#ExcelUploadPath').val() == "Upload Path")
+        {
+            $('#info').modal('show');
+            $('#info').children('.content').children('p').text("请先通过浏览按钮选中您要导入的Excel文件");
+            return;
+        }
         $('#excel-confirm').modal('show');
     });
     $("#xml-btn").on("click",function(){
+        if($('#DBUploadPath').val() == "Upload Path")
+        {
+            $('#info').modal('show');
+            $('#info').children('.content').children('p').text("请先通过浏览按钮选中您要导入的xml文件");
+            return;
+        }
         $('#xml-confirm').modal('show');
     });
 });

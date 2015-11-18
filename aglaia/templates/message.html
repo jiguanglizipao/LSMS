@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Aglaia</title>
-  {% load static from staticfiles %}
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}提示信息{% endblock %}
+
+{% block allcontent %}
   <link rel="stylesheet" href="{% static "css/semantic.min.css" %}" />
   <link rel="stylesheet" href="{% static "css/aglaia.css" %}" />
-</head>
-<body class="base">
-  {# Topbar begins here. #}
-  <div class="ui fixed inverted topbar main menu">
-    <a href="/" class="title item"><i class="home icon"></i>Aglaia</a>
-  </div>
-  {# Topbar ends here. #}
 
   {# Contents begin here. #}
+  </br></br>
   <div class="ui grid">
     <div class="sixteen wide column">
       <div class="ui icon message {% if type == "error" %}error{% else %}info{% endif %}">
@@ -35,5 +30,4 @@
   <script src="{% static "javascript/jquery-1.11.1.min.js" %}"></script>
   <script src="{% static "javascript/semantic.min.js" %}"></script>
   <script src="{% static "javascript/aglaia.js" %}"></script>
-</body>
-</html>
+{% endblock %}

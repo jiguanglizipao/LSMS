@@ -638,7 +638,7 @@ def do_return_repair(request):
                 request, 'The good is not in a repairing status!')
 
         if note == "":
-            note = get_ret_repaired_log();
+            note = get_ret_repaired_log()
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
@@ -1288,7 +1288,8 @@ def show_list(request):
 
     singles = None
     if not status or status == 'all':
-        singles = Single.objects.exclude(status=DESTROYED_KEY)
+        # singles = Single.objects.exclude(status=DESTROYED_KEY)
+        singles = Single.objects.exclude()
     else:
         singles = Single.objects.filter(status=sgl_sta_map[status])
 
@@ -1422,7 +1423,6 @@ def show_borrow(request):
     if 'filtdata' in request.POST:
         if request.POST['filtdata'] == 'true' or request.POST[
                 'filtdata'] == 'True' or request.POST['filtdata'] == 'TRUE':
-            print("true!")
             cont['filtdata'] = True
 
     return render(request, 'borrow.html', cont)

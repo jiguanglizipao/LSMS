@@ -36,15 +36,15 @@
         <!--</td>-->
         <td>
           {% if account.type == 'normal' %}
-            <div class="ui label">普通用户</div>&nbsp;
+            <div class="ui blue label">普通用户</div>&nbsp;
           {% elif account.type == 'manager' %}
-            <div class="ui label">管理员</div>&nbsp;
+            <div class="ui orange label">管理员</div>&nbsp;
           {% elif account.type == 'supervisor' %}
-            <div class="ui label">超级管理员</div>&nbsp;
+            <div class="ui purple label">超级管理员</div>&nbsp;
           {% elif account.type == 'none' %}
             <div class="ui label">无权限</div>&nbsp;
           {% else%}
-            <div class="ui label">特殊管理员</div>&nbsp;
+            <div class="ui green label">特殊管理员</div>&nbsp;
           {% endif %}
           {{ account.username }}
         </td>
@@ -62,9 +62,15 @@
         <!--</td>-->
         <td>
           <div class="ui tiny black buttons operations">
+            {% if 'account.modf_perm' in perm_list %}
             <div class="ui tip button set-perm" data-content="修改权限" data-position="top left" data-user="{{ account.username }}">
               <i class="unlock icon"></i>
             </div>
+            {% else %}
+            <a class="ui tip button item" data-content="查看操作日志" data-position="top left" href="{% url "log.views.show_log" %}?id={{ account.id }}&type=user&is_actor=true">
+                <i class="unordered list icon"></i>
+            </a>
+            {% endif %}
             <div class="ui floating dropdown icon button">
               <i class="dropdown icon"></i>
               <div class="menu">

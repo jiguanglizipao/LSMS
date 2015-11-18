@@ -142,9 +142,14 @@ def do_return_request(request):
         if not (comp.status == DESTROYING_KEY or comp.status ==
                 BORROWED_KEY or comp.status == MODIFY_APPLY_KEY):
             return HttpResponse('denied')
+        message = Message()
+        message.append({'direction': 'Recv',
+                        'info_type': '',
+                        'user_name': request.user.username,
+                        'text': get_comp_ret_log()})
         packed_update_computing(
             request, id, {
-                'status': RETURNING_KEY}, log=get_comp_ret_log())
+                'status': RETURNING_KEY,'note':message.tostring()}, log=get_comp_ret_log())
         send_notify_mail(request, CompReturnMail, comp=comp)
         return HttpResponseRedirect(reverse('goods.views.show_borrow'))
     #		return HttpResponse('ok')
@@ -591,7 +596,7 @@ def do_destroyed_comp(request):
         id = post['id']
         comp = Computing.objects.get(id=id)
         message = Message(comp.note)
-        message.append({'direction': 'Recv',
+        message.append({'direction': 'Send',
                         'info_type': '',
                         'user_name': request.user.username,
                         'text': get_comp_destroyed_log()})
@@ -615,7 +620,7 @@ def do_destroying_comp(request):
         id = post['id']
         comp = Computing.objects.get(id=id)
         message = Message(comp.note)
-        message.append({'direction': 'Recv',
+        message.append({'direction': 'Send',
                         'info_type': '',
                         'user_name': request.user.username,
                         'text': get_comp_destroying_log()})

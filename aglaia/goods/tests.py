@@ -335,6 +335,7 @@ class ViewTestCase(TestCase):
                         'user_name': 'normal', 'text': 'hello world'})
         self.b1 = create_borrow(accounts[2], 'sn1', 'ba', message.tostring())
 
+
     # -------- show_manage ---------
     def assertIsMessage(self, resp, message):
         self.assertEqual(resp.status_code, 200)
@@ -979,6 +980,155 @@ class ViewTestCase(TestCase):
         )
         self.assertIsMessage(wrong_sgl,
                              'The good is not in a repairing status!')
+
+    def test_do_user_finish_repair(self):
+        self.normal = Client()
+        self.assertTrue(
+            self.normal.login(username='normal', password='123456'))
+
+        update_borrow(self.b1.id, {'status': REPAIR_USER_PEND_KEY})
+        update_single(self.s1.id, {'status': BORROWED_KEY})
+
+        dic = {}
+        noid = self.normal.post(
+            reverse('goods.views.do_user_finish_repair'),
+            dic)
+        self.assertIsMessage(noid,
+                             'Return Repair failed: "\'id\'"')
+
+        note = 'testnote'
+        dic['id'] = self.b1.id
+        dic['note'] = note
+
+        correct = self.normal.post(
+            reverse('goods.views.do_user_finish_repair'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('goods.views.show_borrow'))
+
+        b2 = Borrow.objects.get(id=self.b1.id)
+        self.assertEqual(b2.status, BORROWED_KEY)
+        self.assertEqual(Message(b2.note).last()['text'], note)
+        s2 = Single.objects.get(id=self.s1.id)
+        self.assertEqual(s2.status, BORROWED_KEY)
+
+        wrong_brw = self.normal.post(
+            reverse('goods.views.do_user_finish_repair'),
+            dic
+        )
+        self.assertIsMessage(wrong_brw,
+                             'This Request is not in a user-repair status!')
+        update_borrow(self.b1.id, {'status': REPAIR_USER_PEND_KEY})
+        update_single(self.s1.id, {'status': REPAIR_USER_PEND_KEY})
+
+        wrong_sgl = self.normal.post(
+            reverse('goods.views.do_user_finish_repair'),
+            dic
+        )
+        self.assertIsMessage(wrong_sgl,
+                             'This Request is not in a borrowed status!')
+
+
+    def test_do_user_update_repair(self):
+        self.normal = Client()
+        self.assertTrue(
+            self.normal.login(username='normal', password='123456'))
+
+        update_borrow(self.b1.id, {'status': REPAIR_USER_PEND_KEY})
+        update_single(self.s1.id, {'status': BORROWED_KEY})
+
+        dic = {}
+        noid = self.normal.post(
+            reverse('goods.views.do_user_update_repair'),
+            dic)
+        self.assertIsMessage(noid,
+                             'Update Repair failed: "\'id\'"')
+
+        note = 'testnote'
+        dic['id'] = self.b1.id
+        dic['note'] = note
+
+        correct = self.normal.post(
+            reverse('goods.views.do_user_update_repair'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('goods.views.show_borrow'))
+
+        b2 = Borrow.objects.get(id=self.b1.id)
+        self.assertEqual(b2.status, REPAIR_USER_PEND_KEY)
+        self.assertEqual(Message(b2.note).last()['text'], note)
+        s2 = Single.objects.get(id=self.s1.id)
+        self.assertEqual(s2.status, BORROWED_KEY)
+
+        update_borrow(self.b1.id, {'status': BORROWED_KEY})
+
+        wrong_brw = self.normal.post(
+            reverse('goods.views.do_user_update_repair'),
+            dic
+        )
+        self.assertIsMessage(wrong_brw,
+                             'This Request is not in a user-repair status!')
+        update_borrow(self.b1.id, {'status': REPAIR_USER_PEND_KEY})
+        update_single(self.s1.id, {'status': REPAIR_USER_PEND_KEY})
+
+        wrong_sgl = self.normal.post(
+            reverse('goods.views.do_user_finish_repair'),
+            dic
+        )
+        self.assertIsMessage(wrong_sgl,
+                             'This Request is not in a borrowed status!')
+
+
+    def test_do_update_repair(self):
+        self.manager = Client()
+        self.assertTrue(
+            self.manager.login(username='manager', password='123456'))
+
+        update_borrow(self.b1.id, {'status': REPAIRING_KEY})
+        update_single(self.s1.id, {'status': REPAIRING_KEY})
+
+        dic = {}
+        noid = self.manager.post(
+            reverse('goods.views.do_update_repair'),
+            dic)
+        self.assertIsMessage(noid,
+                             'Update Repair failed: "\'id\'"')
+
+        note = 'testnote'
+        dic['id'] = self.b1.id
+        dic['note'] = note
+
+        correct = self.manager.post(
+            reverse('goods.views.do_update_repair'),
+            dic
+        )
+        self.assertRedirects(correct, reverse('goods.views.show_manage'))
+
+        b2 = Borrow.objects.get(id=self.b1.id)
+        self.assertEqual(b2.status, REPAIRING_KEY)
+        self.assertEqual(Message(b2.note).last()['text'], note)
+        s2 = Single.objects.get(id=self.s1.id)
+        self.assertEqual(s2.status, REPAIRING_KEY)
+
+        update_borrow(self.b1.id, {'status': BORROWED_KEY})
+
+        wrong_brw = self.manager.post(
+            reverse('goods.views.do_update_repair'),
+            dic
+        )
+        self.assertIsMessage(wrong_brw,
+                             'This Request is not in a repair status!')
+        update_borrow(self.b1.id, {'status': REPAIRING_KEY})
+        update_single(self.s1.id, {'status': REPAIR_USER_PEND_KEY})
+
+        wrong_sgl = self.manager.post(
+            reverse('goods.views.do_update_repair'),
+            dic
+        )
+        self.assertIsMessage(wrong_sgl,
+                             'This Request is not in a repair status!')
+
+
 
     # ----------- show list --------------
     def test_do_set_unavailable(self):
