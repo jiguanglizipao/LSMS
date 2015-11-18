@@ -60,10 +60,10 @@
     <div class="field">
         <label>服务器类型</label>
         <div class="ui selection dropdown fluid">
-            <input type="hidden" name="type">
+            <input type="hidden" name="type" id="type">
             <div class="default text">虚拟机/实体机</div>
             <i class="dropdown icon"></i>
-            <div class="menu">
+            <div class="menu" id="type-menu">
                 <div class="item" data-value="virtual">虚拟机</div>
                 <div class="item" data-value="real">实体机</div>
             </div>
@@ -92,10 +92,10 @@
     <div class="field">
         <label>硬盘类型</label>
         <div class="ui selection dropdown fluid">
-            <input type="hidden" name="disktype">
+            <input type="hidden" name="disktype" id="disktype">
             <div class="default text">HDD/SSD</div>
             <i class="dropdown icon"></i>
-            <div class="menu">
+            <div class="menu" id="disktype-menu">
                 <div class="item" data-value="HDD">HDD</div>
                 <div class="item" data-value="SSD">SSD</div>
             </div>
@@ -146,6 +146,13 @@ $(function () {
             return;
         }
         {% endfor %}
+        if ($("#type").val()=='') {
+            $('#type').parent().addClass('error');
+            $('#create-package').addClass('error');
+            $('.error.message').children('p').text('必须选择服务器类型！');
+            error_info = "type";
+            return;
+        }
         if ($("#os").val() == "") {
             $('#os').parent().addClass('error');
             $('#create-package').addClass('error');
@@ -166,6 +173,13 @@ $(function () {
             $('#create-package').addClass('error');
             $('.error.message').children('p').text('内存大小必须为合法数字！');
             error_info = "memory";
+            return;
+        }
+        if ($("#disktype").val()=='') {
+            $('#disktype').parent().addClass('error');
+            $('#create-package').addClass('error');
+            $('.error.message').children('p').text('必须选择硬盘类型！');
+            error_info = "disktype";
             return;
         }
         if (!regexp.test($("#disk").val())) {
@@ -209,6 +223,18 @@ $(function () {
     $('#disk').bind('focus keydown', function (event) {
         if (error_info == "disk" && event.keyCode != 9) {
             $('#disk').parent().removeClass('error');
+            $('#create-package').removeClass('error');
+        }
+    });
+    $('#type-menu').click(function () {
+        if (error_info == "type") {
+            $('#type').parent().removeClass('error');
+            $('#create-package').removeClass('error');
+        }
+    });
+    $('#disktype-menu').click(function () {
+        if (error_info == "disktype") {
+            $('#disktype').parent().removeClass('error');
             $('#create-package').removeClass('error');
         }
     });
