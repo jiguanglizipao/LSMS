@@ -638,7 +638,7 @@ def do_return_repair(request):
                 request, 'The good is not in a repairing status!')
 
         if note == "":
-            note = get_ret_repaired_log();
+            note = get_ret_repaired_log()
         message = Message(brw.note)
         message.append({'direction': 'Send', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
