@@ -28,7 +28,7 @@ super_perms = [NORMAL,
                GOODS_AUTH,
                VIEW_ALL,
                COMPUT_AUTH,
-               MODF_PERM,]
+               MODF_PERM, ]
 
 # ===============================================
 # ===============================================
@@ -77,9 +77,11 @@ def check_type(account):
         return
     type_normal = True  # 判断是否为普通用户
     for perm in super_perms:
-        if account.user.has_perm('account.' + perm.lower()) and not perm in normal_perms:
+        if account.user.has_perm('account.' +
+                                 perm.lower()) and not perm in normal_perms:
             type_normal = False
-        if not account.user.has_perm('account.' + perm.lower()) and perm in normal_perms:
+        if not account.user.has_perm(
+                'account.' + perm.lower()) and perm in normal_perms:
             type_normal = False
     if type_normal:
         account.type = "normal"

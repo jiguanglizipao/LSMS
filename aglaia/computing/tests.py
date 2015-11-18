@@ -544,7 +544,7 @@ class TestTestCase(TestCase):
         self.assertRaises(PackageDoesNotExistError, delete_package, 5)
         self.assertRaises(PackageDoesNotExistError, delete_package, -1)
 
-    #Test Goods View
+    # Test Goods View
 
     def test_do_get_comp_prop(self):
         self.manager = Client()
@@ -562,9 +562,9 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_get_comp_prop'),
             dic
         )
-        self.assertEqual(correct.content.decode(),json.dumps(dc))
+        self.assertEqual(correct.content.decode(), json.dumps(dc))
 
-    #Borrow
+    # Borrow
     def test_do_borrow_request(self):
         self.manager = Client()
         self.assertTrue(
@@ -626,6 +626,7 @@ class TestTestCase(TestCase):
             dic
         )
         self.assertEqual(correct.content.decode(), 'ok')
+
     def test_do_disapprove_borrow(self):
         self.manager = Client()
         self.assertTrue(
@@ -664,8 +665,10 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_disapprove_borrow'),
             dic
         )
-        self.assertRedirects(correct, reverse('computing.views.show_comp_verify'))
+        self.assertRedirects(correct, reverse(
+            'computing.views.show_comp_verify'))
         delete_computing(comp.id)
+
     def test_do_approve_borrow(self):
         self.manager = Client()
         self.assertTrue(
@@ -687,9 +690,10 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_approve_borrow'),
             dic
         )
-        self.assertRedirects(correct, reverse('computing.views.show_comp_verify'))
+        self.assertRedirects(correct, reverse(
+            'computing.views.show_comp_verify'))
 
-    #Return
+    # Return
     def test_do_return_request(self):
         self.manager = Client()
         self.assertTrue(
@@ -735,6 +739,7 @@ class TestTestCase(TestCase):
         )
         self.assertRedirects(correct, reverse('goods.views.show_borrow'))
         delete_computing(comp.id)
+
     def test_do_approve_return(self):
         self.manager = Client()
         self.assertTrue(
@@ -772,10 +777,11 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_approve_return'),
             dic
         )
-        self.assertRedirects(correct,reverse('computing.views.show_comp_verify'))
+        self.assertRedirects(correct, reverse(
+            'computing.views.show_comp_verify'))
         delete_computing(comp.id)
 
-    #Modify
+    # Modify
     def test_do_modif_request(self):
         self.manager = Client()
         self.assertTrue(
@@ -821,6 +827,7 @@ class TestTestCase(TestCase):
         )
         self.assertEqual(correct.content.decode(), 'ok')
         delete_computing(comp.id)
+
     def test_do_approve_modify(self):
         self.manager = Client()
         self.assertTrue(
@@ -866,7 +873,8 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_approve_modify'),
             dic
         )
-        self.assertRedirects(correct,reverse('computing.views.show_comp_verify'))
+        self.assertRedirects(correct, reverse(
+            'computing.views.show_comp_verify'))
         delete_computing(comp.id)
         create_computing([computing3])
         comp = Computing.objects.get(name='comp3')
@@ -876,7 +884,8 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_approve_modify'),
             dic
         )
-        self.assertRedirects(correct,reverse('computing.views.show_comp_verify'))
+        self.assertRedirects(correct, reverse(
+            'computing.views.show_comp_verify'))
         delete_computing(comp.id)
         create_computing([computing3])
         comp = Computing.objects.get(name='comp3')
@@ -886,7 +895,9 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_approve_modify'),
             dic
         )
-        self.assertRedirects(correct,reverse('computing.views.show_comp_verify'))
+        self.assertRedirects(correct, reverse(
+            'computing.views.show_comp_verify'))
+
     def test_do_disapprove_modify(self):
         self.manager = Client()
         self.assertTrue(
@@ -932,10 +943,11 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_disapprove_modify'),
             dic
         )
-        self.assertRedirects(correct,reverse('computing.views.show_comp_verify'))
+        self.assertRedirects(correct, reverse(
+            'computing.views.show_comp_verify'))
         delete_computing(comp.id)
 
-    #Flag
+    # Flag
     def test_do_set_flag(self):
         self.manager = Client()
         self.assertTrue(
@@ -959,7 +971,7 @@ class TestTestCase(TestCase):
         )
         self.assertRedirects(correct, reverse('goods.views.show_borrow'))
 
-    #Package
+    # Package
     def test_do_package_create(self):
         self.manager = Client()
         self.assertTrue(
@@ -967,13 +979,13 @@ class TestTestCase(TestCase):
                 username='rongyu',
                 password='rongyu'))
         pack1 = {
-            'name':'pack_test',
-            'cpu':'core',
-            'memory':10,
-            'disk':200,
-            'os':'windows',
-            'type':'real',
-            'disktype':'SSD'
+            'name': 'pack_test',
+            'cpu': 'core',
+            'memory': 10,
+            'disk': 200,
+            'os': 'windows',
+            'type': 'real',
+            'disktype': 'SSD'
         }
 
         dic = {}
@@ -989,7 +1001,8 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_create_package'),
             dic
         )
-        self.assertRedirects(correct, reverse('computing.views.show_comp_manage'))
+        self.assertRedirects(correct, reverse(
+            'computing.views.show_comp_manage'))
 
         dic['type'] = 'virtual'
 
@@ -997,7 +1010,8 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_create_package'),
             dic
         )
-        self.assertRedirects(correct, reverse('computing.views.show_comp_manage'))
+        self.assertRedirects(correct, reverse(
+            'computing.views.show_comp_manage'))
 
     def test_do_package_get(self):
         self.manager = Client()
@@ -1014,7 +1028,7 @@ class TestTestCase(TestCase):
         )
         p = Package.objects.get(name='package1')
         d = get_context_pack(p)
-        self.assertEqual(correct.content.decode(),json.dumps(d))
+        self.assertEqual(correct.content.decode(), json.dumps(d))
 
     def test_do_package_delete(self):
         self.manager = Client()
@@ -1029,9 +1043,10 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_delete_package'),
             dic
         )
-        self.assertRedirects(correct, reverse('computing.views.show_comp_manage'))
+        self.assertRedirects(correct, reverse(
+            'computing.views.show_comp_manage'))
 
-    #Destroy computing resource
+    # Destroy computing resource
     def test_do_destroying_comp(self):
         self.manager = Client()
         self.assertTrue(
@@ -1046,7 +1061,8 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_destroying_comp'),
             dic
         )
-        self.assertRedirects(correct, reverse('computing.views.show_comp_verify'))
+        self.assertRedirects(correct, reverse(
+            'computing.views.show_comp_verify'))
 
     def test_do_destroyed_comp(self):
         self.manager = Client()
@@ -1062,6 +1078,5 @@ class TestTestCase(TestCase):
             reverse('computing.views.do_destroyed_comp'),
             dic
         )
-        self.assertRedirects(correct, reverse('computing.views.show_comp_verify'))
-
-
+        self.assertRedirects(correct, reverse(
+            'computing.views.show_comp_verify'))

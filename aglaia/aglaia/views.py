@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 def show_message(request, msg):
     return render(request, "message.html", {
         'message': msg,
-        'perm_list':request.user.get_all_permissions(),
+        'perm_list': request.user.get_all_permissions(),
     })
 
 

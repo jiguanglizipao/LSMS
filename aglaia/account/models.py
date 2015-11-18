@@ -62,11 +62,11 @@ class Account(models.Model):
                        (VIEW_ALL, '查看所有用户和日志'),
                        (MODF_PERM, '修改所有人的权限信息'),
                        )
-                       # (USER_AUTH, '用户身份审核'),
-                       # (MODF_NORMAL, '修改他人的普通信息'),
-                       # (MODF_KEY, '修改所有人的敏感信息'),
-                       # (MODF_GROUP, '修改所有人所在的用户组'),
-                       # (DEL_USER, '删除用户'))
+        # (USER_AUTH, '用户身份审核'),
+        # (MODF_NORMAL, '修改他人的普通信息'),
+        # (MODF_KEY, '修改所有人的敏感信息'),
+        # (MODF_GROUP, '修改所有人所在的用户组'),
+        # (DEL_USER, '删除用户'))
 
     real_name = models.CharField(max_length=50)
     department = models.ManyToManyField(Department, blank=True)

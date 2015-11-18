@@ -82,11 +82,11 @@ class Message:
             self.root.set('Send_Readed_Time', time.strftime(
                 '%Y-%m-%d %H:%M:%S',
                 time.localtime(
-                    time.time()-1)))
+                    time.time() - 1)))
             self.root.set('Recv_Readed_Time', time.strftime(
                 '%Y-%m-%d %H:%M:%S',
                 time.localtime(
-                    time.time()-1)))
+                    time.time() - 1)))
         else:
             self.root.set(type, time.strftime(
                 '%Y-%m-%d %H:%M:%S',
@@ -94,7 +94,9 @@ class Message:
                     time.time())))
 
     def getTime(self):
-        return {'Send_Readed_Time':self.root.get('Send_Readed_Time'),'Recv_Readed_Time':self.root.get('Recv_Readed_Time')}
+        return {
+            'Send_Readed_Time': self.root.get('Send_Readed_Time'),
+            'Recv_Readed_Time': self.root.get('Recv_Readed_Time')}
 
     def last(self):
         return self.index(self.__sizeof__() - 1)

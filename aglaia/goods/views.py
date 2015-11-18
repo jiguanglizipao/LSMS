@@ -601,7 +601,7 @@ def do_finish_repair(request):
         if not (brw.single.status == REPAIRING_KEY):
             return show_message(
                 request, 'The good is not in a repairing status!')
-        
+
         if note == "":
             note = get_finish_repair_log()
         message = Message(brw.note)
@@ -679,7 +679,7 @@ def do_user_finish_repair(request):
         message = Message(brw.note)
         message.append({'direction': 'Recv', 'info_type': '',
                         'user_name': request.user.username, 'text': note})
-        
+
         packed_update_borrow(request,
                              id,
                              {'status': BORROWED_KEY,
@@ -894,14 +894,16 @@ def do_input_apply_goods(request):
                 request, "This Request is not in a apply_goods finish status!")
 
         if packed_find_single(request, {'sn': sn}, {}):
-            raise Exception("SN already exists! Please specify a different one.")
+            raise Exception(
+                "SN already exists! Please specify a different one.")
         tp = packed_find_gtypes(request, type_name)
 
         pnsr = apgd.pro_names.split(sep)
         pnsr.pop()
 
         if tp and tp[0].get_all_pros() != pnsr:
-            raise Exception("Type name already in use! Please specify a different one.")
+            raise Exception(
+                "Type name already in use! Please specify a different one.")
         if not apgd.status == FINISH_GOODS_APPLY_KEY:
             return show_message(
                 request, "This Request is not in a apply_goods finish status!")
@@ -953,7 +955,7 @@ def do_finish_lost(request):
         if not brw.single.status == BORROWED_KEY:
             return show_message(
                 request, 'The good is not in a borrowed status!')
-        
+
         if note == "":
             note = get_good_lost_log()
         message = Message(brw.note)

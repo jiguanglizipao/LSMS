@@ -335,7 +335,6 @@ class ViewTestCase(TestCase):
                         'user_name': 'normal', 'text': 'hello world'})
         self.b1 = create_borrow(accounts[2], 'sn1', 'ba', message.tostring())
 
-
     # -------- show_manage ---------
     def assertIsMessage(self, resp, message):
         self.assertEqual(resp.status_code, 200)
@@ -1028,7 +1027,6 @@ class ViewTestCase(TestCase):
         self.assertIsMessage(wrong_sgl,
                              'This Request is not in a borrowed status!')
 
-
     def test_do_user_update_repair(self):
         self.normal = Client()
         self.assertTrue(
@@ -1078,7 +1076,6 @@ class ViewTestCase(TestCase):
         self.assertIsMessage(wrong_sgl,
                              'This Request is not in a borrowed status!')
 
-
     def test_do_update_repair(self):
         self.manager = Client()
         self.assertTrue(
@@ -1127,8 +1124,6 @@ class ViewTestCase(TestCase):
         )
         self.assertIsMessage(wrong_sgl,
                              'This Request is not in a repair status!')
-
-
 
     # ----------- show list --------------
     def test_do_set_unavailable(self):
@@ -1599,8 +1594,15 @@ class ViewTestCase(TestCase):
         note = 'applynote'
 
         packed_create_apply_goods(
-            request, name, type_name, pro_name, pro_value, sns, GOODS_APPLYING_KEY, account, note
-        )
+            request,
+            name,
+            type_name,
+            pro_name,
+            pro_value,
+            sns,
+            GOODS_APPLYING_KEY,
+            account,
+            note)
 
         dic = {}
 
@@ -1654,8 +1656,15 @@ class ViewTestCase(TestCase):
         note = 'applynote'
 
         packed_create_apply_goods(
-            request, name, type_name, pro_name, pro_value, sns, GOODS_APPLYING_KEY, account, note
-        )
+            request,
+            name,
+            type_name,
+            pro_name,
+            pro_value,
+            sns,
+            GOODS_APPLYING_KEY,
+            account,
+            note)
 
         dic = {}
 
@@ -1709,8 +1718,15 @@ class ViewTestCase(TestCase):
         note = 'applynote'
 
         packed_create_apply_goods(
-            request, name, type_name, pro_name, pro_value, sns, GOODS_APPLY_KEY, account, note
-        )
+            request,
+            name,
+            type_name,
+            pro_name,
+            pro_value,
+            sns,
+            GOODS_APPLY_KEY,
+            account,
+            note)
 
         dic = {}
 
@@ -1764,8 +1780,15 @@ class ViewTestCase(TestCase):
         note = 'applynote'
 
         packed_create_apply_goods(
-            request, name, type_name, pro_name, pro_value, sns, GOODS_APPLY_PEND_KEY, account, note
-        )
+            request,
+            name,
+            type_name,
+            pro_name,
+            pro_value,
+            sns,
+            GOODS_APPLY_PEND_KEY,
+            account,
+            note)
 
         dic = {}
 
@@ -1820,8 +1843,15 @@ class ViewTestCase(TestCase):
         note = 'applynote'
 
         packed_create_apply_goods(
-            request, name, type_name, pro_name, pro_value, sns, GOODS_APPLYING_KEY, account, note
-        )
+            request,
+            name,
+            type_name,
+            pro_name,
+            pro_value,
+            sns,
+            GOODS_APPLYING_KEY,
+            account,
+            note)
 
         dic = {}
 
@@ -1873,8 +1903,8 @@ class ViewTestCase(TestCase):
         )
 
         packed_update_apply_goods(
-            request, dic['id'], {'status': FINISH_GOODS_APPLY_KEY, 'note': note}
-        )
+            request, dic['id'], {
+                'status': FINISH_GOODS_APPLY_KEY, 'note': note})
 
         goodstatus = self.manager.post(
             reverse('goods.views.do_input_apply_goods'), dic

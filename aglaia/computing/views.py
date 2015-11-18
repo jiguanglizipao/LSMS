@@ -149,7 +149,7 @@ def do_return_request(request):
                         'text': get_comp_ret_log()})
         packed_update_computing(
             request, id, {
-                'status': RETURNING_KEY,'note':message.tostring()}, log=get_comp_ret_log())
+                'status': RETURNING_KEY, 'note': message.tostring()}, log=get_comp_ret_log())
         send_notify_mail(request, CompReturnMail, comp=comp)
         return HttpResponseRedirect(reverse('goods.views.show_borrow'))
     #		return HttpResponse('ok')
@@ -601,8 +601,9 @@ def do_destroyed_comp(request):
                         'user_name': request.user.username,
                         'text': get_comp_destroyed_log()})
         note = message.tostring()
-        packed_update_computing(request, id, {
-            'status': DESTROYED_KEY,'note':note}, log=get_comp_destroyed_log())
+        packed_update_computing(
+            request, id, {
+                'status': DESTROYED_KEY, 'note': note}, log=get_comp_destroyed_log())
         return HttpResponseRedirect(
             reverse('computing.views.show_comp_verify'))
     except Exception as e:
@@ -625,8 +626,9 @@ def do_destroying_comp(request):
                         'user_name': request.user.username,
                         'text': get_comp_destroying_log()})
         note = message.tostring()
-        packed_update_computing(request, id, {
-            'status': DESTROYING_KEY,'note':note}, log=get_comp_destroying_log())
+        packed_update_computing(
+            request, id, {
+                'status': DESTROYING_KEY, 'note': note}, log=get_comp_destroying_log())
         send_user_mail(
             comp.account,
             'Aglaia Item Notify',
