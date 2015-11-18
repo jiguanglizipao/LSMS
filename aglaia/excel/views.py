@@ -554,7 +554,7 @@ def import_computing(request):
             disk_type = DISK_CHOICES[request.POST['disk_type']]
             message = Message()
             message.append({'direction': 'Send', 'info_type': '',
-                            'user_name': request.POST['user'], 'text': '管理员创建'})
+                            'user_name': request.user.username, 'text': '管理员创建'})
             computing = Computing(
                 pc_type=pc_type,
                 cpu=request.POST['cpu'],

@@ -4,7 +4,7 @@ import time
 
 class Message:
 
-    def __init__(self, origin='', max_num=400):
+    def __init__(self, origin='', max_num=50):
         if origin:
             try:
                 self.root = etree.fromstring(origin.encode())
@@ -77,14 +77,24 @@ class Message:
             encoding="utf-8",
             xml_declaration=True)
 
-    def setTime(self):
-        self.root.set('time', time.strftime(
-            '%Y-%m-%d %H:%M:%S',
-            time.localtime(
-                time.time())))
+    def setTime(self, type=None):
+        if not type:
+            self.root.set('Send_Readed_Time', time.strftime(
+                '%Y-%m-%d %H:%M:%S',
+                time.localtime(
+                    time.time()-1)))
+            self.root.set('Recv_Readed_Time', time.strftime(
+                '%Y-%m-%d %H:%M:%S',
+                time.localtime(
+                    time.time()-1)))
+        else:
+            self.root.set(type, time.strftime(
+                '%Y-%m-%d %H:%M:%S',
+                time.localtime(
+                    time.time())))
 
     def getTime(self):
-        return self.root.get('time')
+        return {'Send_Readed_Time':self.root.get('Send_Readed_Time'),'Recv_Readed_Time':self.root.get('Recv_Readed_Time')}
 
     def last(self):
         return self.index(self.__sizeof__() - 1)
