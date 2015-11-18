@@ -7,7 +7,11 @@ class MessageCenterTestCase(TestCase):
 
     def setUp(self):
         self.message = Message(max_num=5)
-        self.assertEqual(self.message.getTime() <= time.strftime(
+        self.assertEqual(self.message.getTime()['Recv_Readed_Time'] < time.strftime(
+            '%Y-%m-%d %H:%M:%S',
+            time.localtime(
+                time.time())), True)
+        self.assertEqual(self.message.getTime()['Send_Readed_Time'] < time.strftime(
             '%Y-%m-%d %H:%M:%S',
             time.localtime(
                 time.time())), True)
