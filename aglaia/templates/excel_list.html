@@ -28,12 +28,14 @@
         <td class="goods-sn">{{ goods.sn }}</td>
         <td class="goods-typename">{{ goods.type_name }}</td>
         <td>
-            <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
-            {% for pro in goods.prop %}
-              {% if pro.pro_name != "" %}
-              <div class="ui label" style="margin-top:5px">{{ pro.pro_name }}: {{ pro.pro_value }}</div>
-              {% endif %}
-            {% endfor %}'>详细
+            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                <table border="1" bordercolor="#989898">
+                    {% for pro in goods.prop %}
+                    {% if pro.pro_name != "" %}
+                    <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
+                    {% endif %}
+                    {% endfor %}
+                </table>'>详细
             </div>
         </td>
         <td>
@@ -89,30 +91,34 @@
         <td class="computing-user">{{ computing.user }}</td>
         <td class="computing-status">{{ computing.status }}</td>
         <td class="computing-pack_name">{{ computing.pack_name }}</td>
+
         <td>
-            <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
-              <div class="ui label" style="margin-top:5px">资源种类: {{ computing.pc_type }}</div>
-              <div class="ui label" style="margin-top:5px">CPU: {{ computing.cpu }}</div>
-              <div class="ui label" style="margin-top:5px">内存: {{ computing.memory }}</div>
-              <div class="ui label" style="margin-top:5px">硬盘: {{ computing.disk_type }}-{{ computing.disk }}</div>
-              <div class="ui label" style="margin-top:5px">操作系统: {{ computing.os }}</div>
-            '>详情
+            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                <table border="1" bordercolor="#989898">
+                    <tr><td>资源种类</td><td>{{ computing.pc_type }}</td></tr>
+                    <tr><td>CPU</td><td>{{ computing.cpu }}</td></tr>
+                    <tr><td>内存</td><td>{{ computing.memory }}GB</td></tr>
+                    <tr><td>硬盘</td><td>{{ computing.disk_type }}-{{ computing.disk }}GB</td></tr>
+                    <tr><td>操作系统</td><td>{{ computing.os }}</td></tr>
+                </table>'>详细
             </div>
         </td>
         <td class="computing-expire_time">{{ computing.expire_time }}</td>
         <td>
-            <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
-              <div class="ui label" style="margin-top:5px">用户名: {{ computing.login }}</div>
-              <div class="ui label" style="margin-top:5px">密码: {{ computing.password }}</div>
-              <div class="ui label" style="margin-top:5px">IP: {{ computing.ip }}</div>
-            '>详情
+            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                <table border="1" bordercolor="#989898">
+                    <tr><td>用户名</td><td>{{ computing.login }}</td></tr>
+                    <tr><td>密码</td><td>{{ computing.password }}</td></tr>
+                    <tr><td>IP</td><td>{{ computing.ip }}</td></tr>
+                </table>'>详细
             </div>
         </td>
         {% if computing.flag == 'True' %}
             <td>
-                <div class="ui basic button tiny config-detail" data-variation="inverted" data-html='
-                  <div class="ui label" style="margin-top:5px">数据内容: {{ computing.data_content }}</div>
-                '><i class="flag red icon"></i>
+                <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                    <table border="1" bordercolor="#989898">
+                        <tr><td>数据内容</td><td>{{ computing.data_content }}</td></tr>
+                    </table>'><i class="flag red icon"></i>
                 </div>
             </td>
         {% else %}
