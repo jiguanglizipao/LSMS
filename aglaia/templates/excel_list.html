@@ -47,8 +47,7 @@
     </tbody>
 </table>
 <div class="ui right aligned basic segment">
-    <input id="goods-all" type="button" class="ui blue button" value="全部选择">
-    <input id="goods-clear" type="button" class="ui purple button" value="取消选择">
+    <input id="goods-all" type="button" class="ui blue button" value="全部反选">
     <input id="goods-btn" type="button" class="ui positive button" value="提交修改">
 </div>
 <!--<div class="ui right aligned basic segment">-->
@@ -132,8 +131,7 @@
     </tbody>
 </table>
 <div class="ui right aligned basic segment">
-    <input id="computing-all" type="button" class="ui blue button" value="全部选择">
-    <input id="computing-clear" type="button" class="ui purple button" value="取消选择">
+    <input id="computing-all" type="button" class="ui blue button" value="全部反选">
     <input id="computing-btn" type="button" class="ui positive button" value="提交修改">
 </div>
 <!--<div class="ui right aligned basic segment">-->
@@ -332,22 +330,18 @@ function Loaded(){
     });
     $("#goods-all").on("click",function(){
 		{% for goods in goods_list %}
-			$("#goods-checkbox-{{goods.id}}").delay(1000).prop("checked",true);
+            if($("#goods-checkbox-{{goods.id}}").is(':checked'))
+                $("#goods-checkbox-{{goods.id}}").delay(1000).prop("checked", false);
+            else
+                $("#goods-checkbox-{{goods.id}}").delay(1000).prop("checked", true);
 		{% endfor %}
     });
     $("#computing-all").on("click",function(){
 		{% for computing in computing_list %}
-			$("#computing-checkbox-{{computing.id}}").delay(1000).prop("checked",true);
-		{% endfor %}
-    });
-    $("#goods-clear").on("click",function(){
-		{% for goods in goods_list %}
-			$("#goodsc-checkbox-{{goods.id}}").delay(1000).prop("checked",false);
-		{% endfor %}
-    });
-    $("#computing-clear").on("click",function(){
-		{% for computing in computing_list %}
-			$("#computing-checkbox-{{computing.id}}").delay(1000).prop("checked",false);
+            if($("#computing-checkbox-{{computing.id}}").is(':checked'))
+			    $("#computing-checkbox-{{computing.id}}").delay(1000).prop("checked",false);
+            else
+                $("#computing-checkbox-{{computing.id}}").delay(1000).prop("checked",true);
 		{% endfor %}
     });
 }
