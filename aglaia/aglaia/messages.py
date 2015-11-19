@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 def get_accept_brw_log(*args, **kwargs):
     return '同意借用'
 

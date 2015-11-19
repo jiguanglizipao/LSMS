@@ -28,7 +28,7 @@ super_perms = [NORMAL,
                GOODS_AUTH,
                VIEW_ALL,
                COMPUT_AUTH,
-               MODF_PERM,]
+               MODF_PERM, ]
 
 # ===============================================
 # ===============================================
@@ -77,9 +77,11 @@ def check_type(account):
         return
     type_normal = True  # 判断是否为普通用户
     for perm in super_perms:
-        if account.user.has_perm('account.' + perm.lower()) and not perm in normal_perms:
+        if account.user.has_perm('account.' +
+                                 perm.lower()) and not perm in normal_perms:
             type_normal = False
-        if not account.user.has_perm('account.' + perm.lower()) and perm in normal_perms:
+        if not account.user.has_perm(
+                'account.' + perm.lower()) and perm in normal_perms:
             type_normal = False
     if type_normal:
         account.type = "normal"
@@ -605,7 +607,7 @@ def do_send_mail(request):
         send_user_mail(acnt, subj, msg)
         if 'next' in request.POST:
             return HttpResponseRedirect(request.POST['next'])
-        return show_message(request, 'Send mail succeed!')
+        return show_message(request, '发送邮件成功!')
     except Exception as e:
         return show_message(request, 'Send mail failed: ' + e.__str__())
 

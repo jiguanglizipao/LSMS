@@ -96,21 +96,21 @@ log_list_func = {
 @permission_required(PERM_VIEW_ALL)
 def show_log(request):
     # try:
-        g = request.GET
-        is_actor = None
-        if 'is_actor' in g:
-            is_actor = g['is_actor']
-        llist = log_list_func[g['type']](g['id'], is_actor)
-        if len(llist) == 0:
-            is_empty = True
-        else:
-            is_empty = False
-        return render(request, 'log.html', {
-            'user': get_context_user(request.user),
-            'logs': llist,
-            'is_empty': is_empty,
-            'perm_list': request.user.get_all_permissions()
-        })
+    g = request.GET
+    is_actor = None
+    if 'is_actor' in g:
+        is_actor = g['is_actor']
+    llist = log_list_func[g['type']](g['id'], is_actor)
+    if len(llist) == 0:
+        is_empty = True
+    else:
+        is_empty = False
+    return render(request, 'log.html', {
+        'user': get_context_user(request.user),
+        'logs': llist,
+        'is_empty': is_empty,
+        'perm_list': request.user.get_all_permissions()
+    })
     # except Exception as e:
     #     return show_message(request, 'Show log Error: ' + e.__str__())
 
@@ -122,10 +122,14 @@ def show_message_center(request):
     brws = packed_find_borrow(request, {'account': account}, {})
     comps = packed_find_computing(request, {'account': account}, {})
 
+    goods_time_type = 'Recv_Readed_Time'
+    comps_time_type = 'Recv_Readed_Time'
     if request.user.has_perm(GOODS_AUTH):
         brws = packed_find_borrow(request, {}, {})
+        goods_time_type = 'Send_Readed_Time'
     if request.user.has_perm(COMPUT_AUTH):
         comps = packed_find_computing(request, {}, {})
+        comps_time_type = 'Send_Readed_Time'
 
     brws = brws.order_by('single', '-id')
 
@@ -153,10 +157,11 @@ def show_message_center(request):
             msg['associate'] = message.index(i)["user_name"]
             msg['time'] = message.index(i)["time"]
             msg['text'] = message.index(i)["text"]
-            msg['flag'] = (message.getTime() < msg['time']).__str__()
+            msg['flag'] = (message.getTime()[goods_time_type]
+                           < msg['time']).__str__()
             if msg['text']:
                 goods[sn]['msgs'].append(msg)
-        message.setTime()
+        message.setTime(goods_time_type)
         brw.note = message.tostring()
         brw.save()
         goods[sn]['msgs'].sort(key=lambda tmsg: tmsg['time'])
@@ -194,10 +199,11 @@ def show_message_center(request):
             msg['associate'] = message.index(i)["user_name"]
             msg['time'] = message.index(i)["time"]
             msg['text'] = message.index(i)["text"]
-            msg['flag'] = (message.getTime() < msg['time']).__str__()
+            msg['flag'] = (message.getTime()[comps_time_type]
+                           < msg['time']).__str__()
             if msg['text']:
                 compset[sn]['msgs'].append(msg)
-        message.setTime()
+        message.setTime(comps_time_type)
         comp.note = message.tostring()
         comp.save()
         compset[sn]['msgs'].sort(key=lambda tmsg: tmsg['time'])
