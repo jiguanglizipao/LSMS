@@ -145,7 +145,7 @@ class MessageCenterTestCase(TestCase):
         create_computing(c)
 
         account[0].user.user_permissions.add(
-            Permission.objects.get(codename="goods_auth"))
+            Permission.objects.get(codename="data_auth"))
 
         settings.SEND_MAIL_NOTIFY = False
 

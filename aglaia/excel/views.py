@@ -73,7 +73,7 @@ def make_hash(data):
 
 
 @method_required('GET')
-@permission_required(DATA_AUTH)
+@permission_required(PERM_DATA_AUTH)
 def export_database(request):
     ran = 'excel/' + random_str() + '.xml'
     execute_from_command_line(
@@ -94,7 +94,7 @@ def export_database(request):
 
 
 @method_required('GET')
-@permission_required(DATA_AUTH)
+@permission_required(PERM_DATA_AUTH)
 def import_database(request):
     try:
         ran = 'excel/' + request.GET['ran'] + '.xml'
@@ -131,7 +131,7 @@ def import_database(request):
         return show_message(request, 'Import Error' + e.__str__())
 
 
-@permission_required(DATA_AUTH)
+@permission_required(PERM_DATA_AUTH)
 def index(request):
     if request.method == 'GET':
         return render(request, "excel_index.html", {
@@ -299,7 +299,7 @@ def export_excel(request):
 
 
 @method_required('GET')
-@permission_required(DATA_AUTH)
+@permission_required(PERM_DATA_AUTH)
 def import_excel(request):
     ran = 'excel/' + request.GET['ran'] + '.xlsx'
 
@@ -487,7 +487,7 @@ def import_excel(request):
 
 
 @method_required('POST')
-@permission_required(DATA_AUTH)
+@permission_required(PERM_DATA_AUTH)
 def import_goods(request):
     try:
         mutex.acquire()
@@ -527,7 +527,7 @@ def import_goods(request):
 
 
 @method_required('POST')
-@permission_required(DATA_AUTH)
+@permission_required(PERM_DATA_AUTH)
 def import_computing(request):
     try:
         mutex.acquire()
