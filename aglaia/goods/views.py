@@ -917,11 +917,15 @@ def do_input_apply_goods(request):
                                    'type_name': type_name},
                                   log=get_input_goods_apply_log())
 
-        type_key = []
-        for name in apgd.pro_names.split(sep):
-            if name:
-                type_key.append(name)
-        tp = packed_create_gtype(request, type_name, type_key)
+        if not tp:
+            type_key = []
+            for name in apgd.pro_names.split(sep):
+                if name:
+                    type_key.append(name)
+            tp = packed_create_gtype(request, type_name, type_key)
+        else:
+            tp = tp[0]
+
         type_value = []
         for value in apgd.pro_values.split(sep):
             if value:
