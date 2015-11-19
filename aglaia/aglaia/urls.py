@@ -14,5 +14,5 @@ urlpatterns = patterns('',
                        url(r'^goods/', include('goods.urls')),
                        url(r'^computing/', include('computing.urls')),
                        url(r'^log/', include('log.urls')),
-                       url(r'^excel/', include('excel.urls'))
+                       url(r'^data_manage/', include('excel.urls'))
                        )
