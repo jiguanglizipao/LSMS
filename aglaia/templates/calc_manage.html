@@ -6,253 +6,267 @@
 
 {% block allcontent %}
 
-<div style="padding-left:150px; padding-right:150px; padding-top:60px">
-<h2 class="ui header">套餐列表</h2>
-<table class="ui small table segment">
-    <thead>
-    <tr>
-        <th>名称</th>
-        <th>服务器</th>
-        <th>操作系统</th>
-        <th>CPU</th>
-        <th>内存</th>
-        <th>硬盘</th>
-        <th>操作</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for pkg in package_list %}
-    <tr>
-        <td>{{ pkg.name }}</td>
-        <td>{% if pkg.type == 'real' %}实体{% elif pkg.type == 'virtual' %}虚拟{% endif %}</td>
-        <td>{{ pkg.os }}</td>
-        <td>{{ pkg.cpu }}</td>
-        <td>{{ pkg.memory }}GB</td>
-        <td>{{ pkg.disk }}GB {{ pkg.disktype }}</td>
-        <td>
-               <a class="ui tiny circular button red reject-button" data-variation="inverted"
-               data-position="top center" data-html='{% include 'confirm_with_yesno.html' with name=pkg.name title="确定要删除套餐吗？" url="computing.views.do_delete_package" %}'>
-                删除</a>
-{#            <form action="{% url "computing.views.do_delete_package" %}" method="post">#}
-{#            <input type="hidden" name="name" value="{{ pkg.name }}">#}
-{#            <button type="submit" class="ui red tiny button">删除</button>#}
-{#            </form>#}
-        </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+    <div style="padding-left:150px; padding-right:150px; padding-top:60px">
+        <h2 class="ui header">套餐列表</h2>
+        <table class="ui small table segment">
+            <thead>
+            <tr>
+                <th>名称</th>
+                <th>服务器</th>
+                <th>操作系统</th>
+                <th>CPU</th>
+                <th>内存</th>
+                <th>硬盘</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for pkg in package_list %}
+                <tr>
+                    <td>{{ pkg.name }}</td>
+                    <td>{% if pkg.type == 'real' %}实体{% elif pkg.type == 'virtual' %}虚拟{% endif %}</td>
+                    <td>{{ pkg.os }}</td>
+                    <td>{{ pkg.cpu }}</td>
+                    <td>{{ pkg.memory }}GB</td>
+                    <td>{{ pkg.disk }}GB {{ pkg.disktype }}</td>
+                    <td>
+                        <a class="ui tiny circular button red reject-button" data-variation="inverted"
+                           data-position="top center"
+                           data-html='{% include 'confirm_with_yesno.html' with name=pkg.name title="确定要删除套餐吗？" url="computing.views.do_delete_package" %}'>
+                            删除</a>
+                        {#            <form action="{% url "computing.views.do_delete_package" %}" method="post">#}
+                        {#            <input type="hidden" name="name" value="{{ pkg.name }}">#}
+                        {#            <button type="submit" class="ui red tiny button">删除</button>#}
+                        {#            </form>#}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-<div class="ui divider"></div>
-<h2 class="ui header">创建套餐</h2>
-<form action="{% url "computing.views.do_create_package" %}" method="post" class="ui form segment" id="create-package">
-    <div class="ui error message">
-    <div class="header">错误</div>
-    <p></p>
-</div>
-<div class="field">
-    <label>套餐名称</label>
-    <div class="ui input">
-        <input type="text" name="name" id="name" placeholder="套餐名称">
-    </div>
-</div>
-<div class="two fields">
-    <div class="field">
-        <label>服务器类型</label>
-        <div class="ui selection dropdown fluid">
-            <input type="hidden" name="type">
-            <div class="default text">虚拟机/实体机</div>
-            <i class="dropdown icon"></i>
-            <div class="menu">
-                <div class="item" data-value="virtual">虚拟机</div>
-                <div class="item" data-value="real">实体机</div>
-            </div>
-        </div>
-    </div>
-    <div class="field">
-        <label>操作系统</label>
-        <div class="ui input">
-            <input type="text" name="os" id="os" placeholder="操作系统">
-        </div>
-    </div>
-</div>
-<div class="four fields">
-    <div class="field">
-        <label>CPU</label>
-        <div class="ui input">
-            <input type="text" name="cpu" id="cpu" placeholder="CPU">
-        </div>
-    </div>
-    <div class="field">
-        <label>内存/GB</label>
-        <div class="ui input">
-            <input type="text" name="memory" id="memory" placeholder="内存/GB">
-        </div>
-    </div>
-    <div class="field">
-        <label>硬盘类型</label>
-        <div class="ui selection dropdown fluid">
-            <input type="hidden" name="disktype">
-            <div class="default text">HDD/SSD</div>
-            <i class="dropdown icon"></i>
-            <div class="menu">
-                <div class="item" data-value="HDD">HDD</div>
-                <div class="item" data-value="SSD">SSD</div>
-            </div>
-        </div>
-    </div>
-    <div class="field">
-        <label>硬盘大小/GB</label>
-        <div class="ui input">
-            <input type="text" name="disk" id="disk" placeholder="硬盘大小/GB">
-        </div>
-    </div>
-</div>
-<button type="button" class="ui green button" id="create-button">创建新套餐</button>
-</form>
+        <div class="ui divider"></div>
+        <h2 class="ui header">创建套餐</h2>
 
-</div>
+        <form action="{% url "computing.views.do_create_package" %}" method="post" class="ui form segment"
+              id="create-package">
+            <div class="ui error message">
+                <div class="header">错误</div>
+                <p></p>
+            </div>
+            <div class="field">
+                <label>套餐名称</label>
+
+                <div class="ui input">
+                    <input type="text" name="name" id="name" placeholder="套餐名称">
+                </div>
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label>服务器类型</label>
+
+                    <div class="ui selection dropdown fluid">
+                        <input type="hidden" name="type">
+
+                        <div class="default text">虚拟机/实体机</div>
+                        <i class="dropdown icon"></i>
+
+                        <div class="menu">
+                            <div class="item" data-value="virtual">虚拟机</div>
+                            <div class="item" data-value="real">实体机</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>操作系统</label>
+
+                    <div class="ui input">
+                        <input type="text" name="os" id="os" placeholder="操作系统">
+                    </div>
+                </div>
+            </div>
+            <div class="four fields">
+                <div class="field">
+                    <label>CPU</label>
+
+                    <div class="ui input">
+                        <input type="text" name="cpu" id="cpu" placeholder="CPU">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>内存/GB</label>
+
+                    <div class="ui input">
+                        <input type="text" name="memory" id="memory" placeholder="内存/GB">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>硬盘类型</label>
+
+                    <div class="ui selection dropdown fluid">
+                        <input type="hidden" name="disktype">
+
+                        <div class="default text">HDD/SSD</div>
+                        <i class="dropdown icon"></i>
+
+                        <div class="menu">
+                            <div class="item" data-value="HDD">HDD</div>
+                            <div class="item" data-value="SSD">SSD</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>硬盘大小/GB</label>
+
+                    <div class="ui input">
+                        <input type="text" name="disk" id="disk" placeholder="硬盘大小/GB">
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="ui green button" id="create-button">创建新套餐</button>
+        </form>
+
+    </div>
 {% endblock %}
 
 {% block js %}
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
-$(function () {
-    $('.tip').popup({
-        on: 'hover'
-    });
-    $('.agree-button').popup({
-        on: 'click'
-    });
-    $('.reject-button').popup({
-        on: 'click'
-    });
-    var error_info = "";
-    $('#create-button').click(function () {
-        if ($("#name").val() == "") {
-            $('#name').parent().addClass('error');
-            $('#create-package').addClass('error');
-            $('.error.message').children('p').text('套餐名称不可为空！');
-            error_info = "name";
-            return;
-        }
-        {% for pkg in package_list %}
-        if ($("#name").val() == "{{pkg.name}}") {
-            $('#name').parent().addClass('error');
-            $('#create-package').addClass('error');
-            $('.error.message').children('p').text('创建套餐名称与已有套餐名相同！');
-            error_info = "name";
-            return;
-        }
-        {% endfor %}
-        if ($("#os").val() == "") {
-            $('#os').parent().addClass('error');
-            $('#create-package').addClass('error');
-            $('.error.message').children('p').text('操作系统不可为空！');
-            error_info = "os";
-            return;
-        }
-        if ($("#cpu").val() == "") {
-            $('#cpu').parent().addClass('error');
-            $('#create-package').addClass('error');
-            $('.error.message').children('p').text('CPU不可为空！');
-            error_info = "cpu";
-            return;
-        }
-        var regexp = /^[1-9][0-9]*$/;
-        if (!regexp.test($("#memory").val())) {
-            $('#memory').parent().addClass('error');
-            $('#create-package').addClass('error');
-            $('.error.message').children('p').text('内存大小必须为合法数字！');
-            error_info = "memory";
-            return;
-        }
-        if (!regexp.test($("#disk").val())) {
-            $('#disk').parent().addClass('error');
-            $('#create-package').addClass('error');
-            $('.error.message').children('p').text('硬盘大小必须为合法数字！');
-            error_info = "disk";
-            return;
-        }
-        $('#create-package').trigger('submit');
-    });
-    $('#create-package').keydown(function (event) {
-        if (event.keyCode == 13) {
-            $('#create-button').trigger("click");
-        }
-    });
-    $('#name').bind('focus keydown', function (event) {
-        if (error_info == "name" && event.keyCode != 9) {
-            $('#name').parent().removeClass('error');
-            $('#create-package').removeClass('error');
-        }
-    });
-    $('#os').bind('focus keydown', function (event) {
-        if (error_info == "os" && event.keyCode != 9) {
-            $('#os').parent().removeClass('error');
-            $('#create-package').removeClass('error');
-        }
-    });
-    $('#cpu').bind('focus keydown', function (event) {
-        if (error_info == "cpu" && event.keyCode != 9) {
-            $('#cpu').parent().removeClass('error');
-            $('#create-package').removeClass('error');
-        }
-    });
-    $('#memory').bind('focus keydown', function (event) {
-        if (error_info == "memory" && event.keyCode != 9) {
-            $('#memory').parent().removeClass('error');
-            $('#create-package').removeClass('error');
-        }
-    });
-    $('#disk').bind('focus keydown', function (event) {
-        if (error_info == "disk" && event.keyCode != 9) {
-            $('#disk').parent().removeClass('error');
-            $('#create-package').removeClass('error');
-        }
-    });
-    $('.final-ultimate-approve-unique-button').click(function () {
-        $.ajax({
-            url: '{% url "computing.views.do_get_comp_prop" %}',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                id: $(this).attr('data-id'),
-            },
-        })
-            .done(function (prop) {
-                if (prop.retcode == 'denied') {
-                    alert('Denied!');
+        $(function () {
+            $('.tip').popup({
+                on: 'hover'
+            });
+            $('.agree-button').popup({
+                on: 'click'
+            });
+            $('.reject-button').popup({
+                on: 'click'
+            });
+            var error_info = "";
+            $('#create-button').click(function () {
+                if ($("#name").val() == "") {
+                    $('#name').parent().addClass('error');
+                    $('#create-package').addClass('error');
+                    $('.error.message').children('p').text('套餐名称不可为空！');
+                    error_info = "name";
                     return;
                 }
-                if (prop.server_type == 'real') {
-                    $('.res-modif .type .text').html('实体机');
-                    $('.res-modif .type input').val('real');
-                } else {
-                    $('.res-modif .type .text').html('虚拟机');
-                    $('.res-modif .type input').val('virtual');
+                {% for pkg in package_list %}
+                    if ($("#name").val() == "{{pkg.name}}") {
+                        $('#name').parent().addClass('error');
+                        $('#create-package').addClass('error');
+                        $('.error.message').children('p').text('创建套餐名称与已有套餐名相同！');
+                        error_info = "name";
+                        return;
+                    }
+                {% endfor %}
+                if ($("#os").val() == "") {
+                    $('#os').parent().addClass('error');
+                    $('#create-package').addClass('error');
+                    $('.error.message').children('p').text('操作系统不可为空！');
+                    error_info = "os";
+                    return;
                 }
-                $('.res-modif #id').val(prop.id);
-                $('.res-modif .sn input').val(prop.sn);
-                $('.res-modif .ip input').val(prop.ip);
-                $('.res-modif .cpu input').val(prop.cpu);
-                $('.res-modif .memory input').val(prop.memory);
-                $('.res-modif .disk input').val(prop.disk);
-                $('.res-modif .os input').val(prop.os);
-                $('.res-modif .disktype input').val(prop.disktype);
-                $('.res-modif .disktype .text').html(prop.disktype);
-                $('.res-modif .data_content input').val(prop.data_content);
-                if (!prop.flag) {
-                    $('.res-modif .data_content').hide();
+                if ($("#cpu").val() == "") {
+                    $('#cpu').parent().addClass('error');
+                    $('#create-package').addClass('error');
+                    $('.error.message').children('p').text('CPU不可为空！');
+                    error_info = "cpu";
+                    return;
                 }
-                $('.res-modif').modal('show');
-            }).failed(function () {
-                alert(':-(');
+                var regexp = /^[1-9][0-9]*$/;
+                if (!regexp.test($("#memory").val())) {
+                    $('#memory').parent().addClass('error');
+                    $('#create-package').addClass('error');
+                    $('.error.message').children('p').text('内存大小必须为合法数字！');
+                    error_info = "memory";
+                    return;
+                }
+                if (!regexp.test($("#disk").val())) {
+                    $('#disk').parent().addClass('error');
+                    $('#create-package').addClass('error');
+                    $('.error.message').children('p').text('硬盘大小必须为合法数字！');
+                    error_info = "disk";
+                    return;
+                }
+                $('#create-package').trigger('submit');
             });
-    });
-});
+            $('#create-package').keydown(function (event) {
+                if (event.keyCode == 13) {
+                    $('#create-button').trigger("click");
+                }
+            });
+            $('#name').bind('focus keydown', function (event) {
+                if (error_info == "name" && event.keyCode != 9) {
+                    $('#name').parent().removeClass('error');
+                    $('#create-package').removeClass('error');
+                }
+            });
+            $('#os').bind('focus keydown', function (event) {
+                if (error_info == "os" && event.keyCode != 9) {
+                    $('#os').parent().removeClass('error');
+                    $('#create-package').removeClass('error');
+                }
+            });
+            $('#cpu').bind('focus keydown', function (event) {
+                if (error_info == "cpu" && event.keyCode != 9) {
+                    $('#cpu').parent().removeClass('error');
+                    $('#create-package').removeClass('error');
+                }
+            });
+            $('#memory').bind('focus keydown', function (event) {
+                if (error_info == "memory" && event.keyCode != 9) {
+                    $('#memory').parent().removeClass('error');
+                    $('#create-package').removeClass('error');
+                }
+            });
+            $('#disk').bind('focus keydown', function (event) {
+                if (error_info == "disk" && event.keyCode != 9) {
+                    $('#disk').parent().removeClass('error');
+                    $('#create-package').removeClass('error');
+                }
+            });
+            $('.final-ultimate-approve-unique-button').click(function () {
+                $.ajax({
+                    url: '{% url "computing.views.do_get_comp_prop" %}',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id: $(this).attr('data-id'),
+                    },
+                })
+                        .done(function (prop) {
+                            if (prop.retcode == 'denied') {
+                                alert('Denied!');
+                                return;
+                            }
+                            if (prop.server_type == 'real') {
+                                $('.res-modif .type .text').html('实体机');
+                                $('.res-modif .type input').val('real');
+                            } else  {
+                                $('.res-modif .type .text').html('虚拟机');
+                                $('.res-modif .type input').val('virtual');
+                            }
+                            $('.res-modif #id').val(prop.id);
+                            $('.res-modif .sn input').val(prop.sn);
+                            $('.res-modif .ip input').val(prop.ip);
+                            $('.res-modif .cpu input').val(prop.cpu);
+                            $('.res-modif .memory input').val(prop.memory);
+                            $('.res-modif .disk input').val(prop.disk);
+                            $('.res-modif .os input').val(prop.os);
+                            $('.res-modif .disktype input').val(prop.disktype);
+                            $('.res-modif .disktype .text').html(prop.disktype);
+                            $('.res-modif .data_content input').val(prop.data_content);
+                            if (!prop.flag) {
+                                $('.res-modif .data_content').hide();
+                            }
+                            $('.res-modif').modal('show');
+                        }).failed(function () {
+                            alert(':-(');
+                        });
+            });
+        });
 
-</script>
+    </script>
 
 {% endblock %}

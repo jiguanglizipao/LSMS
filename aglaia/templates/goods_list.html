@@ -134,13 +134,13 @@
                     <td>
                         <span hidden class="goods-id">{{ goods.id }}</span>
 
-                        <div class="circular ui icon green button tiny borrow-goods" data-variation="inverted"
-                             data-content="借用"><i class="icon add sign"></i></div>
+                        <div class="circular ui icon green button tiny borrow-goods" data-content="借用"><i
+                                class="icon add sign"></i></div>
                         {% if "account.goods_auth" in perm_list %}
-                            <div class="circular ui icon orange button tiny do-unavailable" data-variation="inverted"
-                                 data-content="设置为不在库"><i class="icon ban circle"></i></div>
-                            <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted"
-                                 data-content="销毁"><i class="icon trash"></i></div>
+                            <div class="circular ui icon orange button tiny do-unavailable" data-content="设置为不在库"><i
+                                    class="icon ban circle"></i></div>
+                            <div class="circular ui icon black button tiny trash-destroy" data-content="销毁">
+                                <i class="icon trash"></i></div>
                         {% endif %}
                         {% if "account.view_all" in perm_list %}
                             <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
@@ -255,9 +255,8 @@
                     </td>
                     {% if "account.goods_auth" in perm_list %}
                         <td>
-                            <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted"
-                                 data-value="false"
-                                 data-content="选择"><i class="icon star sign"></i></div>
+                            <div class="circular ui icon purple button tiny choose-mail" data-content="选择"><i
+                                    class="icon star sign"></i></div>
                         </td>
                     {% endif %}
                 </tr>
