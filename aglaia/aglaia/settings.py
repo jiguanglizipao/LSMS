@@ -10,27 +10,27 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-# import ldap
-# from django_auth_ldap.config import LDAPSearch
-#
-# AUTHENTICATION_BACKENDS = (
-#     'django_auth_ldap.backend.LDAPBackend',
-#     'django.contrib.auth.backends.ModelBackend',
-# )
-# AUTH_LDAP_SERVER_URI = 'ldap://192.168.56.101:389'
-# AUTH_LDAP_BIND_DN = 'CN=admin,DC=lsms,DC=com'
-# AUTH_LDAP_BIND_PASSWORD = "lsms"
-# AUTH_LDAP_USER_SEARCH = LDAPSearch(
-#     "OU=People,DC=lsms,DC=com", ldap.SCOPE_SUBTREE,
-#     "(&(objectClass=person)(uid=%(user)s))")
-# AUTH_LDAP_USER_ATTR_MAP = {
-#     "username": "uid",
-#     "password": "userPassword",
-#     "first_name": "givenName",
-#     "last_name": "sn",
-#     "email": "mail",
-# }
-# AUTH_LDAP_ALWAYS_UPDATE_USER = True
+import ldap
+from django_auth_ldap.config import LDAPSearch
+
+AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+AUTH_LDAP_SERVER_URI = 'ldap://127.0.0.1:389'
+AUTH_LDAP_BIND_DN = 'CN=Manager,DC=lsms,DC=com'
+AUTH_LDAP_BIND_PASSWORD = "answer42"
+AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    "OU=People,DC=lsms,DC=com", ldap.SCOPE_SUBTREE,
+    "(&(objectClass=person)(uid=%(user)s))")
+AUTH_LDAP_USER_ATTR_MAP = {
+    "username": "uid",
+    "password": "userPassword",
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail",
+}
+AUTH_LDAP_ALWAYS_UPDATE_USER = True
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # Quick-start development settings - unsuitable for production
@@ -38,7 +38,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'b^jrfnul^@=#2@gu!8jxs9y#xz30!(uhol1f3h+o6uu!@$mr$w'
-
+ 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -83,9 +83,9 @@ DATABASES = {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aglaia',
+        'NAME': 'lsms',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'answer42',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
