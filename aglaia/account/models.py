@@ -40,6 +40,9 @@ PERM_MODF_GROUP = APP_NAME + '.' + MODF_GROUP
 DEL_USER = 'del_user'
 PERM_DEL_USER = APP_NAME + '.' + DEL_USER
 
+DATA_AUTH = 'data_auth'
+PERM_DATA_AUTH = APP_NAME + '.' + DATA_AUTH
+
 
 class Department(models.Model):
     depart_name = models.CharField(max_length=100)  # wait for modify
@@ -61,6 +64,7 @@ class Account(models.Model):
                        (COMPUT_AUTH, '计算资源借用审核'),
                        (VIEW_ALL, '查看所有用户和日志'),
                        (MODF_PERM, '修改所有人的权限信息'),
+                       (DATA_AUTH, '管理数据导入导出'),
                        )
         # (USER_AUTH, '用户身份审核'),
         # (MODF_NORMAL, '修改他人的普通信息'),

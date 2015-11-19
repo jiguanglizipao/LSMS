@@ -28,7 +28,8 @@ super_perms = [NORMAL,
                GOODS_AUTH,
                VIEW_ALL,
                COMPUT_AUTH,
-               MODF_PERM, ]
+               MODF_PERM,
+               DATA_AUTH]
 
 # ===============================================
 # ===============================================
