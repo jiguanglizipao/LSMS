@@ -160,19 +160,19 @@
                         {% else %}含有{% endif %}
                     </td>
                     <td class="comps-sn" style="font-size:20px;">
-                        <span class="ui green mini button msg-button" data-value="true" id="{{ comp.id }}">显示消息</span>
+                        <span class="ui green mini button msg-button" data-value="true" id="comp-{{ comp.id }}">显示消息</span>
                     </td>
                 </tr>
                 {% if comp.msgs %}
                 <tr>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden></th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▼</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden></th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▼</th>
                 </tr>
                 {% for msg in comp.msgs %}
-                <tr class="{{ comp.id }}" data-value="{{ comp.id }}" hidden>
+                <tr class="comp-{{ comp.id }}" data-value="{{ comp.id }}" hidden>
                     <td width="10%"></td>
                     <td width="20%">
                         {% if msg.direction == 'Send' %}
@@ -195,11 +195,11 @@
                 </tr>
                 {% endfor %}
                 <tr>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden> </th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▲</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden> </th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▲</th>
                 </tr>
             {% endif %}
             {% endif %}
@@ -219,19 +219,19 @@
                         {% else %}含有{% endif %}
                     </td>
                     <td class="comps-sn" style="font-size:20px;">
-                        <span class="ui green mini button msg-button" data-value="true" id="{{ comp.id }}">显示消息</span>
+                        <span class="ui green mini button msg-button" data-value="true" id="comp-{{ comp.id }}">显示消息</span>
                     </td>
                 </tr>
                 {% if comp.msgs %}
                 <tr>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden></th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▼</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden></th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▼</th>
                 </tr>
                 {% for msg in comp.msgs %}
-                <tr class="{{ comp.id }}" data-value="{{ comp.id }}" hidden>
+                <tr class="comp-{{ comp.id }}" data-value="{{ comp.id }}" hidden>
                     <td width="10%"></td>
                     <td width="20%">
                         {% if msg.direction == 'Send' %}
@@ -254,11 +254,11 @@
                 </tr>
                 {% endfor %}
                 <tr>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden> </th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-                    <th class="{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▲</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden> </th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
+                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▲</th>
                 </tr>
                 {% endif %}
                 {% endif %}

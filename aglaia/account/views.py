@@ -194,6 +194,8 @@ def do_signin(request):
                         type='none',
                         school_id=0)
                     account.save()
+                if packed_find_users(request, {'user_name': username}, {})[0].type == 'none':
+                    return HttpResponse('noperm')
                 login(request, user)
                 return HttpResponse('ok')
 
