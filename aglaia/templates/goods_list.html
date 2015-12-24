@@ -83,336 +83,337 @@
 
     <!-- 列表 -->
     <h2 class="ui header" style="margin-top:10px; margin-left:10px">实物列表</h2>
-    <table class="ui table segment small" style="margin-left:10px">
-        <thead>
-        <tr>
-            <th>SN号</th>
-            <th>名称</th>
-            <th>状态</th>
-            <th>类型</th>
-            <th>配置</th>
-            <th>备注</th>
-            <th>操作</th>
-            {% if "account.goods_auth" in perm_list %}
-                <th>
-                    <div class="ui icon blue button mini send-mail" data-variation="inverted" data-content="发送邮件">
-                        <i class="icon mail circle"></i>
-                    </div>
-                </th>
-            {% endif %}
-        </tr>
-        </thead>
-        <tbody>
-
-        {% for goods in goods_list %}
-            {% if goods.status == "available" %}
-                <tr class="positive">
-                    <td class="goods-sn">{{ goods.sn }}</td>
-                    <td class="goods-name">{{ goods.name }}</td>
-                    <td class="good-status" data-value='{{ goods.status }}'>在库</td>
-                    <td class="goods-typename">{{ goods.type_name }}</td>
-
-                    <td>
-                        <div class="ui basic button tiny tip" data-variation="inverted" data-html='
-                            <table border="1" bordercolor="#989898">
-                                {% for pro in goods.prop %}
-                                {% if pro.pro_name != "" %}
-                                <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
-                                {% endif %}
-                                {% endfor %}
-                            </table>
-                            '>详细
+    <div class="ui raised segment" >
+        <table class="ui table segment small" style="margin-left:10px" id="goods-table">
+            <thead>
+            <tr>
+                <th>SN号</th>
+                <th>名称</th>
+                <th>状态</th>
+                <th>类型</th>
+                <th>配置</th>
+                <th>备注</th>
+                <th>操作</th>
+                {% if "account.goods_auth" in perm_list %}
+                    <th>
+                        <div class="ui icon blue button mini send-mail" data-variation="inverted" data-content="发送邮件">
+                            <i class="icon mail circle"></i>
                         </div>
-                    </td>
+                    </th>
+                {% endif %}
+            </tr>
+            </thead>
+            <tbody>
 
-                    <!--{% for pro in goods.prop %}-->
-                        <!--{% if pro.pro_name != "" %}-->
-                            <!--<div class="ui label" style="margin-top:5px">{{ pro.pro_name }}: {{ pro.pro_value }}</div>-->
-                            <!--{% endif %}-->
-                        <!--{% endfor %}-->
-                    <td></td>
-                    <td>
-                        <span hidden class="goods-id">{{ goods.id }}</span>
+            {% for goods in goods_list %}
+                {% if goods.status == "available" %}
+                    <tr class="positive">
+                        <td class="goods-sn">{{ goods.sn }}</td>
+                        <td class="goods-name">{{ goods.name }}</td>
+                        <td class="good-status" data-value='{{ goods.status }}'>在库</td>
+                        <td class="goods-typename">{{ goods.type_name }}</td>
 
-                        <div class="circular ui icon green button tiny borrow-goods" data-content="借用"><i
-                                class="icon add sign"></i></div>
-                        {% if "account.goods_auth" in perm_list %}
-                            <div class="circular ui icon orange button tiny do-unavailable" data-content="设置为不在库"><i
-                                    class="icon ban circle"></i></div>
-                            <div class="circular ui icon black button tiny trash-destroy" data-content="销毁">
-                                <i class="icon trash"></i></div>
-                        {% endif %}
-                        {% if "account.view_all" in perm_list %}
-                            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-                                <input type="hidden" name="id" value="{{ goods.id }}">
-                                <input type="hidden" name="type" value="goods">
-                                <button type="submit" class="ui circular tiny inverted icon teal tip button"
-                                        data-content="日志">
-                                    <i class="unordered list icon"></i>
-                                </button>
-                            </form>
-                        {% endif %}
-                    </td>
-                    {% if "account.goods_auth" in perm_list %}
                         <td>
-                            <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
-                            <!--data-content="选择"><i class="icon star sign"></i></div>-->
+                            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                                <table border="1" bordercolor="#989898">
+                                    {% for pro in goods.prop %}
+                                    {% if pro.pro_name != "" %}
+                                    <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </table>
+                                '>详细
+                            </div>
                         </td>
-                    {% endif %}
-                </tr>
-            {% endif %}
-        {% endfor %}
-        {% for goods in goods_list %}
 
-            {% if goods.status == "unavailable" %}
-                <tr>
-                    <td class="goods-sn">{{ goods.sn }}</td>
-                    <td class="goods-name">{{ goods.name }}</td>
-                    <td class="good-status" data-value='{{ goods.status }}'>不在库</td>
-                    <td class="goods-typename">{{ goods.type_name }}</td>
-                    <td>
-                        <div class="ui basic button tiny tip" data-variation="inverted" data-html='
-                            <table border="1" bordercolor="#989898">
-                                {% for pro in goods.prop %}
-                                {% if pro.pro_name != "" %}
-                                <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
-                                {% endif %}
-                                {% endfor %}
-                            </table>
-                            '>详细
-                        </div>
-                    </td>
-                    <td>{{ goods.note }}</td>
-                    <td>
-                        <span hidden class="goods-id">{{ goods.id }}</span>
-
-                        <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
-                             data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
-                        {% if "account.goods_auth" in perm_list %}
-                            <div class="circular ui icon green button tiny do-available" data-variation="inverted"
-                                 data-content="设置为在库"><i class="icon checkmark sign"></i></div>
-                            <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted"
-                                 data-content="销毁"><i class="icon trash"></i></div>
-                        {% endif %}
-                        {% if "account.view_all" in perm_list %}
-                            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-                                <input type="hidden" name="id" value="{{ goods.id }}">
-                                <input type="hidden" name="type" value="goods">
-                                <button type="submit" class="ui circular tiny inverted icon teal tip button"
-                                        data-content="日志">
-                                    <i class="unordered list icon"></i>
-                                </button>
-                            </form>
-                        {% endif %}
-                    </td>
-                    {% if "account.goods_auth" in perm_list %}
+                        <!--{% for pro in goods.prop %}-->
+                            <!--{% if pro.pro_name != "" %}-->
+                                <!--<div class="ui label" style="margin-top:5px">{{ pro.pro_name }}: {{ pro.pro_value }}</div>-->
+                                <!--{% endif %}-->
+                            <!--{% endfor %}-->
+                        <td></td>
                         <td>
-                            <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
-                            <!--data-content="选择"><i class="icon star sign"></i></div>-->
-                        </td>
-                    {% endif %}
-                </tr>
-            {% elif goods.status == "borrowed" %}
-                <tr>
-                    <td class="goods-sn">{{ goods.sn }}</td>
-                    <td class="goods-name">{{ goods.name }}</td>
-                    <td class="good-status" data-value='{{ goods.status }}'>已借出</td>
-                    <td class="goods-typename">{{ goods.type_name }}</td>
-                    <td>
-                        <div class="ui basic button tiny tip" data-variation="inverted" data-html='
-                            <table border="1" bordercolor="#989898">
-                                {% for pro in goods.prop %}
-                                {% if pro.pro_name != "" %}
-                                <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
-                                {% endif %}
-                                {% endfor %}
-                            </table>
-                            '>详细
-                        </div>
-                    </td>
-                    <td>{{ goods.user_name }}借出</td>
-                    <td>
-                        <span hidden class="goods-id">{{ goods.id }}</span>
+                            <span hidden class="goods-id">{{ goods.id }}</span>
 
-                        <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
-                             data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                            <div class="circular ui icon green button tiny borrow-goods" data-content="借用"><i
+                                    class="icon add sign"></i></div>
+                            {% if "account.goods_auth" in perm_list %}
+                                <div class="circular ui icon orange button tiny do-unavailable" data-content="设置为不在库"><i
+                                        class="icon ban circle"></i></div>
+                                <div class="circular ui icon black button tiny trash-destroy" data-content="销毁">
+                                    <i class="icon trash"></i></div>
+                            {% endif %}
+                            {% if "account.view_all" in perm_list %}
+                                <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                                    <input type="hidden" name="id" value="{{ goods.id }}">
+                                    <input type="hidden" name="type" value="goods">
+                                    <button type="submit" class="ui circular tiny inverted icon teal tip button"
+                                            data-content="日志">
+                                        <i class="unordered list icon"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
                         {% if "account.goods_auth" in perm_list %}
-                            <div class="circular ui icon orange button tiny disabled  disabled-do-unavailable"
-                                 data-variation="inverted" data-content="设置为不在库"><i class="icon ban circle"></i></div>
-                            <div class="circular ui icon black button tiny disabled disabled-trash-destroy"
-                                 data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
+                            <td>
+                                <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
+                                <!--data-content="选择"><i class="icon star sign"></i></div>-->
+                            </td>
                         {% endif %}
-                        {% if "account.view_all" in perm_list %}
-                            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-                                <input type="hidden" name="id" value="{{ goods.id }}">
-                                <input type="hidden" name="type" value="goods">
-                                <button type="submit" class="ui circular tiny inverted icon teal tip button"
-                                        data-content="日志">
-                                    <i class="unordered list icon"></i>
-                                </button>
-                            </form>
-                        {% endif %}
-                    </td>
-                    {% if "account.goods_auth" in perm_list %}
-                        <td>
-                            <div class="circular ui icon purple button tiny choose-mail" data-content="选择"><i
-                                    class="icon star sign"></i></div>
-                        </td>
-                    {% endif %}
-                </tr>
-            {% elif goods.status == "destroyed" %}
-                <!--<tr>-->
-                <tr>
-                    <td class="goods-sn">{{ goods.sn }}</td>
-                    <td class="goods-name">{{ goods.name }}</td>
-                    <td class="good-status" data-value='{{ goods.status }}'>已销毁</td>
-                    <td class="goods-typename">{{ goods.type_name }}</td>
-                    <td>
-                        <div class="ui basic button tiny tip" data-variation="inverted" data-html='
-                            <table border="1" bordercolor="#989898">
-                                {% for pro in goods.prop %}
-                                {% if pro.pro_name != "" %}
-                                <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
-                                {% endif %}
-                                {% endfor %}
-                            </table>
-                            '>详细
-                        </div>
-                    </td>
-                    <td></td>
-                    <td>
-                        <span hidden class="goods-id">{{ goods.id }}</span>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            {% for goods in goods_list %}
 
-                        <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
-                             data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                {% if goods.status == "unavailable" %}
+                    <tr>
+                        <td class="goods-sn">{{ goods.sn }}</td>
+                        <td class="goods-name">{{ goods.name }}</td>
+                        <td class="good-status" data-value='{{ goods.status }}'>不在库</td>
+                        <td class="goods-typename">{{ goods.type_name }}</td>
+                        <td>
+                            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                                <table border="1" bordercolor="#989898">
+                                    {% for pro in goods.prop %}
+                                    {% if pro.pro_name != "" %}
+                                    <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </table>
+                                '>详细
+                            </div>
+                        </td>
+                        <td>{{ goods.note }}</td>
+                        <td>
+                            <span hidden class="goods-id">{{ goods.id }}</span>
+
+                            <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
+                                 data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                            {% if "account.goods_auth" in perm_list %}
+                                <div class="circular ui icon green button tiny do-available" data-variation="inverted"
+                                     data-content="设置为在库"><i class="icon checkmark sign"></i></div>
+                                <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted"
+                                     data-content="销毁"><i class="icon trash"></i></div>
+                            {% endif %}
+                            {% if "account.view_all" in perm_list %}
+                                <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                                    <input type="hidden" name="id" value="{{ goods.id }}">
+                                    <input type="hidden" name="type" value="goods">
+                                    <button type="submit" class="ui circular tiny inverted icon teal tip button"
+                                            data-content="日志">
+                                        <i class="unordered list icon"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
                         {% if "account.goods_auth" in perm_list %}
-                            <div class="circular ui icon orange button tiny disabled disabled-do-available"
-                                 data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
-                            <div class="circular ui icon black button tiny disabled disabled-trash-destroy"
-                                 data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
+                            <td>
+                                <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
+                                <!--data-content="选择"><i class="icon star sign"></i></div>-->
+                            </td>
                         {% endif %}
-                        {% if "account.view_all" in perm_list %}
-                            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-                                <input type="hidden" name="id" value="{{ goods.id }}">
-                                <input type="hidden" name="type" value="goods">
-                                <button type="submit" class="ui circular tiny inverted icon teal tip button"
-                                        data-content="日志">
-                                    <i class="unordered list icon"></i>
-                                </button>
-                            </form>
-                        {% endif %}
-                    </td>
-                    {% if "account.goods_auth" in perm_list %}
+                    </tr>
+                {% elif goods.status == "borrowed" %}
+                    <tr>
+                        <td class="goods-sn">{{ goods.sn }}</td>
+                        <td class="goods-name">{{ goods.name }}</td>
+                        <td class="good-status" data-value='{{ goods.status }}'>已借出</td>
+                        <td class="goods-typename">{{ goods.type_name }}</td>
                         <td>
-                            <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
-                            <!--data-content="选择"><i class="icon star sign"></i></div>-->
+                            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                                <table border="1" bordercolor="#989898">
+                                    {% for pro in goods.prop %}
+                                    {% if pro.pro_name != "" %}
+                                    <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </table>
+                                '>详细
+                            </div>
                         </td>
-                    {% endif %}
-                </tr>
-            {% elif goods.status == "lost" %}
-                <tr>
-                    <td class="goods-sn">{{ goods.sn }}</td>
-                    <td class="goods-name">{{ goods.name }}</td>
-                    <td class="good-status" data-value='{{ goods.status }}'>已挂失</td>
-                    <td class="goods-typename">{{ goods.type_name }}</td>
-                    <td>
-                        <div class="ui basic button tiny tip" data-variation="inverted" data-html='
-                            <table border="1" bordercolor="#989898">
-                                {% for pro in goods.prop %}
-                                {% if pro.pro_name != "" %}
-                                <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
-                                {% endif %}
-                                {% endfor %}
-                            </table>
-                            '>详细
-                        </div>
-                    </td>
-                    <td></td>
-                    <td>
-                        <span hidden class="goods-id">{{ goods.id }}</span>
+                        <td>{{ goods.user_name }}借出</td>
+                        <td>
+                            <span hidden class="goods-id">{{ goods.id }}</span>
 
-                        <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
-                             data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                            <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
+                                 data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                            {% if "account.goods_auth" in perm_list %}
+                                <div class="circular ui icon orange button tiny disabled  disabled-do-unavailable"
+                                     data-variation="inverted" data-content="设置为不在库"><i class="icon ban circle"></i></div>
+                                <div class="circular ui icon black button tiny disabled disabled-trash-destroy"
+                                     data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
+                            {% endif %}
+                            {% if "account.view_all" in perm_list %}
+                                <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                                    <input type="hidden" name="id" value="{{ goods.id }}">
+                                    <input type="hidden" name="type" value="goods">
+                                    <button type="submit" class="ui circular tiny inverted icon teal tip button"
+                                            data-content="日志">
+                                        <i class="unordered list icon"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
                         {% if "account.goods_auth" in perm_list %}
-                            <div class="circular ui icon orange button tiny disabled disabled-do-available"
-                                 data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
-                            <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted"
-                                 data-content="销毁"><i class="icon trash"></i></div>
-                            <div class="circular ui icon orange button tiny find-goods" data-variation="inverted"
-                                 data-content="找回物品"><i class="leaf icon"></i></div>
+                            <td>
+                                <div class="circular ui icon purple button tiny choose-mail" data-content="选择"><i
+                                        class="icon star sign"></i></div>
+                            </td>
                         {% endif %}
-                        {% if "account.view_all" in perm_list %}
-                            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-                                <input type="hidden" name="id" value="{{ goods.id }}">
-                                <input type="hidden" name="type" value="goods">
-                                <button type="submit" class="ui circular tiny inverted icon teal tip button"
-                                        data-content="日志">
-                                    <i class="unordered list icon"></i>
-                                </button>
-                            </form>
-                        {% endif %}
-                    </td>
-                    {% if "account.goods_auth" in perm_list %}
+                    </tr>
+                {% elif goods.status == "destroyed" %}
+                    <!--<tr>-->
+                    <tr>
+                        <td class="goods-sn">{{ goods.sn }}</td>
+                        <td class="goods-name">{{ goods.name }}</td>
+                        <td class="good-status" data-value='{{ goods.status }}'>已销毁</td>
+                        <td class="goods-typename">{{ goods.type_name }}</td>
                         <td>
-                            <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
-                            <!--data-content="选择"><i class="icon star sign"></i></div>-->
+                            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                                <table border="1" bordercolor="#989898">
+                                    {% for pro in goods.prop %}
+                                    {% if pro.pro_name != "" %}
+                                    <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </table>
+                                '>详细
+                            </div>
                         </td>
-                    {% endif %}
-                </tr>
-            {% elif goods.status == "repairing" %}
-                <tr>
-                    <td class="goods-sn">{{ goods.sn }}</td>
-                    <td class="goods-name">{{ goods.name }}</td>
-                    <td class="good-status" data-value='{{ goods.status }}'>维修中</td>
-                    <td class="goods-typename">{{ goods.type_name }}</td>
-                    <td>
-                        <div class="ui basic button tiny tip" data-variation="inverted" data-html='
-                            <table border="1" bordercolor="#989898">
-                                {% for pro in goods.prop %}
-                                {% if pro.pro_name != "" %}
-                                <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
-                                {% endif %}
-                                {% endfor %}
-                            </table>
-                            '>详细
-                        </div>
-                    </td>
-                    <td></td>
-                    <td>
-                        <span hidden class="goods-id">{{ goods.id }}</span>
+                        <td></td>
+                        <td>
+                            <span hidden class="goods-id">{{ goods.id }}</span>
 
-                        <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
-                             data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                            <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
+                                 data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                            {% if "account.goods_auth" in perm_list %}
+                                <div class="circular ui icon orange button tiny disabled disabled-do-available"
+                                     data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
+                                <div class="circular ui icon black button tiny disabled disabled-trash-destroy"
+                                     data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
+                            {% endif %}
+                            {% if "account.view_all" in perm_list %}
+                                <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                                    <input type="hidden" name="id" value="{{ goods.id }}">
+                                    <input type="hidden" name="type" value="goods">
+                                    <button type="submit" class="ui circular tiny inverted icon teal tip button"
+                                            data-content="日志">
+                                        <i class="unordered list icon"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
                         {% if "account.goods_auth" in perm_list %}
-                            <div class="circular ui icon orange button tiny disabled disabled-do-available"
-                                 data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
-                            <div class="circular ui icon black button tiny disabled disabled-trash-destroy"
-                                 data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
+                            <td>
+                                <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
+                                <!--data-content="选择"><i class="icon star sign"></i></div>-->
+                            </td>
                         {% endif %}
-                        {% if "account.view_all" in perm_list %}
-                            <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
-                                <input type="hidden" name="id" value="{{ goods.id }}">
-                                <input type="hidden" name="type" value="goods">
-                                <button type="submit" class="ui circular tiny inverted icon teal tip button"
-                                        data-content="日志">
-                                    <i class="unordered list icon"></i>
-                                </button>
-                            </form>
-                        {% endif %}
-                    </td>
-                    {% if "account.goods_auth" in perm_list %}
+                    </tr>
+                {% elif goods.status == "lost" %}
+                    <tr>
+                        <td class="goods-sn">{{ goods.sn }}</td>
+                        <td class="goods-name">{{ goods.name }}</td>
+                        <td class="good-status" data-value='{{ goods.status }}'>已挂失</td>
+                        <td class="goods-typename">{{ goods.type_name }}</td>
                         <td>
-                            <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted"
-                                 data-value="false"
-                                 data-content="选择"><i class="icon star sign"></i></div>
+                            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                                <table border="1" bordercolor="#989898">
+                                    {% for pro in goods.prop %}
+                                    {% if pro.pro_name != "" %}
+                                    <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </table>
+                                '>详细
+                            </div>
                         </td>
-                    {% endif %}
-                </tr>
-            {% endif %}
-        {% endfor %}
-        </tbody>
-    </table>
+                        <td></td>
+                        <td>
+                            <span hidden class="goods-id">{{ goods.id }}</span>
 
+                            <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
+                                 data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                            {% if "account.goods_auth" in perm_list %}
+                                <div class="circular ui icon orange button tiny disabled disabled-do-available"
+                                     data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
+                                <div class="circular ui icon black button tiny trash-destroy" data-variation="inverted"
+                                     data-content="销毁"><i class="icon trash"></i></div>
+                                <div class="circular ui icon orange button tiny find-goods" data-variation="inverted"
+                                     data-content="找回物品"><i class="leaf icon"></i></div>
+                            {% endif %}
+                            {% if "account.view_all" in perm_list %}
+                                <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                                    <input type="hidden" name="id" value="{{ goods.id }}">
+                                    <input type="hidden" name="type" value="goods">
+                                    <button type="submit" class="ui circular tiny inverted icon teal tip button"
+                                            data-content="日志">
+                                        <i class="unordered list icon"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                        {% if "account.goods_auth" in perm_list %}
+                            <td>
+                                <!--<div class="circular ui icon purple button tiny choose-mail" data-variation="inverted" data-value="false"-->
+                                <!--data-content="选择"><i class="icon star sign"></i></div>-->
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% elif goods.status == "repairing" %}
+                    <tr>
+                        <td class="goods-sn">{{ goods.sn }}</td>
+                        <td class="goods-name">{{ goods.name }}</td>
+                        <td class="good-status" data-value='{{ goods.status }}'>维修中</td>
+                        <td class="goods-typename">{{ goods.type_name }}</td>
+                        <td>
+                            <div class="ui basic button tiny tip" data-variation="inverted" data-html='
+                                <table border="1" bordercolor="#989898">
+                                    {% for pro in goods.prop %}
+                                    {% if pro.pro_name != "" %}
+                                    <tr><td>{{ pro.pro_name }}</td><td>{{ pro.pro_value }}</td></tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </table>
+                                '>详细
+                            </div>
+                        </td>
+                        <td></td>
+                        <td>
+                            <span hidden class="goods-id">{{ goods.id }}</span>
+
+                            <div class="circular ui icon green button tiny disabled disabled-borrow-goods"
+                                 data-variation="inverted" data-content="不可借用"><i class="icon add sign"></i></div>
+                            {% if "account.goods_auth" in perm_list %}
+                                <div class="circular ui icon orange button tiny disabled disabled-do-available"
+                                     data-variation="inverted" data-content="设置在库"><i class="icon checkmark sign"></i></div>
+                                <div class="circular ui icon black button tiny disabled disabled-trash-destroy"
+                                     data-variation="inverted" data-content="销毁"><i class="icon trash"></i></div>
+                            {% endif %}
+                            {% if "account.view_all" in perm_list %}
+                                <form action="{% url "log.views.show_log" %}" method="get" style="display:inline-block;">
+                                    <input type="hidden" name="id" value="{{ goods.id }}">
+                                    <input type="hidden" name="type" value="goods">
+                                    <button type="submit" class="ui circular tiny inverted icon teal tip button"
+                                            data-content="日志">
+                                        <i class="unordered list icon"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                        {% if "account.goods_auth" in perm_list %}
+                            <td>
+                                <div class="circular ui icon purple button tiny choose-mail" data-variation="inverted"
+                                     data-value="false"
+                                     data-content="选择"><i class="icon star sign"></i></div>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <!-- 提交信息 -->
 
     <div class="ui small modal" id="mail-action">
@@ -492,7 +493,6 @@
         </div>
     </div>
     <!--</form>-->
-
 
 {% endblock %}
 
@@ -669,6 +669,43 @@
                 goods_filter();
             });
         });
-
+        $(document).ready(function() {
+            $('#goods-table').DataTable( {
+                "language": {
+                    "sProcessing":   "处理中...",
+                    "sLengthMenu":   "显示 _MENU_ 项结果",
+                    "sZeroRecords":  "没有匹配结果",
+                    "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                    "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                    "sInfoPostFix":  "",
+                    "sSearch":       "搜索:",
+                    "sUrl":          "",
+                    "sEmptyTable":     "表中数据为空",
+                    "sLoadingRecords": "载入中...",
+                    "sInfoThousands":  ",",
+                    "oPaginate": {
+                        "sFirst":    "首页",
+                        "sPrevious": "上页",
+                        "sNext":     "下页",
+                        "sLast":     "末页"
+                    },
+                    "oAria": {
+                        "sSortAscending":  ": 以升序排列此列",
+                        "sSortDescending": ": 以降序排列此列"
+                    }
+                },
+                "columns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    { "orderable": false },
+                    null,
+                    { "orderable": false },
+                    { "orderable": false },
+                  ]
+            });
+        });
     </script>
 {% endblock %}
