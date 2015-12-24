@@ -48,6 +48,7 @@ def create_computing(computing_list):
             disk = computing['disk']
             disk_type = computing['disk_type']
             os = computing['os']
+
             sn = random_str()
             expire_time = computing['expire_time']
             login = computing['login']
@@ -75,6 +76,8 @@ def create_computing(computing_list):
                                    address=address, flag=flag,
                                    name=name, pack_name=pack_name,
                                    data_content=data_content)
+                comput.save()
+                comput.sn = str(comput.id+1).zfill(6)
                 comput.save()
                 new_computing.append(comput)
             except TypeError:

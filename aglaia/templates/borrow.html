@@ -75,8 +75,9 @@
         </div>
     </div>
 
+    <div class="ui raised segment" >
     <div class="ui header attached top">实物资源</div>
-    <table class="ui table segment small attached">
+    <table class="ui table segment small attached" id="goods-table">
         <thead>
         <tr>
             <th>状态</th>
@@ -147,7 +148,8 @@
 
         </tbody>
     </table>
-
+        </div>
+    <div class="ui raised segment" >
     <div class="ui header attached top">
         计算资源&nbsp;&nbsp;
         <button id="siftvipbtn" class="ui circular mini icon orange tip return button" data-content="筛选重要数据"
@@ -157,11 +159,11 @@
                 name="filtdata" value="False">
             <i class="tags icon"></i></button>
     </div>
-    <table class="ui table segment small attached">
+    <table class="ui table segment small attached", id="comp-table">
         <thead>
         <tr>
             <th>状态</th>
-            <th>名称</th>
+            <th>SN号</th>
             <th>描述</th>
             <th>消息</th>
             <th>操作</th>
@@ -205,7 +207,7 @@
         {% endfor %}
         </tbody>
     </table>
-
+    </div>
 
 
     {# Computing resource modification dialog begins here. #}
@@ -617,6 +619,34 @@
                 }
             });
         });
+        $(document).ready(function() {
+            $('#goods-table').DataTable({
+                "language": {
+                    "sProcessing": "处理中...", "sLengthMenu": "显示 _MENU_ 项结果", "sZeroRecords": "没有匹配结果",
+                    "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项", "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)", "sInfoPostFix": "", "sSearch": "搜索:", "sUrl": "",
+                    "sEmptyTable": "表中数据为空", "sLoadingRecords": "载入中...", "sInfoThousands": ",",
+                    "oPaginate": {"sFirst": "首页", "sPrevious": "上页", "sNext": "下页", "sLast": "末页"},
+                    "oAria": {"sSortAscending": ": 以升序排列此列", "sSortDescending": ": 以降序排列此列"}
+                },
+                "columns": [
+                    null, null, null, null, {"orderable": false},
+                ]
+            });
+            $('#comp-table').DataTable({
+                "language": {
+                    "sProcessing": "处理中...", "sLengthMenu": "显示 _MENU_ 项结果", "sZeroRecords": "没有匹配结果",
+                    "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项", "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)", "sInfoPostFix": "", "sSearch": "搜索:", "sUrl": "",
+                    "sEmptyTable": "表中数据为空", "sLoadingRecords": "载入中...", "sInfoThousands": ",",
+                    "oPaginate": {"sFirst": "首页", "sPrevious": "上页", "sNext": "下页", "sLast": "末页"},
+                    "oAria": {"sSortAscending": ": 以升序排列此列", "sSortDescending": ": 以降序排列此列"}
+                },
+                "columns": [
+                    null, null, {"orderable": false}, null, {"orderable": false},
+                ]
+            });
+        })
     </script>
 
     <script type="text/javascript">
@@ -629,5 +659,6 @@
             });
         });
     </script>
+
 
 {% endblock %}
