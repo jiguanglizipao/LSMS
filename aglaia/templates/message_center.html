@@ -25,7 +25,7 @@
                     <tbody>
                         {% for brw in goods %}
                             <tr>
-                                <td>{{ brw.id }}</td>
+                                <td>{{ brw.sn }}</td>
                                 {% if brw.newMessage %}
                                    <td><div class="ui red label">新消息</div></td>
                                 {% else %}
@@ -36,7 +36,9 @@
                                 <td>{{ brw.user }}</td>
                                 <td class="goods-sn">
                                     <div class="ui accordion">
-                                        <div class="title"><i class="dropdown icon"></i> 显示消息 </div>
+                                        <div class="title accordion-title" data-type="goods" data-time-type="{{ brw.time_type }}" data-id={{ brw.id }}>
+                                            <i class="dropdown icon"></i> 显示消息
+                                        </div>
                                         <div class="content">
                                             {% if brw.msgs %}
                                                 <table class="ui small table">
@@ -102,7 +104,7 @@
                     <tbody>
                         {% for comp in complist %}
                             <tr>
-                                <td>{{ comp.id }}</td>
+                                <td>{{ comp.sn }}</td>
                                 {% if comp.newMessage %}
                                    <td><div class="ui red label">新消息</div></td>
                                 {% else %}
@@ -119,7 +121,9 @@
                                 </td>
                                 <td class="comps-sn">
                                     <div class="ui accordion">
-                                        <div class="title"><i class="dropdown icon"></i> 显示消息 </div>
+                                        <div class="title accordion-title" data-type="comp" data-time-type="{{ comp.time_type }}" data-id={{ comp.id }}>
+                                            <i class="dropdown icon"></i> 显示消息
+                                        </div>
                                         <div class="content">
                                             {% if comp.msgs %}
                                                 <table class="ui small table">
@@ -212,6 +216,20 @@ $(document).ready(function() {
             null,
             { "orderable": false }
           ]
+    });
+    $('.accordion-title').on("click", function(){
+        var url = '{% url "log.views.update_message_center" %}';
+        var data = {'type':$(this).data("type"),
+                    'id':$(this).data("id"),
+                    'time_type':$(this).data("time-type")
+                   };
+        $.ajax({
+            type : "post",
+            url : url,
+            data : data,
+            success: function(data) {
+            }
+        });
     });
 });
 
