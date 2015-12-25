@@ -298,18 +298,18 @@ def do_approve_modify(request):
         if not comp.status == MODIFY_APPLY_KEY:
             return show_denied_message(request)
 
-        if post['note'] == '':
-            post['note'] = get_comp_modfed_log()
+        note = post['note']
+        if note == '':
+            note = get_comp_modfed_log()
         message = Message(comp.note)
         message.append({'direction': 'Send',
                         'info_type': '',
                         'user_name': request.user.username,
-                        'text': post['note']})
-        post['note'] = message.tostring()
-
+                        'text': note})
+        note = message.tostring()
         dic = {}
         dic['status'] = BORROWED_KEY
-        dic['note'] = post['note']
+        dic['note'] = note
         if post['type'] == 'real':
             dic['pc_type'] = PHYSICAL_MACHINE_KEY
         else:
