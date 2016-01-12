@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     {% load static from staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static "DataTables/datatables.min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "DataTables/datatables_semantic.css" %}"/>
     <link rel="stylesheet" href="{% static "css/semantic.min.css" %}"/>
     <link rel="stylesheet" href="{% static "css/aglaia.css" %}"/>
+
 </head>
 <body class="base">
 <div class="ui right floating wide inverted styled sidebar" id="account-sidebar">
@@ -207,6 +210,8 @@
     </div>
 {% endblock %}
 <script src="{% static "javascript/jquery-1.11.1.min.js" %}"></script>
+<script src="{% static "DataTables/datatables.min.js" %}"></script>
+<script src="{% static "DataTables/datatables_semantic.js" %}"></script>
 <script src="{% static "javascript/semantic.min.js" %}"></script>
 <script src="{% static "javascript/aglaia.js" %}"></script>
 {% block js %}

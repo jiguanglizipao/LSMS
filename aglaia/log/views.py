@@ -142,10 +142,12 @@ def show_message_center(request):
         sn = str(brw.single.sn).replace(" ", "")
         if sn not in goods:
             goods[sn] = {
-                'id': sn,
+                'id': brw.id,
+                'sn': sn,
                 'name': brw.single.goods.name,
                 'user': brw.account,
                 'type': brw.single.goods.gtype,
+                'time_type': goods_time_type,
                 'msgs': [],
             }
         message = Message(brw.note)
@@ -161,9 +163,9 @@ def show_message_center(request):
                            < msg['time']).__str__()
             if msg['text']:
                 goods[sn]['msgs'].append(msg)
-        message.setTime(goods_time_type)
-        brw.note = message.tostring()
-        brw.save()
+        # message.setTime(goods_time_type)
+        # brw.note = message.tostring()
+        # brw.save()
         goods[sn]['msgs'].sort(key=lambda tmsg: tmsg['time'])
         goods[sn]['msgs'].reverse()
 
@@ -185,10 +187,12 @@ def show_message_center(request):
         sn = str(comp.sn).replace(" ", "")
         if sn not in compset:
             compset[sn] = {
-                'id': sn,
+                'id': comp.id,
+                'sn': sn,
                 'os': comp.os,
                 'pc_type': comp.pc_type,
                 'flag': str(comp.flag),
+                'time_type': comps_time_type,
                 'msgs': [],
             }
         message = Message(comp.note)
@@ -203,9 +207,9 @@ def show_message_center(request):
                            < msg['time']).__str__()
             if msg['text']:
                 compset[sn]['msgs'].append(msg)
-        message.setTime(comps_time_type)
-        comp.note = message.tostring()
-        comp.save()
+        # message.setTime(comps_time_type)
+        # comp.note = message.tostring()
+        # comp.save()
         compset[sn]['msgs'].sort(key=lambda tmsg: tmsg['time'])
         compset[sn]['msgs'].reverse()
 
@@ -231,3 +235,23 @@ def show_message_center(request):
         'complist': complist,
     }
     return render(request, 'message_center.html', cont)
+
+
+@method_required('POST')
+@permission_required(PERM_NORMAL)
+def update_message_center(request):
+    try:
+        id = request.POST['id']
+        type = request.POST['type']
+        time_type = request.POST['time_type']
+        if type == 'goods':
+            data = Borrow.objects.filter(id=id)[0]
+        elif type == 'comp':
+            data = Computing.objects.filter(id=id)[0]
+        message = Message(data.note)
+        message.setTime(time_type)
+        data.note = message.tostring()
+        data.save()
+        return HttpResponse('success')
+    except Exception as e:
+        return HttpResponse('failed '+e.__str__())

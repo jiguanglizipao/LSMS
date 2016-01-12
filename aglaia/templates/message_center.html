@@ -8,263 +8,166 @@
 
 <div class="ui page grid">
     <h2 class="ui header" style="margin-top:10px; margin-left:10px">实物资源消息列表</h2>
-    <div class="sixteen wide column">
-        <table class="ui small table">
-            <thead>
-            <tr>
-                <th width="10%">SN</th>
-                <th width="20%">实物名称</th>
-                <th width="30%">实物类型</th>
-                <th width="30%">用户</th>
-                <th width="10%">操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for brw in goods %}
-                {% if brw.newMessage %}
-                <tr>
-                    <td>{{ brw.id }}</td>
-                    <td>{{ brw.name }}
-                        <div class="ui red label">新消息</div>&nbsp;
-                    </td>
-                    <td>{{ brw.type }}</td>
-                    <td>{{ brw.user }}</td>
-                    <td class="goods-sn" style="font-size:20px;">
-                        <span class="ui green mini button msg-button" data-value="true" id="{{ brw.id }}">显示消息</span>
-                    </td>
-                </tr>
-                {% if brw.msgs %}
-                <tr>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="10%" hidden></th>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="10%" hidden>▼</th>
-                </tr>
-                {% for msg in brw.msgs %}
-                <tr class="{{ brw.id }}" data-value="{{ brw.id }}" hidden>
-                    <td width="10%"></td>
-                    <td width="20%">
-                        {% if msg.direction == 'Send' %}
-                        <div style="color:Purple; font-weight:bold;">{{ msg.associate }}</div>
-                        {% else %}
-                        <div style="color:Green; font-weight:bold;">{{ msg.associate }}</div>
-                        {% endif %}
-                    </td>
-                    <td width="30%">
-                        <div style="color:Blue; display:inline">{{ msg.time }}</div>
-                    </td>
-                    <td width="30%">
-                        {% if msg.flag == 'True' %}
-                            <span style="font-weight:bold;">{{ msg.text }}</span>
-                        {% else %}
-                            <span style="color:grey;">{{ msg.text }}</span>
-                        {% endif %}
-                    </td>
-                    <td width="10%"> </td>
-                </tr>
-                {% endfor %}
-            <tr>
-                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="10%" hidden> </th>
-                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-                <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="10%" hidden>▲</th>
-            </tr>
-                {% endif %}
-                {% endif %}
-            {% endfor %}
-
-            {% for brw in goods %}
-                {% if not brw.newMessage %}
-                <tr>
-                    <td>{{ brw.id }}</td>
-                    <td>{{ brw.name }}</td>
-                    <td>{{ brw.type }}</td>
-                    <td>{{ brw.user }}</td>
-                    <td class="goods-sn" style="font-size:20px;">
-                        <span class="ui green mini button msg-button" data-value="true" id="{{ brw.id }}">显示消息</span>
-                    </td>
-                </tr>
-                {% if brw.msgs %}
-                <tr>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="10%" hidden></th>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="10%" hidden>▼</th>
-                </tr>
-                {% for msg in brw.msgs %}
-                <tr class="{{ brw.id }}" data-value="{{ brw.id }}" hidden>
-                    <td width="10%"></td>
-                    <td width="20%">
-                        {% if msg.direction == 'Send' %}
-                        <div style="color:Purple; font-weight:bold;">{{ msg.associate }}</div>
-                        {% else %}
-                        <div style="color:Green; font-weight:bold;">{{ msg.associate }}</div>
-                        {% endif %}
-                    </td>
-                    <td width="30%">
-                        <div style="color:Blue; display:inline">{{ msg.time }}</div>
-                    </td>
-                    <td width="30%">
-                        {% if msg.flag == 'True' %}
-                            <span style="font-weight:bold;">{{ msg.text }}</span>
-                        {% else %}
-                            <span style="color:grey;">{{ msg.text }}</span>
-                        {% endif %}
-                    </td>
-                    <td width="10%"> </td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="10%" hidden> </th>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-                    <th class="{{ brw.id }}" data-value="{{ brw.id }}" width="10%" hidden>▲</th>
-                </tr>
-                {% endif %}
-                {% endif %}
-            {% endfor %}
-
-        </table>
+    <div class="sixteen wide column" >
+        <div class="ui raised segment ">
+            <div class="fourteen wide column">
+                <table class="ui small table" id="goods-table">
+                    <thead>
+                        <tr>
+                            <th>SN</th>
+                            <th>未读消息</th>
+                            <th>实物名称</th>
+                            <th>实物类型</th>
+                            <th>用户</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for brw in goods %}
+                            <tr>
+                                <td>{{ brw.sn }}</td>
+                                {% if brw.newMessage %}
+                                   <td><div class="ui red label">新消息</div></td>
+                                {% else %}
+                                   <td><div class="ui green label">无新消息</div></td>
+                                {% endif %}
+                                <td>{{ brw.name }}</td>
+                                <td>{{ brw.type }}</td>
+                                <td>{{ brw.user }}</td>
+                                <td class="goods-sn">
+                                    <div class="ui accordion">
+                                        <div class="title accordion-title" data-type="goods" data-time-type="{{ brw.time_type }}" data-id={{ brw.id }}>
+                                            <i class="dropdown icon"></i> 显示消息
+                                        </div>
+                                        <div class="content">
+                                            {% if brw.msgs %}
+                                                <table class="ui small table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>操作者</th>
+                                                            <th>操作时间</th>
+                                                            <th>消息内容</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for msg in brw.msgs %}
+                                                        <tr class="{{ brw.id }}" data-value="{{ brw.id }}">
+                                                            <td>
+                                                                {% if msg.direction == 'Send' %}
+                                                                <div style="color:Purple; font-weight:bold;">{{ msg.associate }}</div>
+                                                                {% else %}
+                                                                <div style="color:Green; font-weight:bold;">{{ msg.associate }}</div>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <div style="color:Blue; display:inline">{{ msg.time }}</div>
+                                                            </td>
+                                                            <td>
+                                                                {% if msg.flag == 'True' %}
+                                                                    <span style="font-weight:bold;">{{ msg.text }}</span>
+                                                                {% else %}
+                                                                    <span style="color:grey;">{{ msg.text }}</span>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
+
     <h2 class="ui header" style="margin-top:10px; margin-left:10px">计算资源消息列表</h2>
-
-    <div class="sixteen wide column">
-        <table class="ui small table">
-            <thead>
-            <tr>
-                <th width="10%">SN</th>
-                <th width="20%">资源类型</th>
-                <th width="30%">操作系统</th>
-                <th width="30%">是否含有重要资源</th>
-                <th width="10%">操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for comp in complist %}
-                {% if comp.newMessage %}
-                <tr>
-                    <td>{{ comp.id }}</td>
-                    <td>
-                        {% if comp.pc_type == 'v' %}虚拟机
-                        {% else %}实体机{% endif %}
-                        <div class="ui red label">新消息</div>&nbsp;
-                    </td>
-                    <td>{{ comp.os }}</td>
-                    <td>
-                        {% if comp.flag == 'False' %}不含有
-                        {% else %}含有{% endif %}
-                    </td>
-                    <td class="comps-sn" style="font-size:20px;">
-                        <span class="ui green mini button msg-button" data-value="true" id="comp-{{ comp.id }}">显示消息</span>
-                    </td>
-                </tr>
-                {% if comp.msgs %}
-                <tr>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden></th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▼</th>
-                </tr>
-                {% for msg in comp.msgs %}
-                <tr class="comp-{{ comp.id }}" data-value="{{ comp.id }}" hidden>
-                    <td width="10%"></td>
-                    <td width="20%">
-                        {% if msg.direction == 'Send' %}
-                        <div style="color:Purple; font-weight:bold;">{{ msg.associate }}</div>
-                        {% else %}
-                        <div style="color:Green; font-weight:bold;">{{ msg.associate }}</div>
-                        {% endif %}
-                    </td>
-                    <td width="30%">
-                        <div style="color:Blue; display:inline">{{ msg.time }}</div>
-                    </td>
-                    <td width="30%">
-                        {% if msg.flag == 'True' %}
-                            <span style="font-weight:bold;">{{ msg.text }}</span>
-                        {% else %}
-                            <span style="color:grey;">{{ msg.text }}</span>
-                        {% endif %}
-                    </td>
-                    <td width="10%"> </td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden> </th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▲</th>
-                </tr>
-            {% endif %}
-            {% endif %}
-            {% endfor %}
-
-            {% for comp in complist %}
-                {% if not comp.newMessage %}
-                <tr>
-                    <td>{{ comp.id }}</td>
-                    <td>
-                        {% if comp.pc_type == 'v' %}虚拟机
-                        {% else %}实体机{% endif %}
-                    </td>
-                    <td>{{ comp.os }}</td>
-                    <td>
-                        {% if comp.flag == 'False' %}不含有
-                        {% else %}含有{% endif %}
-                    </td>
-                    <td class="comps-sn" style="font-size:20px;">
-                        <span class="ui green mini button msg-button" data-value="true" id="comp-{{ comp.id }}">显示消息</span>
-                    </td>
-                </tr>
-                {% if comp.msgs %}
-                <tr>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden></th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▼</th>
-                </tr>
-                {% for msg in comp.msgs %}
-                <tr class="comp-{{ comp.id }}" data-value="{{ comp.id }}" hidden>
-                    <td width="10%"></td>
-                    <td width="20%">
-                        {% if msg.direction == 'Send' %}
-                        <div style="color:Purple; font-weight:bold;">{{ msg.associate }}</div>
-                        {% else %}
-                        <div style="color:Green; font-weight:bold;">{{ msg.associate }}</div>
-                        {% endif %}
-                    </td>
-                    <td width="30%">
-                        <div style="color:Blue; display:inline">{{ msg.time }}</div>
-                    </td>
-                    <td width="30%">
-                        {% if msg.flag == 'True' %}
-                            <span style="font-weight:bold;">{{ msg.text }}</span>
-                        {% else %}
-                            <span style="color:grey;">{{ msg.text }}</span>
-                        {% endif %}
-                    </td>
-                    <td width="10%"> </td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden> </th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="20%" hidden>操作者</th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>操作时间</th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="30%" hidden>消息内容</th>
-                    <th class="comp-{{ comp.id }}" data-value="{{ brw.id }}" width="10%" hidden>▲</th>
-                </tr>
-                {% endif %}
-                {% endif %}
-            {% endfor %}
-
-        </table>
+    <div class="sixteen wide column" >
+        <div class="ui raised segment ">
+            <div class="fourteen wide column">
+                <table class="ui small table" id = "comp-table">
+                    <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>未读消息</th>
+                        <th>资源类型</th>
+                        <th>操作系统</th>
+                        <th>重要数据标签</th>
+                        <th>消息</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for comp in complist %}
+                            <tr>
+                                <td>{{ comp.sn }}</td>
+                                {% if comp.newMessage %}
+                                   <td><div class="ui red label">新消息</div></td>
+                                {% else %}
+                                   <td><div class="ui green label">无新消息</div></td>
+                                {% endif %}
+                                <td>
+                                    {% if comp.pc_type == 'v' %}虚拟机
+                                    {% else %}实体机{% endif %}
+                                </td>
+                                <td>{{ comp.os }}</td>
+                                <td>
+                                    {% if comp.flag == 'False' %}不含有
+                                    {% else %}含有{% endif %}
+                                </td>
+                                <td class="comps-sn">
+                                    <div class="ui accordion">
+                                        <div class="title accordion-title" data-type="comp" data-time-type="{{ comp.time_type }}" data-id={{ comp.id }}>
+                                            <i class="dropdown icon"></i> 显示消息
+                                        </div>
+                                        <div class="content">
+                                            {% if comp.msgs %}
+                                                <table class="ui small table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>操作者</th>
+                                                            <th>操作时间</th>
+                                                            <th>消息内容</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for msg in comp.msgs %}
+                                                        <tr class="comp-{{ comp.id }}" data-value="{{ comp.id }}" >
+                                                            <td>
+                                                                {% if msg.direction == 'Send' %}
+                                                                <div style="color:Purple; font-weight:bold;">{{ msg.associate }}</div>
+                                                                {% else %}
+                                                                <div style="color:Green; font-weight:bold;">{{ msg.associate }}</div>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <div style="color:Blue; display:inline">{{ msg.time }}</div>
+                                                            </td>
+                                                            <td>
+                                                                {% if msg.flag == 'True' %}
+                                                                    <span style="font-weight:bold;">{{ msg.text }}</span>
+                                                                {% else %}
+                                                                    <span style="color:grey;">{{ msg.text }}</span>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
 </div>
@@ -275,19 +178,58 @@
 
 <script>
 
-$(function() {
-    $('.msg-button').click(function () {
-        if ($(this).attr('data-value') == 'true') {
-            $(this).attr('data-value', 'false');
-            $(this).text('隐藏消息');
-            $(this).removeClass('green').addClass('red');
-            $('.' + this.id).show();
-        } else {
-            $(this).attr('data-value', 'true');
-            $(this).text('显示消息');
-            $(this).removeClass('red').addClass('green');
-            $('.' + this.id).hide();
-        }
+$(document).ready(function() {
+    $('#comp-table').DataTable( {
+        "language": {
+            "sProcessing":   "处理中...", "sLengthMenu":   "显示 _MENU_ 项结果", "sZeroRecords":  "没有匹配结果",
+            "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项", "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+            "sInfoFiltered": "(由 _MAX_ 项结果过滤)", "sInfoPostFix":  "", "sSearch":       "搜索:", "sUrl":          "",
+            "sEmptyTable":     "表中数据为空", "sLoadingRecords": "载入中...", "sInfoThousands":  ",",
+            "oPaginate": {"sFirst":    "首页", "sPrevious": "上页", "sNext":     "下页", "sLast":     "末页"},
+            "oAria": {"sSortAscending":  ": 以升序排列此列", "sSortDescending": ": 以降序排列此列"}
+        },
+        "order": [[ 1, "asc" ]],
+        "columns": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            { "orderable": false }
+          ]
+    });
+    $('#goods-table').DataTable( {
+        "language": {
+            "sProcessing":   "处理中...", "sLengthMenu":   "显示 _MENU_ 项结果", "sZeroRecords":  "没有匹配结果",
+            "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项", "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+            "sInfoFiltered": "(由 _MAX_ 项结果过滤)", "sInfoPostFix":  "", "sSearch":       "搜索:", "sUrl":          "",
+            "sEmptyTable":     "表中数据为空", "sLoadingRecords": "载入中...", "sInfoThousands":  ",",
+            "oPaginate": {"sFirst":    "首页", "sPrevious": "上页", "sNext":     "下页", "sLast":     "末页"},
+            "oAria": {"sSortAscending":  ": 以升序排列此列", "sSortDescending": ": 以降序排列此列"}
+        },
+        "order": [[ 1, "asc" ]],
+        "columns": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            { "orderable": false }
+          ]
+    });
+    $('.accordion-title').on("click", function(){
+        var url = '{% url "log.views.update_message_center" %}';
+        var data = {'type':$(this).data("type"),
+                    'id':$(this).data("id"),
+                    'time_type':$(this).data("time-type")
+                   };
+        $.ajax({
+            type : "post",
+            url : url,
+            data : data,
+            success: function(data) {
+            }
+        });
     });
 });
 

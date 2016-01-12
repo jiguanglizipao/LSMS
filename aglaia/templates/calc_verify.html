@@ -43,23 +43,24 @@
 <!--待审核借用申请-->
 {% if borrowing_list %}
 <h3 id="borrowing" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">借用</font>申请</h3>
-<table class="ui small segment table attached">
+<div class="ui raised segment" >
+<table class="ui small segment table attached" id="borrow-table">
     <thead>
     <tr>
-        <th>id</th>
+        <th>SN号</th>
         <th>重要数据</th>
         <th>资源类型</th>
         <th>套餐类型</th>
         <th>配置要求</th>
         <th>申请者</th>
         <th>申请理由</th>
-        <th>操作</th>
+        <th>管理员操作</th>
     </tr>
     </thead>
     <tbody>
     {% for borrow in borrowing_list %}
     <tr>
-        <td>{{ borrow.id }}</td>
+        <td>{{ borrow.sn }}</td>
         <td>{% if borrow.flag == True %}含有{% else %}不含有{% endif %}</td>
         <td>{% if borrow.type == 'real' %}实体{% elif borrow.type == 'virtual' %}虚拟{% endif %}</td>
         <td>{{ borrow.package_name | default:"无" }}</td>
@@ -139,29 +140,30 @@
     {% endfor %}
     </tbody>
 </table>
+    </div>
 <div class="ui divider"></div>
 {% endif %}
-
 <!--待审核归还申请-->
 {% if returning_list %}
 <h3 id="returning" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">归还</font>申请</h3>
-<table class="ui small segment table attached">
+<div class="ui raised segment" >
+<table class="ui small segment table attached" id="returning-table">
     <thead>
     <tr>
-        <th>id</th>
+        <th>SN号</th>
         <th>重要数据</th>
         <th>资源类型</th>
         <th>套餐类型</th>
         <th>配置要求</th>
         <th>申请者</th>
         <th>释放说明</th>
-        <th>操作</th>
+        <th>管理员操作</th>
     </tr>
     </thead>
     <tbody>
     {% for return in returning_list %}
     <tr>
-        <td>{{ return.id }}</td>
+        <td>{{ return.sn }}</td>
         <td>{% if return.flag == True %}含有{% else %}不含有{% endif %}</td>
         <td>{% if return.type == 'real' %}实体{% elif return.type == 'virtual' %}虚拟{% endif %}</td>
         <td>{{ return.package_name | default:"无" }}</td>
@@ -207,29 +209,32 @@
     {% endfor %}
     </tbody>
 </table>
+    </div>
 <div class="ui divider"></div>
 {% endif %}
+
 
 <!--待审核配置调整申请-->
 {% if modifying_list %}
 <h3 id="modifying" class="ui header top attached" style="margin-top:10px">待审核<font color="#F05940">配置调整</font>申请</h3>
-<table class="ui small segment table attached">
+<div class="ui raised segment" >
+<table class="ui small segment table attached" id="modifying-table">
     <thead>
     <tr>
-        <th>id</th>
+        <th>SN号</th>
         <th>重要数据</th>
         <th>资源类型</th>
         <th>套餐类型</th>
         <th>配置要求</th>
         <th>申请者</th>
         <th>释放说明</th>
-        <th>操作</th>
+        <th>管理员操作</th>
     </tr>
     </thead>
     <tbody>
     {% for modify in modifying_list %}
     <tr>
-        <td>{{ modify.id }}</td>
+        <td>{{ modify.sn }}</td>
         <td>{% if modify.flag == True %}含有{% else %}不含有{% endif %}</td>
         <td>{% if modify.type == 'real' %}实体{% elif modify.type == 'virtual' %}虚拟{% endif %}</td>
         <td>{{ modify.package_name | default:"无" }}</td>
@@ -277,6 +282,7 @@
     {% endfor %}
     </tbody>
 </table>
+    </div>
 <div class="ui divider"></div>
 {% endif %}
 <div class="ui modal res-modif">
@@ -357,7 +363,8 @@
 <!--使用中资源-->
 {% if inuse_list %}
 <h3 id="inuse" class="ui header top attached" style="margin-top:10px"><font color="#F05940">使用中</font>资源</h3>
-<table class="ui small segment table attached">
+<div class="ui raised segment" >
+<table class="ui small segment table attached" id="inuse-table">
     <thead>
     <tr>
         <th>SN号</th>
@@ -367,7 +374,7 @@
         <th>配置要求</th>
         <th>申请者</th>
         <th>管理员答复</th>
-        <th>操作</th>
+        <th>管理员操作</th>
     </tr>
     </thead>
     <tbody>
@@ -421,28 +428,30 @@
     </tbody>
 </table>
 <div class="ui divider"></div>
+    </div>
 {% endif %}
 
 <!--备份重要数据资源-->
 {% if backup_list %}
 <h3 id="backup" class="ui header top attached" style="margin-top:10px"><font color="#F05940">备份重要数据</font>资源</h3>
-<table class="ui small segment table attached">
+<div class="ui raised segment" >
+<table class="ui small segment table attached" id="backup-table">
     <thead>
     <tr>
-        <th>id</th>
+        <th>SN号</th>
         <th>重要数据</th>
         <th>资源类型</th>
         <th>套餐类型</th>
         <th>配置要求</th>
         <th>申请者</th>
         <th>答复</th>
-        <th>操作</th>
+        <th>管理员操作</th>
     </tr>
     </thead>
     <tbody>
     {% for backup in backup_list %}
     <tr>
-        <td>{{ backup.id }}</td>
+        <td>{{ backup.sn }}</td>
         <td>{% if backup.flag == True %}含有{% else %}不含有{% endif %}</td>
         <td>{% if backup.type == 'real' %}实体{% elif backup.type == 'virtual' %}虚拟{% endif %}</td>
         <td>{{ backup.package_name | default:"无" }}</td>
@@ -479,6 +488,7 @@
     {% endfor %}
     </tbody>
 </table>
+    </div>
 <div class="ui divider"></div>
 {% endif %}
 
@@ -535,7 +545,64 @@ $(function () {
             });
     });
 });
-
+    $(document).ready(function() {
+        $('#returning-table').DataTable( {
+            "language": {
+                "sProcessing":   "处理中...", "sLengthMenu":   "显示 _MENU_ 项结果", "sZeroRecords":  "没有匹配结果",
+                "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项", "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)", "sInfoPostFix":  "", "sSearch":       "搜索:", "sUrl":          "",
+                "sEmptyTable":     "表中数据为空", "sLoadingRecords": "载入中...", "sInfoThousands":  ",",
+                "oPaginate": {"sFirst":    "首页", "sPrevious": "上页", "sNext":     "下页", "sLast":     "末页"},
+                "oAria": {"sSortAscending":  ": 以升序排列此列", "sSortDescending": ": 以降序排列此列"}
+            },
+            "columns": [
+                null, null, null, null, null,
+                null, null, { "orderable": false },
+              ]
+        });
+        $('#modifying-table').DataTable( {
+            "language": {
+                "sProcessing":   "处理中...", "sLengthMenu":   "显示 _MENU_ 项结果", "sZeroRecords":  "没有匹配结果",
+                "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项", "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)", "sInfoPostFix":  "", "sSearch":       "搜索:", "sUrl":          "",
+                "sEmptyTable":     "表中数据为空", "sLoadingRecords": "载入中...", "sInfoThousands":  ",",
+                "oPaginate": {"sFirst":    "首页", "sPrevious": "上页", "sNext":     "下页", "sLast":     "末页"},
+                "oAria": {"sSortAscending":  ": 以升序排列此列", "sSortDescending": ": 以降序排列此列"}
+            },
+            "columns": [
+                null, null, null, null, null,
+                null, null, { "orderable": false },
+              ]
+        });
+        $('#inuse-table').DataTable( {
+            "language": {
+                "sProcessing":   "处理中...", "sLengthMenu":   "显示 _MENU_ 项结果", "sZeroRecords":  "没有匹配结果",
+                "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项", "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)", "sInfoPostFix":  "", "sSearch":       "搜索:", "sUrl":          "",
+                "sEmptyTable":     "表中数据为空", "sLoadingRecords": "载入中...", "sInfoThousands":  ",",
+                "oPaginate": {"sFirst":    "首页", "sPrevious": "上页", "sNext":     "下页", "sLast":     "末页"},
+                "oAria": {"sSortAscending":  ": 以升序排列此列", "sSortDescending": ": 以降序排列此列"}
+            },
+            "columns": [
+                null, null, null, null, null,
+                null, null, { "orderable": false },
+              ]
+        });
+        $('#backup-table').DataTable( {
+            "language": {
+                "sProcessing":   "处理中...", "sLengthMenu":   "显示 _MENU_ 项结果", "sZeroRecords":  "没有匹配结果",
+                "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项", "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)", "sInfoPostFix":  "", "sSearch":       "搜索:", "sUrl":          "",
+                "sEmptyTable":     "表中数据为空", "sLoadingRecords": "载入中...", "sInfoThousands":  ",",
+                "oPaginate": {"sFirst":    "首页", "sPrevious": "上页", "sNext":     "下页", "sLast":     "末页"},
+                "oAria": {"sSortAscending":  ": 以升序排列此列", "sSortDescending": ": 以降序排列此列"}
+            },
+            "columns": [
+                null, null, null, null, null,
+                null, null, { "orderable": false },
+              ]
+        });
+    });
 </script>
 
 {% endblock %}

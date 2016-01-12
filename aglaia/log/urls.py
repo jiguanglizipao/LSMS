@@ -3,5 +3,6 @@ from django.contrib import admin
 
 urlpatterns = patterns('log.views',
                        url(r'^show_log$', 'show_log'),
-                       url(r'^message_center$', 'show_message_center')
+                       url(r'^message_center$', 'show_message_center'),
+                       url(r'^update_message_center$', 'update_message_center')
                        )
