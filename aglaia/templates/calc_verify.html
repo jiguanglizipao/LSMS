@@ -360,7 +360,7 @@
 <table class="ui small segment table attached">
     <thead>
     <tr>
-        <th>id</th>
+        <th>SN号</th>
         <th>重要数据</th>
         <th>资源类型</th>
         <th>套餐类型</th>
@@ -373,7 +373,7 @@
     <tbody>
     {% for inuse in inuse_list %}
     <tr>
-        <td>{{ inuse.id }}</td>
+        <td>{{ inuse.sn }}</td>
         <td>{% if inuse.flag == True %}含有{% else %}不含有{% endif %}</td>
         <td>{% if inuse.type == 'real' %}实体{% elif inuse.type == 'virtual' %}虚拟{% endif %}</td>
         <td>{{ inuse.package_name | default:"无" }}</td>

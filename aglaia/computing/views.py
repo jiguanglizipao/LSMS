@@ -174,10 +174,10 @@ def do_modif_request(request):
                         'info_type': '',
                         'user_name': request.user.username,
                         'text': post['reason']})
-        post['reason'] = message.tostring()
+        note = message.tostring()
 
-        packed_update_computing(request, id, {'status': MODIFY_APPLY_KEY, 'note': post[
-            'reason']}, log=get_comp_modif_log())
+        packed_update_computing(request, id, {'status': MODIFY_APPLY_KEY, 'note': note},
+                                log=get_comp_modif_log())
         send_notify_mail(request, CompModfApplyMail, comp=comp)
 
         return HttpResponse('ok')
