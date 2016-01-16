@@ -1,16 +1,38 @@
-ÏÖÓĞ´úÂë²¿ÊğÖÁ¿ÉÓÃ´óÖÂĞèÒªÕâÃ´¼¸²½£º
-1.Êı¾İ¿âÅäÖÃ¼°³õÊ¼»¯¡£
-	ÏµÍ³±¾ÉíÊ¹ÓÃMysqlÊı¾İ¿â£¬¿ÉÔÚaglaia/settings.pyÀïÃæµÄDATABASESÖĞÅäÖÃÊı¾İ¿âµÄµØÖ·¡¢¶Ë¿Ú¡¢Êı¾İ¿âÃû¡¢ÓÃ»§Ãû¡¢ÃÜÂëµÈ¡£Èç¹ûÖ»ÊÇÒª²¿Êğdemo£¬¿ÉÒÔÊ¹ÓÃsqlite£¬Ö±½Ó°ÑDATABASESÀïÃæµÄENGINEĞŞ¸ÄÎªdjango.db.backends.sqlite3¼´¿É£¬NAMEÎªsqlite3Êı¾İÎÄ¼şµÄµØÖ·¡£
-	ÅäÖÃÍê±Ïºó¿ÉÒÔ½øĞĞÊı¾İ¿âµÄ³õÊ¼»¯£¬²¢´´½¨Êı¾İ¿âµÄ³¬¼¶¹ÜÀíÔ±¡£
-	python manage.py syncdb   (³õ´ÎÖ´ĞĞÕâÌõÓï¾ä»áÈÃÄã´´½¨³¬¼¶ÓÃ»§
+åç«¯è¯­è¨€: python 3.4/3.5
+ç½‘ç»œæ¡†æ¶: Django 1.8.4
+ç¯å¢ƒé…ç½®ï¼šéœ€å®‰è£…ä»¥ä¸‹åº“åŠæ’ä»¶
+	Ubuntu: libsasl2-dev libldap2-dev libxslt-dev
+	CentOs: openssl-devel gcc zlib-devel make saslwrapper-devel.x86_64 openldap-devel.x86_64 libxslt-devel.x86_64 
+
+	pip: 	django pymysql xlrd xlsxwriter pyldap django-auth-ldap lxml uwsgi 
+	
+æ•°æ®åº“é…ç½®åŠåˆå§‹åŒ–ã€‚
+	ç³»ç»Ÿæœ¬èº«ä½¿ç”¨Mysqlæ•°æ®åº“ï¼Œå¯åœ¨aglaia/settings.pyé‡Œé¢çš„DATABASESä¸­é…ç½®æ•°æ®åº“çš„åœ°å€ã€ç«¯å£ã€æ•°æ®åº“åã€ç”¨æˆ·åã€å¯†ç ç­‰ã€‚å¦‚æœåªæ˜¯è¦éƒ¨ç½²demoï¼Œå¯ä»¥ä½¿ç”¨sqliteï¼Œç›´æ¥æŠŠDATABASESé‡Œé¢çš„ENGINEä¿®æ”¹ä¸ºdjango.db.backends.sqlite3å³å¯ï¼ŒNAMEä¸ºsqlite3æ•°æ®æ–‡ä»¶çš„åœ°å€ã€‚
+	ä½¿ç”¨LDAPæœåŠ¡å™¨æ—¶è¦ä¿®æ”¹aglaia/settings.pyé‡Œé¢çš„ç›¸åº”é…ç½®ï¼Œè‹¥ä¸éœ€è¦å¯ç›´æ¥æ³¨é‡Šè¯¥ä»£ç æ®µï¼š
+		AUTH_LDAP_SERVER_URI	LDAPæœåŠ¡å™¨IP
+		AUTH_LDAP_BIND_DN	LDAPæœåŠ¡å™¨ç®¡ç†å‘˜
+		AUTH_LDAP_BIND_PASSWORD	LDAPæœåŠ¡å™¨å¯†ç 
+		AUTH_LDAP_USER_SEARCH	LDAPæœåŠ¡å™¨æœç´¢å‘½ä»¤
+		AUTH_LDAP_USER_ATTR_MAP	LDAPä¸æœ¬ç³»ç»Ÿæ˜ å°„å…³ç³»
+		
+	é…ç½®å®Œæ¯•åå¯ä»¥è¿›è¡Œæ•°æ®åº“çš„åˆå§‹åŒ–ï¼Œå¹¶åˆ›å»ºæ•°æ®åº“çš„è¶…çº§ç®¡ç†å‘˜ã€‚
+	python manage.py syncdb   åˆæ¬¡æ‰§è¡Œè¿™æ¡è¯­å¥ä¼šè®©ä½ åˆ›å»ºè¶…çº§ç”¨æˆ·
 	python manage.py migrate
-	python manage.py createsuperuser £¨ÈôÔÚsyncdbÊ±´´½¨¹ı¾Í²»±ØÁË
+	python manage.py createsuperuser è‹¥åœ¨syncdbæ—¶åˆ›å»ºè¿‡å°±ä¸å¿…äº†
+	ä¿®æ”¹aglaia/settings.pyä¸­çš„DEBUGé€‰é¡¹ï¼Œæ”¹ä¸ºTrue
+	ç”¨ python manage.py runserver å¯åŠ¨ï¼Œæµ‹è¯•è¿è¡Œç¯å¢ƒä¸é…ç½®æ–‡ä»¶æ˜¯å¦æ­£ç¡®
 
-ÅäÖÃÍê±Ïºó¾Í¿ÉÒÔÓÃ python manage.py runserver Æô¶¯ÁË
-×¢Òâ£º´´½¨Êı¾İ¿âÊ±´´½¨µÄÓÃ»§²¢²»ÊÇÍøÕ¾µÄÓÃ»§£¬²»ÄÜÓÃÓÚµÇÂ¼ÍøÕ¾£¬Ö»ÄÜÓÃÓÚµÇÂ¼¹ÜÀí½çÃæ¡£
+ä½¿ç”¨uWSGI+nginxéƒ¨ç½²ï¼š
+	æµ‹è¯•æ­£ç¡®åï¼Œä¿®æ”¹aglaia/settings.pyä¸­çš„DEBUGé€‰é¡¹ï¼Œæ”¹ä¸ºFalse
+	å®‰è£…uWSGIä¸nginx
+	ä¿®æ”¹uwsgi.iniæ–‡ä»¶ä¸­çš„ç›®å½•ï¼Œå¹¶åœ¨nginxä¸­åˆ›å»ºæˆ–ä¿®æ”¹ç›¸åº”é…ç½®æ–‡ä»¶ï¼ˆæ³¨æ„nginxå¯¹ç½‘ç«™ç›®å½•è®¿é—®æƒé™é—®é¢˜ï¼‰
+	ç±»ä¼¼äºï¼š
+	location /static {
+            alias /home/lsms/lsms/aglaia/static;
+        }
 
-Èç¹û³öÏÖ No module named pymysqlµÄ´íÎó£¬¿ÉÒÔ×°Ò»¸öpymysql¡£Èç¹ûÊ¹ÓÃµÄÊÇsqlite£¬Ò²¿ÉÒÔ°Ñaglaia/__init__.pyÀïµÄÓï¾ä×¢ÊÍµô
-
-2.´´½¨ÓÃ»§×é
-	¿ÉÔÚ/adminÒ³ÃæÖĞÊ¹ÓÃ³¬¼¶¹ÜÀíÔ±µÇÂ¼£¬È»ºó¼´¿É¹ÜÀíÊı¾İ¿âÖĞµÄÊı¾İ¡£
-	ĞèÒª´´½¨'normal'¡¢'manager'¡¢'supervisor'Èı¸öÓÃ»§×é¡£µ«²»Òª¸øÕâĞ©ÓÃ»§×éÌí¼ÓÈ¨ÏŞ¡£
+        location / {
+            uwsgi_pass 127.0.0.1:8000;
+            include uwsgi_params;
+        }
+	ä¹‹åä½¿ç”¨uwsgi uwsgi.iniå¯åŠ¨uwsgiæœåŠ¡ï¼Œé‡å¯nginxå³å¯è®¿é—®
