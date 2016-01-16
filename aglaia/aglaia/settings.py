@@ -40,7 +40,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'b^jrfnul^@=#2@gu!8jxs9y#xz30!(uhol1f3h+o6uu!@$mr$w'
  
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
@@ -110,7 +110,7 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
@@ -121,7 +121,7 @@ TEMPLATE_DIRS = (
 )
 # Some redirect url
 
-ROOT_ADDRESS = 'http://166.111.206.89/'
+ROOT_ADDRESS = 'http://lsms.tcst42.tk/'
 
 LOGIN_URL = '/account/signin/'
 
