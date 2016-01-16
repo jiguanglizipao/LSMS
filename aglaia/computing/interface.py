@@ -77,7 +77,7 @@ def create_computing(computing_list):
                                    name=name, pack_name=pack_name,
                                    data_content=data_content)
                 comput.save()
-                comput.sn = str(comput.id+1).zfill(6)
+                comput.sn = str(comput.id + 1).zfill(6)
                 comput.save()
                 new_computing.append(comput)
             except TypeError:

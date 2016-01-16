@@ -254,4 +254,4 @@ def update_message_center(request):
         data.save()
         return HttpResponse('success')
     except Exception as e:
-        return HttpResponse('failed '+e.__str__())
+        return HttpResponse('failed ' + e.__str__())
